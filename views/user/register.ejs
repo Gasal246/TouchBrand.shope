@@ -1,0 +1,64 @@
+<%- include('head.ejs') %>
+
+    <div class="userRegWrapper">
+        <img src="assets/images/demos/demo-2/logot.png" alt="myLogo" style="width: 150px; margin-left: auto; margin-right: auto;">
+        <div class="formDiv">
+            <h5 class="text-center" style="color: #6e6e6e;">Create Account</h5>
+            <form method="post" action="/registeruser">
+                <div class="mb-2">
+                    <label class="form-label">Your name</label>
+                    <input type="text" class="form-control" name="uname" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Mobile number</label>
+                    <input type="tel" class="form-control" name="phone" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="checkbox" class="custom-control-input" id="register-policy"
+                        required>
+                    <label class="custom-control-label" for="register-policy">I agree to the
+                        <a href="#">privacy policy</a> *</label>
+                </div>
+                <p class="mb-3 ">To verify your number, we will send you a text message with a temporary code. Message and data rates may apply.</p>
+                <div style="display: flex; justify-content: space-between">
+                    <div class="custom-control">
+                        <a href="/">Already have an acount ?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <p class="footer-copyright">Copyright © 2023 TouchBrand Store. All Rights Reserved.</p>
+            <!-- End .footer-copyright -->
+            <ul class="footer-menu">
+                <li><a href="#">Terms Of Use</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul><!-- End .footer-menu -->
+
+            <div class="social-icons social-icons-color">
+                <span class="social-label">Social Media</span>
+                <a href="#" class="social-icon social-facebook" title="Facebook" target="_blank"><i
+                        class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon social-twitter" title="Twitter" target="_blank"><i
+                        class="icon-twitter"></i></a>
+                <a href="#" class="social-icon social-instagram" title="Instagram" target="_blank"><i
+                        class="icon-instagram"></i></a>
+                <a href="#" class="social-icon social-youtube" title="Youtube" target="_blank"><i
+                        class="icon-youtube"></i></a>
+                <a href="#" class="social-icon social-pinterest" title="Pinterest" target="_blank"><i
+                        class="icon-pinterest"></i></a>
+            </div><!-- End .soial-icons -->
+        </div><!-- End .container -->
+    </div>
+    <%- include('foot.ejs') %>
