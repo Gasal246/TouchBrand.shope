@@ -1,0 +1,23 @@
+<%- include('head.ejs') %>
+
+<div class="verifyWrapper">
+  <form action="/verify" method="post">
+    <% if (cookies) { %>
+    <h3>Enter the verification code that have sended to email <span><%= cookies.email %></span></h3>
+    <% } %>
+    <% if (error) { %>
+      <h6 style="color: red;"><%= error %></h6> 
+    <% } %>
+    <div class="inputf">
+      <div class="mb-3">
+        <input type="text" name="vcode" class="form-control" id="vcode">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+  <form action="/resendVerification/<%= cookies.email %>" method="post">
+    <button type="submit" class="btn btn-dark mt-2">Resend Verification Code</button>
+  </form>
+</div>
+
+<%- include('foot.ejs') %>
