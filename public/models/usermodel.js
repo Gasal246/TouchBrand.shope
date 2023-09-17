@@ -11,8 +11,9 @@ const UsersSchema = new Schema({
   Phone2: { type: Number },
   Gender: { type: String },
   Dob: { type: Date },
-  verifycode:{ type: Number, required: true},
-  verify: { type: Boolean }
+  verifycode:{ type: Number},
+  verify: { type: Boolean },
+  Blocked: { type: Boolean }
 });
 
 module.exports = mongoose.model("users", UsersSchema);

@@ -93,8 +93,31 @@ router.get("/deleteproduct/:pid", async (req, res) => {
   }
 });
 
-router.get('/users', (req, res) => {
-  res.render('admin/users')
+router.get("/deleteuser/:uid", async (req, res) => {
+  const userId = req.params.uid;
+  try {
+    const user = await Usercopy.findById(userId);
+    await Usercopy.findByIdAndRemove(userId);
+    res.redirect("/admin/users"); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get('/users', async (req, res) => {
+  const users = await Usercopy.find({});
+  res.render('admin/users', {users})
+})
+
+router.get('/blockuser/:email', async(req, res) => {
+  await Usercopy.updateOne({ Email: req.params.email }, {$set:{ Blocked: true }})
+  res.redirect('/admin/users')
+})
+
+router.get('/unblockuser/:email', async(req, res) => {
+  await Usercopy.updateOne({ Email: req.params.email }, {$set:{ Blocked: false }})
+  res.redirect('/admin/users')
 })
 
 module.exports = router;

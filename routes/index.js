@@ -206,5 +206,33 @@ router.post('/secondaryaddress', async(req, res) => {
   }
 })
 
+router.post('/editprofile', async (req, res) => {
+  try {
+    const user = await Usercopy.findOne({ Email: req.body.email});
+    if (user) {
+      if (req.body.currentpass && user.Password == req.body.currentpass) {
+        return res.status(401).send('Current password is incorrect.');
+      }
+
+      // Update user information
+      user.Username = req.body.name;
+      user.Email = req.body.email;
+      if (req.body.newpass && req.body.newpass == req.body.cpass) {
+        const newPass = await bcrypt.hash(req.body.newpass, 10)
+        user.Password = newPass;
+      }
+
+      // Save the updated user information
+      await user.save();
+      return res.redirect('/account')
+    } else {
+      return res.status(404).send('User not found.');
+    }
+  } catch (error) {
+    console.error('Error updating user information:', error);
+    res.status(500).send('An error occurred while updating user information.');
+  }
+})
+
 
 module.exports = router;
