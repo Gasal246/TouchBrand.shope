@@ -64,3 +64,9 @@
         flex-direction: column;
     }
 }
+
+.popform{
+    max-width: 500px;
+    background: white;
+    padding: 20px 20px;
+}

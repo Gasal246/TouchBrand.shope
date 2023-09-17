@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 var Usercopy = require("../public/models/usermodel");
+var AddressCopy = require("../public/models/addressmodel")
+
 var bcrypt = require("bcrypt");
 var nodemailer = require("nodemailer");
 
@@ -14,16 +16,16 @@ var transporter = nodemailer.createTransport({
     user: "gasalgasal246@gmail.com",
     pass: "szglvviqkkjbywad",
   },
-});
+})
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
+router.get("/", async (req, res, next)=> {
   if (req.cookies.user) {
-    res.render("user/index", { cdata: req.cookies.user });
+    res.render("user/index", { cdata: req.cookies.user, error: null});
   } else {
-    res.render("user/index");
+    res.render("user/index", {error : "Not logged in ??", cdata: null});
   }
 });
+
 router.get("/registernow", (req, res) => {
   res.render("user/register");
 });
@@ -36,6 +38,7 @@ router.post("/registeruser", (req, res) => {
       Usercopy.findOne({ Email: req.body.email }).then(async (data) => {
         if (data) {
           console.log("User already registered bro");
+          res.render("user/register", {error : "Not logged in ??", cdata: null});
         } else {
           const bpassword = await bcrypt.hash(req.body.password, 10);
           const user = new Usercopy({
@@ -51,6 +54,7 @@ router.post("/registeruser", (req, res) => {
             .then((data) => {
               console.log("saved to db" + data);
               const cdata = {
+                id: data._id,
                 name: data.Username,
                 email: data.Email,
                 phone: data.Phone,
@@ -123,5 +127,84 @@ router.post("/resendVerification/:email", async (req, res) => {
   });
   res.redirect("/verify");
 });
+
+router.post('/userlogin', (req, res) => {
+  console.log(req.body);
+  Usercopy.findOne({ Email: req.body.email}).then(async(data) => {
+    if(data && (await bcrypt.compare(req.body.password, data.Password))){
+      const cdata = {
+        id: data._id,
+        name: data.Username,
+        email: data.Email,
+        phone: data.Phone,
+      };
+      res.cookie("user", cdata, { maxAge: 3600000, httpOnly: true });
+      res.redirect('/');
+    } else {
+      res.render("user/index", { error: "Login error: gmail and password not valid!⚠️", cdata: null });
+    }
+  })
+})
+
+router.get('/logout', (req, res) =>{
+  res.clearCookie("user");
+  res.redirect("/");
+})
+
+router.get('/account', async (req, res) => {
+  if(req.cookies.user){
+    const address = await AddressCopy.findOne({Userid: req.cookies.user.id})
+    res.render('user/account', {cookies: req.cookies.user, address: address})
+  }else{
+    res.render('user/account', {cookies: null, address:null}) 
+  }
+})
+
+router.post('/primaryaddress', async(req, res) => {
+  const userid = req.cookies.user.id;
+  const data = await AddressCopy.findOne({Userid: userid})
+  const addressData = {
+    Userid: userid,
+    Firstaddress:{
+      City: req.body.city,
+      Country: req.body.country,
+      Landmark: req.body.landmark,
+      Pincode: req.body.pincode,
+      Place: req.body.place
+    }
+  }
+  if(data){
+    await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
+    res.redirect('/account')
+  }else{
+    const newAddress = new AddressCopy(addressData);
+    await newAddress.save()
+    res.redirect('/account')
+  }
+})
+
+router.post('/secondaryaddress', async(req, res) => {
+  const userid = req.cookies.user.id;
+  const data = await AddressCopy.findOne({Userid: userid})
+  const addressData = {
+    Userid: userid,
+    Secondaddress:{
+      City: req.body.city,
+      Country: req.body.country,
+      Landmark: req.body.landmark,
+      Pincode: req.body.pincode,
+      Place: req.body.place
+    }
+  }
+  if(data){
+    await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
+    res.redirect('/account')
+  }else{
+    const newAddress = new AddressCopy(addressData);
+    await newAddress.save()
+    res.redirect('/account')
+  }
+})
+
 
 module.exports = router;

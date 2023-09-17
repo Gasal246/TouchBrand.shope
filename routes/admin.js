@@ -93,5 +93,9 @@ router.get("/deleteproduct/:pid", async (req, res) => {
   }
 });
 
+router.get('/users', (req, res) => {
+  res.render('admin/users')
+})
+
 module.exports = router;
  
