@@ -1,10 +1,12 @@
 var express = require("express");
 var router = express.Router();
-var Usercopy = require("../public/models/usermodel");
 const multer = require("multer");
-const Product = require("../public/models/productmodel");
-const fs = require("fs");
 const path = require("path");
+const fs = require("fs");
+
+const Product = require("../public/models/productmodel");
+const Usercopy = require("../public/models/usermodel");
+const Admincopy = require("../public/models/adminmodel");
 
 let uniqueIdentifier = Date.now(); // Declare the variable in the outer scope
 
@@ -18,9 +20,32 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/", async (req, res) => {
-  const userData = await Usercopy.find({});
-  res.render("admin/admin");
+router.get("/", (req, res) => {
+  res.render("admin/login", { error: null });
+});
+
+router.post("/adminlogin", async (req, res) => {
+  console.log();
+  const admin = await Admincopy.find({
+    email: req.body.email,
+    password: req.body.password,
+  });
+  if (admin) {
+    res.cookie("admin", req.body.email, { maxAge: 36000000, httpOnly: true });
+    res.redirect("/admin/dash");
+  } else {
+    console.log(" ADMIN LOGIN ERROR : ", err);
+    res.render("admin/login", { error: "Entered credentials are wrong!!" });
+  }
+});
+
+router.get("/dash", async (req, res) => {
+  if (req.cookies.admin) {
+    const userData = await Usercopy.find({});
+    res.render("admin/admin");
+  } else {
+    res.render("admin/login", { error: "Entered credentials are wrong!!" });
+  }
 });
 
 router.get("/products", async (req, res) => {
@@ -98,27 +123,32 @@ router.get("/deleteuser/:uid", async (req, res) => {
   try {
     const user = await Usercopy.findById(userId);
     await Usercopy.findByIdAndRemove(userId);
-    res.redirect("/admin/users"); 
+    res.redirect("/admin/users");
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-router.get('/users', async (req, res) => {
+router.get("/users", async (req, res) => {
   const users = await Usercopy.find({});
-  res.render('admin/users', {users})
-})
+  res.render("admin/users", { users });
+});
 
-router.get('/blockuser/:email', async(req, res) => {
-  await Usercopy.updateOne({ Email: req.params.email }, {$set:{ Blocked: true }})
-  res.redirect('/admin/users')
-})
+router.get("/blockuser/:email", async (req, res) => {
+  await Usercopy.updateOne(
+    { Email: req.params.email },
+    { $set: { Blocked: true } }
+  );
+  res.redirect("/admin/users");
+});
 
-router.get('/unblockuser/:email', async(req, res) => {
-  await Usercopy.updateOne({ Email: req.params.email }, {$set:{ Blocked: false }})
-  res.redirect('/admin/users')
-})
+router.get("/unblockuser/:email", async (req, res) => {
+  await Usercopy.updateOne(
+    { Email: req.params.email },
+    { $set: { Blocked: false } }
+  );
+  res.redirect("/admin/users");
+});
 
 module.exports = router;
- 

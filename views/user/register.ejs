@@ -4,22 +4,30 @@
         <img src="assets/images/demos/demo-2/logot.png" alt="myLogo" style="width: 150px; margin-left: auto; margin-right: auto;">
         <div class="formDiv">
             <h5 class="text-center" style="color: #6e6e6e;">Create Account</h5>
+            <h6 id="reg-err" style="color: red; font-size: 14px;" class="text-center"></h6>
             <form method="post" action="/registeruser">
                 <div class="mb-2">
                     <label class="form-label">Your name</label>
-                    <input type="text" class="form-control" name="uname" required>
+                    <input type="text" class="form-control" name="uname" placeholder="This name will be displayed on homepage" required>
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Mobile number</label>
-                    <input type="tel" class="form-control" name="phone" required>
+                    <span id="reg-phone-err" style="color: red; font-size: 12px;"></span>
+                    <input type="tel" class="form-control" id="reg-phone" name="phone" onchange="regphone()" placeholder="* This must be 10 digits" required>
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Email address</label>
-                    <input type="email" class="form-control" name="email" required>
+                    <span id="reg-email-err" style="color: red; font-size: 12px;"></span>
+                    <input type="email" class="form-control" id="reg-email" name="email" onchange="regemail()" placeholder="Enter your email address" required>
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" required>
+                    <input type="password" class="form-control" id="reg-pass" name="password" placeholder="Your password" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Confirm Password</label>
+                    <span id="reg-cpass-err" style="color: red; font-size: 12px;"></span>
+                    <input type="password" class="form-control" id="reg-cpass" name="cpassword" onchange="regpass()" placeholder="Enter your password again" required>
                 </div>
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" name="checkbox" class="custom-control-input" id="register-policy"
@@ -27,7 +35,7 @@
                     <label class="custom-control-label" for="register-policy">I agree to the
                         <a href="#">privacy policy</a> *</label>
                 </div>
-                <p class="mb-3 ">To verify your number, we will send you a text message with a temporary code. Message and data rates may apply.</p>
+                <p class="mb-3 ">To verify your number, we will send you a text message with a temporary code. <br> Message and data rates may apply.</p>
                 <div style="display: flex; justify-content: space-between">
                     <div class="custom-control">
                         <a href="/">Already have an acount ?</a>
@@ -61,4 +69,52 @@
             </div><!-- End .soial-icons -->
         </div><!-- End .container -->
     </div>
+
+    <script>
+        var emailErr = document.getElementById('reg-email-err');
+        var phoneErr = document.getElementById('reg-phone-err');
+        var passErr = document.getElementById('reg-cpass-err');
+        let err = false;
+
+        regemail = () => {
+            let email = document.getElementById('reg-email').value;
+            if (email.length < 1) {
+                emailErr.innerHTML = "Not meeting minimum charecters"
+                err = true;
+                return false;
+            }
+            if (!email.match(/^[a-zA-Z0-9]+@/)) {
+                emailErr.innerHTML = "Not valid mail id"
+                err = true;
+                return false;
+            }
+            emailErr.innerHTML = ""
+            return err = false;
+        }
+
+        regphone = () => {
+            let phone = document.getElementById('reg-phone').value;
+            if (phone.length != 10) {
+                phoneErr.innerHTML = "Enter a valid phonenumber"
+                err = true;
+                return false;
+            }
+            phoneErr.innerHTML = ""
+            return err = false;
+        }
+
+        regpass = () => {
+            let pass = document.getElementById('reg-pass').value;
+            let cpass = document.getElementById('reg-cpass').value;
+            if(pass != cpass){
+                passErr.innerHTML = "Your passwords are not matching"
+                err = true;
+                return false;
+            }
+            passErr.innerHTML = ""
+            return err = false;
+        }
+
+    </script>
+
     <%- include('foot.ejs') %>

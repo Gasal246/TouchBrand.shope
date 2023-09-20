@@ -18,5 +18,3 @@ const ProductsSchema = new Schema({
 const Products = mongoose.model("Products", ProductsSchema);
 
 module.exports = Products;
-
-1694688029016

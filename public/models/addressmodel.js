@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema, ObjectId } = mongoose;
 
 const AddressSchema = new Schema({
+  Userid: { type: Schema.Types.ObjectId, required: true, unique: true },
   Firstaddress: {
      City: { type: String, required: true },
      Country: { type: String, required: true },
@@ -10,7 +11,6 @@ const AddressSchema = new Schema({
      Pincode: { type: Number, required: true },
      Place: { type: String, required: true },
   },
-  Userid: { type: Schema.Types.ObjectId, required: true, unique: true },
   Secondaddress: {
      City: { type: String },
      Country: { type: String},
