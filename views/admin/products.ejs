@@ -2,11 +2,11 @@
 
     <div class="product-wrapper">
         <div class="productsNav mt-3 mb-5">
-            <button class="btn btn-success" id="openAddProduct">Add Products</button>
             <div class="searchBar">
-                <input type="search" placeholder="Search for products by name or category" id="productSearch">
+                <input type="search" placeholder="search by name or category" id="productSearch">
                 <i class="las la-search"></i>
             </div>
+            <button class="btn btn-success" id="openAddProduct">Add Products</button>
         </div>
         <div class="div tableWrapper">
             <table class="table table-light">
@@ -18,8 +18,8 @@
                         <th scope="col">Price</th>
                         <th scope="col">Items Left</th>
                         <th scope="col">Image</th>
-                        <th scope="col">Actions</th>
-                        <th scope="col"></th>
+                        <th scope="col">edit</th>
+                        <th scope="col">delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +44,7 @@
                                     style="width: 40px;height: 40px;object-fit: cover;border-radius: 10px;"></td>
                             <td>
                                 <button class="btn btn-primary openEditBtn" onclick="editClick({
+                                        pid: `<%= product._id %>`,
                                         pname:`<%= product.Productname %>`,
                                         category: `<%= product.Category %>`,
                                         specs: `<%= product.Spec %>`,
@@ -118,7 +119,7 @@
         <div><button class="btn btn-danger closeBtn-edit">close</button></div>
         <div class="formDiv">
             <h6 class="text-center">Edit the product</h6>
-            <form>
+            <form method="post" onsubmit="editproduct()" id="theEditForm" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Product Name</label>
                     <input type="text" class="form-control" name="pname" id="pname">
@@ -153,7 +154,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Select the images</label>
-                    <input type="file" class="form-control" id="editfileUpload" name="images[]" multiple>
+                    <input type="file" class="form-control" id="editfileUpload" name="images" multiple>
                 </div>
                 <h6>images</h6>
                 <div id="editImagePreview"></div>
@@ -163,7 +164,10 @@
     </div>
 
     <script>
+        let productid;
+
         function editClick(product) {
+            productid = product.pid;
             document.getElementById('pname').value = product.pname;
             document.getElementById('category').value = product.category;
             document.getElementById('specs').value = product.specs;
@@ -171,41 +175,91 @@
             document.getElementById('price').value = product.price;
             document.getElementById('scost').value = product.scost;
             document.getElementById('discount').value = product.discount;
-            document.getElementById('stoke').value = product.stoke
+            document.getElementById('stoke').value = product.stoke;
 
-            console.log(product.images);
             const imgs = product.images.split(',');
-            console.log(imgs);
+
             document.getElementById('editImagePreview').innerHTML = '';
-            imgs.forEach(function (imageSrc) {
+            imgs.forEach(function (imageSrc, index) {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'image-container';
+
                 const img = document.createElement('img');
                 img.src = imageSrc;
                 img.className = 'm-1';
                 img.style.maxWidth = '80px';
-                document.getElementById('editImagePreview').appendChild(img);
+
+                const deleteLink = document.createElement('a');
+                deleteLink.innerText = 'Delete';
+                deleteLink.className = 'btn btn-danger delete-image-button';
+                deleteLink.href = `/admin/delproductimg/${encodeURIComponent(imageSrc)}/${productid}`;
+
+                deleteLink.onclick = function () {
+                    // Remove the image container on click
+                    imgContainer.remove();
+                };
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(deleteLink);
+
+                document.getElementById('editImagePreview').appendChild(imgContainer);
             });
         }
+
+        function editproduct() {
+            document.querySelector("#theEditForm").action = "/admin/editproduct/" + productid;
+        }
     </script>
+
 
     <!-- THIS IS THE SCRIPT TO PRIVIEW IMAGES AFTER THE SELECTION -->
     <script>
         const fileInput = document.getElementById('fileUpload');
         const imagePreview = document.getElementById('imagePreview');
+        let selectedFiles = [];
 
         fileInput.addEventListener('change', () => {
             imagePreview.innerHTML = '';
-
             const files = fileInput.files;
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.type.startsWith('image/')) {
                     const img = document.createElement('img');
                     img.className = 'preview-image';
                     img.src = URL.createObjectURL(file);
+                    img.setAttribute('data-index', i);
+
+                    img.addEventListener('click', (event) => {
+                        const index = parseInt(event.target.getAttribute('data-index'));
+                        selectedFiles = selectedFiles.filter((_, idx) => idx !== index);
+                        updateFileInput(selectedFiles);
+                        img.remove();
+                    });
+
+                    img.addEventListener('mouseover', () => {
+                        img.style.opacity = '0.5';
+                    });
+
+                    img.addEventListener('mouseout', () => {
+                        img.style.opacity = '1';
+                    });
+
                     imagePreview.appendChild(img);
+                    selectedFiles.push(file);
                 }
             }
+            updateFileInput(selectedFiles);
         });
+
+        function updateFileInput(updatedFiles) {
+            const updatedFileList = new DataTransfer();
+            for (let i = 0; i < updatedFiles.length; i++) {
+                updatedFileList.items.add(updatedFiles[i]);
+            }
+            fileInput.files = updatedFileList.files;
+        }
+
     </script>
     <script>
         const fileInput2 = document.getElementById('editfileUpload');

@@ -184,7 +184,7 @@ router.get("/account", async (req, res) => {
     res.render("user/account", {
       cookies: userdata,
       address: address,
-      error: req.query.error?req.query.error:null,
+      error: req.query.error ? req.query.error : null,
     });
   } else {
     res.render("user/account", { cookies: null, address: null, error: null });
@@ -237,24 +237,23 @@ router.post("/secondaryaddress", async (req, res) => {
   }
 });
 
-router.post("/editprofile", async (req, res) => {
+router.post("/editprofile", async (req, res, next) => {
   try {
     const user = await Usercopy.findOne({ Email: req.cookies.user.email });
     if (user) {
-      if (
-        req.body.currentpass &&
-        (await bcrypt.compare(req.body.currentpass, user.Password))
-      ) {
-        if (req.body.newpass) {
-          const newPass = await bcrypt.hash(req.body.newpass, 10);
-          user.Password = newPass;
+      if (req.body.currentpass) {
+        if (await bcrypt.compare(req.body.currentpass, user.Password)) {
+          if (req.body.newpass) {
+            const newPass = await bcrypt.hash(req.body.newpass, 10);
+            user.Password = newPass;
+          }
+        } else {
+          const err = "Your entered current password is incorrect, ";
+          return res.redirect(`/account?error=${err}`);
         }
-      }else{
-        const err = "Your entered current password is incorrect, "
-        return res.redirect(`/account?error=${(err)}`);
       }
 
-      await bcrypt.compare(req.body.currentpass, user.Password)
+      await bcrypt.compare(req.body.currentpass, user.Password);
 
       user.Username = req.body.name;
       user.Email = req.body.email;
