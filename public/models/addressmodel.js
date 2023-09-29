@@ -23,4 +23,3 @@ const AddressSchema = new Schema({
 const Address = mongoose.model('Address', AddressSchema);
 
 module.exports = Address;
-

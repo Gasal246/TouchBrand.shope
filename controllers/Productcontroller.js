@@ -15,9 +15,9 @@ module.exports = {
   getAdminProducts: async (req, res, uniqueIdentifier) => {
     const products = await Product.find({});
     if (req.cookies.admin) {
-      return res.render("admin/products", { products });
+      res.render("admin/products", { products });
     } else {
-      return res.render("admin/login", {
+      res.render("admin/login", {
         error: "Entered credentials are wrong!!",
       });
     }
@@ -82,6 +82,7 @@ module.exports = {
   //   EDIT THE PRODUCT
   editProduct: async (req, res, uniqueIdentifier) => {
     const uploadedImages = req.files;
+    console.log(uploadedImages);
     const productId = req.params.pid;
     const theproduct = await Product.findById(productId);
     const imagePaths = theproduct.Imagepath;
@@ -107,9 +108,10 @@ module.exports = {
       await Product.findByIdAndUpdate(productId, {
         $set: editedData,
       });
-      return res.redirect("/admin/products");
+      res.redirect("/admin/products");
     } catch (err) {
       console.log("Error on updating the data : " + err);
     }
   },
+  
 };

@@ -1,5 +1,7 @@
 const Usercopy = require("../public/models/usermodel");
 const Admincopy = require("../public/models/adminmodel");
+var AddressCopy = require("../public/models/addressmodel");
+const usermodel = require("../public/models/usermodel");
 
 module.exports = {
   // ADMIN LOGIN CHECK
@@ -14,7 +16,9 @@ module.exports = {
       return res.redirect("/admin/dash");
     } else {
       console.log(" ADMIN LOGIN ERROR : ", err);
-      return res.render("admin/login", { error: "Entered credentials are wrong!!" });
+      return res.render("admin/login", {
+        error: "Entered credentials are wrong!!",
+      });
     }
   },
   // GET USERS
@@ -47,5 +51,14 @@ module.exports = {
       { $set: { Blocked: false } }
     );
     res.redirect("/admin/users");
+  },
+  viewuser: async (req, res) => {
+    try {
+      let user = await usermodel.findById(req.params.uid)
+      let address = await AddressCopy.findOne({Userid: req.params.uid})
+      res.render('admin/viewuser', { user: user,  address: address })
+    } catch (error) {
+      console.log(error.message);
+    }
   },
 };

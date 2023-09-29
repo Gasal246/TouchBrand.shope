@@ -22,13 +22,15 @@ const upload = multer({ storage: storage });
 const productController = require("../controllers/Productcontroller");
 const AdminUsercontroller = require("../controllers/AdminUsercontroller");
 const AdminDashboard = require("../controllers/AdminDashboard");
+const Categorycontroller = require("../controllers/Categorycontroller");
+const usermodel = require("../public/models/usermodel");
 
 // ############################### GET INTO DASHBOARD #########################
 
 router.get("/", (req, res) => {
-  if(req.cookies.admin){
-    res.render("admin/admin");
-  }else{
+  if (req.cookies.admin) {
+    res.render("admin/dashboard");
+  } else {
     res.render("admin/login", { error: null });
   }
 });
@@ -84,7 +86,6 @@ router.get("/deleteuser/:uid", async (req, res) => {
   AdminUsercontroller.deleteUser(req, res);
 });
 
-
 router.get("/users", async (req, res) => {
   AdminUsercontroller.getUsers(req, res);
 });
@@ -97,9 +98,40 @@ router.get("/unblockuser/:email", async (req, res) => {
   AdminUsercontroller.unblockUser(req, res);
 });
 
+router.get('/viewuser', (req, res) => {
+  res.render('admin/viewuser')
+});
+
+router.get("/showuser/:uid", async(req, res, next) => {
+  AdminUsercontroller.viewuser(req, res, next);
+});
+
 // ############################## CATEGORY CONTROLL #########################
-router.get('/categories', (req, res) => {
-  res.render('admin/categories')
-})
+router.get("/categories", (req, res) => {
+  Categorycontroller.getCategory(req, res);
+});
+
+router.post("/addcategory", async (req, res) => {
+  Categorycontroller.addcategory(req, res);
+});
+
+router.post("/editcategory/:catid", async (req, res) => {
+  Categorycontroller.editCategory(req, res);
+});
+
+router.get("/deletecategory/:catid", async (req, res) => {
+  Categorycontroller.deleteCategory(req, res);
+});
+
+// ################### ADMIN LOGOUT #################
+router.get("/logout", async (req, res) => {
+  res.clearCookie("admin");
+  res.redirect("/admin");
+});
+
+// ################## BANNER CONTROL ################
+router.get("/banner", async (req, res) => {
+  res.render("admin/banner");
+});
 
 module.exports = router;

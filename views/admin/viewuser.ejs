@@ -1,0 +1,59 @@
+<%- include('head.ejs') %>
+<div>
+    <div class="container mt-5">
+        <div style="display: flex; justify-content: space-between;">
+            <h4>View other details</h4>
+            <a href="/admin/users" class="btn btn-danger closeBtn">close</a>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Name</span>
+                    <input type="text" class="form-control uname" value="<%= user.Username %>" aria-label="Username"
+                    aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Email</span>
+                    <input type="text" class="form-control uemail" value="<%= user.Email %>" aria-label="Username"
+                    aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text " id="basic-addon1">Phone</span>
+                    <input type="text" class="form-control uphone" value="<%= user.Phone %>" aria-label="Username"
+                    aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text " id="basic-addon1">Age</span>
+                    <input type="text" class="form-control uage" value="<%= new Date().getFullYear() - new Date(user.Dob).getFullYear() %>" aria-label="Username"
+                    aria-describedby="basic-addon1" autocomplete="bday">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Gender</span>
+                    <input type="text" class="form-control ugender" value="<%= user.Gender %>" aria-label="Username"
+                    aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-text ">Primary Adress</span>
+                    <textarea class="form-control upaddress" aria-label="With textarea" rows="8"><%= address ? address.Firstaddress : '' %></textarea>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-text ">Secondary Adress</span>
+                    <textarea class="form-control usaddress" aria-label="With textarea" rows="8"><%= address ? address.Secondaddress : '' %></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('foot.ejs') %>

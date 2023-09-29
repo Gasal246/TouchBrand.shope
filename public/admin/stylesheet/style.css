@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 .adminData {
   max-width: 200px;
   display: flex;
@@ -45,6 +46,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 .popUp .formDiv {
   background: white;
@@ -80,6 +82,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 .popUp-edit .formDiv {
   background: white;
@@ -93,4 +96,13 @@
   position: absolute;
   top: 10px;
   right: 10px;
+}
+.viewUser{
+  background: rgb(233, 233, 233);
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
 }
