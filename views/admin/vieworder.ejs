@@ -1,0 +1,50 @@
+<%- include('head.ejs') %>
+
+<div class="container">
+    <div class="row mb-4 mt-3">
+        <h5 class="text-center col-11">View order</h5>
+        <a href="/admin/orders" class="btn btn-dark col-1">close</a>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Costumer Name</span>
+                <input type="text" class="form-control " value="" aria-label="Username"
+                aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Order date</span>
+                <input type="text" class="form-control " value="" aria-label="Username"
+                aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Total amount</span>
+                <input type="text" class="form-control " value="" aria-label="Username"
+                aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text ">Delivery Adress</span>
+                <textarea class="form-control upaddress" aria-label="With textarea" rows="6"></textarea>
+            </div>
+        </div>
+        <!-- ITEMS -->
+        <div class="col-3">
+            <div class="card shadow" style="width: 18rem;">
+                <img src="/admin/images/gasal.jpg" class="card-img-top" style="height: 150px;object-fit: cover;" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Product Name</h5>
+                  <p class="card-text">Quantity: 3 <br> <span style="font-weight: 500;">Total: $3000</span></p>
+                  <a href="#" class="btn btn-dark">cancel</a>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+<%- include('foot.ejs') %>

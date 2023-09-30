@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const { Schema, ObjectId } = mongoose;
 
 const OrdersSchema = new Schema({
-  Userid: { type: Schema.Types.ObjectId, required: true, unique: true },
+  Userid: { type: Schema.Types.ObjectId, unique: true },
+  Username: { type: String },
   Shippingcost: { type: Number },
   Items: [{
      Paymet: { type: String, required: true, enum: [ 'pod', ' online' ] },
@@ -20,4 +21,3 @@ const OrdersSchema = new Schema({
 const Orders = mongoose.model('Orders', OrdersSchema);
 
 module.exports = Orders;
-

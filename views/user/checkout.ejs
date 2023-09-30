@@ -3,7 +3,7 @@
     <main class="main">
         <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
             <div class="container">
-                <h1 class="page-title">Checkout<span><%= product.Productname  %></span></h1>
+                <h1 class="page-title">Checkout<span><%= product?product.Productname:'Checkout cart'  %></span></h1>
             </div><!-- End .container -->
         </div><!-- End .page-header -->
         <nav aria-label="breadcrumb" class="breadcrumb-nav">
@@ -25,7 +25,7 @@
                             <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
                         </form>
                     </div><!-- End .checkout-discount -->
-                    <form action="/checkoutproduct" method="post">
+                    <form action="/saveorder" method="post">
                         <div class="row">
                             <div class="col-lg-9">
                                 <h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
@@ -94,18 +94,29 @@
                                         </thead>
 
                                         <tbody>
+                                            <% let subtotal = 0 %>
+                                            <% if(cart){ %>
+                                                <% cart.map((product)=>{ %>
+                                                    <input type="hidden" name="productId" value="<%= product.Productid %>">
+                                                    <input type="hidden" name="quantity" value="<%= product.Quantity %>">
                                             <tr>
-                                                <td><a href="#">Beige knitted elastic runner shoes</a></td>
-                                                <td>$84.00</td>
+                                                <td><a href="#"><%= product.Productname %></a><i style="color: rgb(0, 0, 0);font-weight: 500;"> x <%= product.Quantity %></i></td>
+                                                <td>$<%= product.Price * product.Quantity %></td>
                                             </tr>
+                                            <% subtotal += product.Price * product.Quantity %>
+                                            <% }) %>
+                                            <% } else {%>
+                                                <input type="hidden" name="productId" value="<%= product._id %>">
+                                                <input type="hidden" name="quantity" value="1">
+                                            <tr>
+                                                <td><a href="#"><%= product.Productname %></a></td>
+                                                <td>$<%= product.Price - product.Discount * quantity %></td>
 
-                                            <tr>
-                                                <td><a href="#">Blue utility pinafore denimdress</a></td>
-                                                <td>$76,00</td>
                                             </tr>
+                                            <% } %>
                                             <tr class="summary-subtotal">
                                                 <td>Subtotal:</td>
-                                                <td>$160.00</td>
+                                                <td>$<%= subtotal %></td>
                                             </tr><!-- End .summary-subtotal -->
                                             <tr>
                                                 <td>Shipping:</td>
@@ -113,7 +124,7 @@
                                             </tr>
                                             <tr class="summary-total">
                                                 <td>Total:</td>
-                                                <td>$160.00</td>
+                                                <td>$<%= subtotal %></td>
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->

@@ -1,4 +1,5 @@
 <%- include('head.ejs') %>
+    <% let qty = 1 %>
     <div class="page-wrapper">
         <main class="main">
             <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
@@ -32,22 +33,21 @@
                                     <div class="row">
                                         <figure class="product-main-image">
                                             <img id="product-zoom" src='<%= product.Imagepath[0] %>'
-                                                data-zoom-image="<%= product.Imagepath[0] %>"
-                                                alt="product view image">
+                                                data-zoom-image="<%= product.Imagepath[0] %>" alt="product view image">
 
                                             <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                                 <i class="icon-arrows"></i>
                                             </a>
                                         </figure><!-- End .product-main-image -->
 
-                                        <div id="product-zoom-gallery" class="product-image-gallery" style="max-height: 420px; overflow-y: scroll;">
+                                        <div id="product-zoom-gallery" class="product-image-gallery"
+                                            style="max-height: 420px; overflow-y: scroll;">
                                             <% product.Imagepath.map((img)=>{ %>
-                                            <a class="product-gallery-item"
-                                                data-image="<%= img %>"
-                                                data-zoom-image="<%= img %>">
-                                                <img src="<%= img %>" alt="product side">
-                                            </a>
-                                            <% }) %>
+                                                <a class="product-gallery-item" data-image="<%= img %>"
+                                                    data-zoom-image="<%= img %>">
+                                                    <img src="<%= img %>" alt="product side">
+                                                </a>
+                                                <% }) %>
                                         </div><!-- End .product-image-gallery -->
                                     </div><!-- End .row -->
                                 </div><!-- End .product-gallery -->
@@ -55,7 +55,9 @@
 
                             <div class="col-md-6">
                                 <div class="product-details">
-                                    <h1 class="product-title"><%= product.Productname %></h1>
+                                    <h1 class="product-title">
+                                        <%= product.Productname %>
+                                    </h1>
                                     <!-- End .product-title -->
 
                                     <div class="ratings-container">
@@ -73,7 +75,7 @@
                                     <div class="product-content">
                                         <p>
                                             Actual price: $<%= product.Price %> <br>
-                                            You save: $<%= product.Discount %>
+                                                You save: $<%= product.Discount %>
                                         </p>
                                     </div><!-- End .product-content -->
 
@@ -108,13 +110,14 @@
                                     <div class="details-filter-row details-row-size">
                                         <label for="qty">Qty:</label>
                                         <div class="product-details-quantity">
-                                            <input type="number" id="qty" class="form-control" value="1" min="1"
+                                            <input type="number" id="qty" class="form-control qty1" value="<%= qty %>" onchange="gasal()" min="1"
                                                 max="10" step="1" data-decimals="0" required>
                                         </div><!-- End .product-details-quantity -->
                                     </div><!-- End .details-filter-row -->
 
                                     <div class="product-details-action">
-                                        <a href="/addtocartproduct/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <a href="/addtocartproduct/<%= product._id %>"
+                                            class="btn-product btn-cart"><span>add to cart</span></a>
 
                                         <div class="details-action-wrapper">
                                             <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to
@@ -127,12 +130,14 @@
                                     <div class="product-details-footer">
                                         <div class="product-cat">
                                             <% if(category){%>
-                                            <span>Category: <%= category.Catname %></span><br>
-                                            <% let subcats = category.Subcat.split(',') %>
-                                            <% subcats.map((cat)=>{ %>
-                                            <a href="#"><%= cat %></a>,
-                                            <% }) %>
-                                            <% } %>
+                                                <span>Category: <%= category.Catname %></span><br>
+                                                <% let subcats=category.Subcat.split(',') %>
+                                                    <% subcats.map((cat)=>{ %>
+                                                        <a href="#">
+                                                            <%= cat %>
+                                                        </a>,
+                                                        <% }) %>
+                                                            <% } %>
                                         </div><!-- End .product-cat -->
 
                                         <div class="social-icons social-icons-sm">
@@ -402,7 +407,8 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="/addtocartproduct/<%= product._id %>"
+                                        class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 
@@ -442,7 +448,8 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="/addtocartproduct/<%= product._id %>"
+                                        class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 
@@ -494,7 +501,8 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="/addtocartproduct/<%= product._id %>"
+                                        class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 
@@ -533,7 +541,8 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="/addtocartproduct/<%= product._id %>"
+                                        class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 
@@ -652,7 +661,9 @@
                             <img src="<%= product.Imagepath[0] %>" alt="Product image">
                         </a>
                     </figure><!-- End .product-media -->
-                    <h4 class="product-title"><a href="/viewproduct/<%= product._id %>"><%= product.Productname %></a></h4>
+                    <h4 class="product-title"><a href="/viewproduct/<%= product._id %>">
+                            <%= product.Productname %>
+                        </a></h4>
                     <!-- End .product-title -->
                 </div><!-- End .col-6 -->
 
@@ -666,7 +677,8 @@
                     </div><!-- End .product-details-quantity -->
 
                     <div class="product-details-action">
-                        <a href="/checkoutitem/<%= product._id %>" class="btn-product btn-cart"><span>Checkout</span></a>
+                        <a href="/checkoutitem/<%= product._id %>"
+                            class="btn-product btn-cart"><span>Checkout</span></a>
                         <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                     </div><!-- End .product-details-action -->
                 </div><!-- End .col-6 -->
@@ -674,5 +686,8 @@
         </div><!-- End .container -->
     </div><!-- End .sticky-bar -->
     <!-- Plugins JS File -->
-    
+
+    <script>
+    </script>
+
     <%- include('foot.ejs') %>

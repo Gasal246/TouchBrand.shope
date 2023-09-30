@@ -24,6 +24,8 @@ const AdminUsercontroller = require("../controllers/AdminUsercontroller");
 const AdminDashboard = require("../controllers/AdminDashboard");
 const Categorycontroller = require("../controllers/Categorycontroller");
 const usermodel = require("../public/models/usermodel");
+const Ordercontroller = require("../controllers/Ordercontroller");
+const Orders = require("../public/models/ordermodel");
 
 // ############################### GET INTO DASHBOARD #########################
 
@@ -133,5 +135,21 @@ router.get("/logout", async (req, res) => {
 router.get("/banner", async (req, res) => {
   res.render("admin/banner");
 });
+
+// ###################### ORDER CONTROL ################
+router.get('/orders', async (req, res, next) => {
+  Ordercontroller.getOrders(req, res, next);
+})
+router.get('/vieworder', async (req, res, next) => {
+  res.render("admin/vieworder");
+})
+router.get('/changeorderstatus/:orderid/:status', async (req, res, next) => {
+  await Orders.findByIdAndUpdate(req.params.orderid, { $set: {Status: req.params.status} })
+  res.redirect('/admin/orders')
+})
+router.get('/deleteorder/:orderid', async (req, res, next) => {
+  await Orders.findByIdAndDelete(req.params.orderid)
+  res.redirect('/admin/orders')
+})
 
 module.exports = router;

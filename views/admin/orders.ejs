@@ -1,0 +1,51 @@
+<%- include('head.ejs') %>
+
+    <div style="width: 100%;">
+        <h3 class="headtext p-3 mb-5"><i class="fa-solid fa-cog"></i> Order Controls</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Total items</th>
+                    <th scope="col">Total amount</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">View order</th>
+                    <th scope="col">Cancel order</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(orders){ %>
+                <% orders.map((order, index)=>{ %>
+                <tr>
+                    <th scope="row"><%= index+1 %></th>
+                    <td><%= order.Username %></td>
+                    <td><%= order.Items.length %></td>
+                    <td>$<%= order.Totalamount %></td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= order.Status %>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="/admin/changeorderstatus/<%= order._id %>/active">Active</a></li>
+                              <li><a class="dropdown-item" href="/admin/changeorderstatus/<%= order._id %>/shipped">Shipped</a></li>
+                              <li><a class="dropdown-item" href="/admin/changeorderstatus/<%= order._id %>/delivered">Delivered</a></li>
+                            </ul>
+                          </div>
+                    </td>
+                    <td>
+                        <a href="/admin/vieworder" class="btn btn-primary">view</a>
+                    </td>
+                    <td>
+                        <a href="/admin/deleteorder/<%= order._id %>" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to cancel the order?')">cancel</a>
+                    </td>
+                </tr>
+                <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <%- include('foot.ejs') %>

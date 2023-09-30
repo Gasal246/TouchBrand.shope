@@ -96,14 +96,36 @@ module.exports = {
       return res.status(500).json({ message: "Internal server error." });
     }
   },
-  getCart: async(req, res) => {
-    if(req.cookies.user){
+  getCart: async (req, res) => {
+    if (req.cookies.user) {
       let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
-      res.render('user/cart', { cart: cart ? cart.Products : null })
+      res.render("user/cart", { cart: cart ? cart.Products : null });
     }
   },
-  productView: async(req, res) => {
+  deleteallCart: async (req, res, next) => {
+    const userid = req.cookies.user.id;
+
+    try {
+      const cart = await cartModel.findOne({ Userid: userid });
+
+      if (!cart) {
+        return res.status(404).json({ message: "Cart not found" });
+      }
+
+      // Set the Products array to an empty array
+      cart.Products = [];
+
+      // Save the updated cart
+      await cart.save();
+
+      res.redirect('/viewcart')
+    } catch (error) {
+      console.error("Error deleting products:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+  productView: async (req, res) => {
     const pid = req.params.pid;
-    res.redirect(`/product?pid=${pid}`)
+    res.redirect(`/product?pid=${pid}`);
   },
 };
