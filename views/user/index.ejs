@@ -1,7 +1,7 @@
 <%- include('head.ejs') %>
     <div class="page-wrapper">
         <!-- HEADER -->
-        <header class="header header-2 header-intro-clearance">
+        <header class="header header-4 header-intro-clearance">
             <div class="header-top">
                 <div class="container">
                     <div class="header-left">
@@ -30,7 +30,7 @@
                                         <li><a href="#signin-modal" data-toggle="modal"
                                                 style="color: #1f1e18; font-weight: 600;">Sign in</a></li>
                                         <% } else { %>
-                                            <a href="/logout" style="color: #1d1410; font-weight: 600;">
+                                            <a href="/logout" onclick="return confirm('You are temporarly lefting Touchbrand..')" style="color: #1d1410; font-weight: 600;">
                                                 <li>Sign out</li>
                                             </a>
                                             <% } %>
@@ -50,8 +50,9 @@
                             <i class="icon-bars"></i>
                         </button>
 
-                        <a href="index.html" class="logo">
-                            <img src="assets/images/demos/demo-2/logot.png" alt="Molla Logo" width="105" height="25">
+                        <a href="/" class="logo">
+                            <!-- <img src="assets/images/demos/demo-2/logot.png" alt="Molla Logo" width="180"> -->
+                            <h1 class="text-center" style="font-size: 28px;font-weight: 700;"><i class="fa-solid fa-table-cells-large"></i> TouchBrand</h1>
                         </a>
                     </div><!-- End .header-left -->
 
@@ -136,7 +137,7 @@
                                                     <img src="<%= product.Productimg %>" alt="product">
                                                 </a>
                                             </figure>
-                                            <a href="/removefromcarthome/<%= product.Productid %>" class="btn-remove" title="Remove Product"><i
+                                            <a  onclick="removeFromCart('<%= product.Productid %>')" class="btn-remove" title="Remove Product"><i
                                                     class="icon-close"></i></a>
                                         </div><!-- End .product -->
                                         <% totalPrice += product.Price * product.Quantity; %>
@@ -413,7 +414,7 @@
                                         </div><!-- End .megamenu -->
                                     </li>
                                     <li>
-                                        <a href="category.html" class="sf-with-ul">Shop</a>
+                                        <a href="/shope" class="sf-with-ul">Shop</a>
 
                                         <div class="megamenu megamenu-md">
                                             <div class="row no-gutters">
@@ -421,55 +422,28 @@
                                                     <div class="menu-col">
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <div class="menu-title">Shop with sidebar</div>
+                                                                <div class="menu-title">Shop with category</div>
                                                                 <!-- End .menu-title -->
                                                                 <ul>
-                                                                    <li><a href="category-list.html">Shop List</a></li>
-                                                                    <li><a href="category-2cols.html">Shop Grid 2
-                                                                            Columns</a></li>
-                                                                    <li><a href="category.html">Shop Grid 3 Columns</a>
-                                                                    </li>
-                                                                    <li><a href="category-4cols.html">Shop Grid 4
-                                                                            Columns</a></li>
-                                                                    <li><a href="category-market.html"><span>Shop
-                                                                                Market<span
-                                                                                    class="tip tip-new">New</span></span></a>
-                                                                    </li>
-                                                                </ul>
-
-                                                                <div class="menu-title">Shop no sidebar</div>
-                                                                <!-- End .menu-title -->
-                                                                <ul>
-                                                                    <li><a href="category-boxed.html"><span>Shop Boxed
-                                                                                No
-                                                                                Sidebar<span
-                                                                                    class="tip tip-hot">Hot</span></span></a>
-                                                                    </li>
-                                                                    <li><a href="category-fullwidth.html">Shop Fullwidth
-                                                                            No
-                                                                            Sidebar</a></li>
+                                                                    <li><a href="#"><span>Smartphones<span
+                                                                            class="tip tip-new">New</span></span></a></li>
+                                                                    <li><a href="#">Laptops</a></li>
+                                                                    <li><a href="#">Smart TVs</li>
+                                                                        <li><a href="#"><span>Gadgets & Accessories<span
+                                                                                        class="tip tip-new">New</span></span></a>
+                                                                        </li>
+                                                                    <li><a href="#">Gaming</a></li>
                                                                 </ul>
                                                             </div><!-- End .col-md-6 -->
 
                                                             <div class="col-md-6">
-                                                                <div class="menu-title">Product Category</div>
-                                                                <!-- End .menu-title -->
-                                                                <ul>
-                                                                    <li><a href="product-category-boxed.html">Product
-                                                                            Category Boxed</a></li>
-                                                                    <li><a href="product-category-fullwidth.html"><span>Product
-                                                                                Category Fullwidth<span
-                                                                                    class="tip tip-new">New</span></span></a>
-                                                                    </li>
-                                                                </ul>
                                                                 <div class="menu-title">Shop Pages</div>
                                                                 <!-- End .menu-title -->
                                                                 <ul>
-                                                                    <li><a href="cart.html">Cart</a></li>
-                                                                    <li><a href="checkout.html">Checkout</a></li>
+                                                                    <li><a href="/viewcart">Cart</a></li>
                                                                     <li><a href="wishlist.html">Wishlist</a></li>
-                                                                    <li><a href="dashboard.html">My Account</a></li>
-                                                                    <li><a href="#">Lookbook</a></li>
+                                                                    <li><a href="/account">Your Account</a></li>
+                                                                    <li><a href="/account">Your Orders</a></li>
                                                                 </ul>
                                                             </div><!-- End .col-md-6 -->
                                                         </div><!-- End .row -->
@@ -478,9 +452,8 @@
 
                                                 <div class="col-md-4">
                                                     <div class="banner banner-overlay">
-                                                        <a href="category.html" class="banner banner-menu">
-                                                            <img src="assets/images/menu/banner-1.jpg" alt="Banner">
-
+                                                        <a href="/shope" class="banner banner-menu">
+                                                            <img src="assets/images/backgrounds/soon-bg.jpg" alt="Banner">
                                                             <div class="banner-content banner-content-top">
                                                                 <div class="banner-title text-white">Last
                                                                     <br>Chance<br><span><strong>Sale</strong></span>
@@ -905,7 +878,7 @@
                                                 </div><!-- End .product-nav -->
                                             </div><!-- End .product-body -->
                                             <div class="product-action">
-                                                <a href="/addtocarthome/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                                <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
                                             </div><!-- End .product-action -->
                                         </div><!-- End .product -->
                                         <% } %>
@@ -2429,6 +2402,45 @@
             }
             theError.innerHTML = null
             return theError = null;
+        }
+
+    </script>
+    <script>
+        function removeFromCart(productId) {
+            // AJAX request to update the quantity
+            $.ajax({
+                type: 'GET',
+                url: `/removefromcart/${productId}`,
+                success: function (response) {
+                    console.log('Item Removed successfully:', response);
+                    // Update the total price and any other UI elements as needed
+                    // For simplicity, let's reload the page to update the UI after quantity change
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Error removing cart item:', error);
+                    location.reload();
+                }
+            });
+        }
+        function addToCart(productId) {
+            // AJAX request to update the quantity
+            $.ajax({
+                type: 'GET',
+                url: `/addtocart/${productId}`,
+                success: function (response) {
+                    console.log('Item Aadded successfully:', response);
+                    // Update the total price and any other UI elements as needed
+                    // For simplicity, let's reload the page to update the UI after quantity change
+                    alert('Item Aadded successfully');
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Error Adding cart item:', error);
+                    alert('Item Aadded successfully');
+                    location.reload();
+                }
+            });
         }
 
     </script>

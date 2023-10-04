@@ -4,25 +4,30 @@ const cartModel = require("../public/models/cartmodel");
 
 module.exports = {
   loadHome: async (req, res) => {
-    const products = await Product.find({});
-    const categories = await categoryCopy.find({});
-    if (req.cookies.user) {
-      let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
-      res.render("user/index", {
-        cdata: req.cookies.user,
-        error: null,
-        products,
-        categories,
-        cart: cart ? cart.Products : null,
-      });
-    } else {
-      res.render("user/index", {
-        error: req.query.err ? { form: req.query.err } : "Not logged in ??",
-        cdata: null,
-        products,
-        categories,
-        cart: "no",
-      });
+    try {
+      const products = await Product.find({});
+      const categories = await categoryCopy.find({});
+      if (req.cookies.user) {
+        let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
+        res.render("user/index", {
+          cdata: req.cookies.user,
+          error: null,
+          products,
+          categories,
+          cart: cart ? cart.Products : null,
+        });
+      } else {
+        res.render("user/index", {
+          error: req.query.err ? { form: req.query.err } : "Not logged in ??",
+          cdata: null,
+          products,
+          categories,
+          cart: "no",
+        });
+      }
+    } catch (error) {
+      console.log("Loding Home error: ", error);
+      return res.status(500).json({ message: "Internal error." });
     }
   },
   addToCart: async (req, res, next) => {
@@ -118,7 +123,7 @@ module.exports = {
       // Save the updated cart
       await cart.save();
 
-      res.redirect('/viewcart')
+      res.redirect("/viewcart");
     } catch (error) {
       console.error("Error deleting products:", error);
       return res.status(500).json({ message: "Internal server error" });

@@ -7,6 +7,7 @@ const fs = require("fs");
 
 const Product = require("../public/models/productmodel");
 const Admincopy = require("../public/models/adminmodel");
+const Categories = require("../public/models/categorymodel");
 
 // ###########################################################################################
 
@@ -14,8 +15,9 @@ module.exports = {
   // GET PRODUCT
   getAdminProducts: async (req, res, uniqueIdentifier) => {
     const products = await Product.find({});
+    const categories = await Categories.find({});
     if (req.cookies.admin) {
-      res.render("admin/products", { products });
+      res.render("admin/products", { products, categories });
     } else {
       res.render("admin/login", {
         error: "Entered credentials are wrong!!",
@@ -33,7 +35,12 @@ module.exports = {
         const imagePath = `/uploads/${uniqueIdentifier}_${image.originalname}`;
         imagePaths.push(imagePath);
       }
-
+      let category;
+      if(Array.isArray(req.body.category)){
+        category = req.body.category.toString()
+      }else{
+        category = req.body.category
+      }
       const newProduct = new Product({
         Description: req.body.desc,
         Productname: req.body.pname,
@@ -113,5 +120,14 @@ module.exports = {
       console.log("Error on updating the data : " + err);
     }
   },
-  
+
+  getProduct: async (req, res, next) => {
+    const pid = req.query.pid;
+    if (pid) {
+      const product = await Product.findById(pid);
+      const category = await Categories.findOne({ Catname: product.Category });
+      res.render("user/product", { product: product, category: category });
+      console.log("category : ", category);
+    }
+  },
 };

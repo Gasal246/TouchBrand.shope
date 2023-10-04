@@ -5,9 +5,12 @@
             <div class="col-md-9 col-lg-8">
                 <div class="soon-content text-center">
                     <div class="soon-content-wrapper">
-                        <img src="assets/images/logo-icon.png" alt="Logo" class="soon-logo mx-auto">
-                        <h1 class="soon-title">Coming Soon</h1><!-- End .soon-title -->
-                        <div class="coming-countdown countdown-separator"></div><!-- End .coming-countdown -->
+                        <img src="assets/images/demos/demo-2/logot.png" width="180px" alt="Logo" class="soon-logo mx-auto">
+                        <h1 class="soon-title">Order Placed.. Thankyou</h1><!-- End .soon-title -->
+                        <div class="container">
+                            <a href="/account" class="btn btn-dark">see orders</a>
+                            <a href="/" class="btn btn-dark">continue shopping</a>
+                        </div>
                         <hr class="mt-2 mb-3 mt-md-3">
                         <p>We are currently working on an awesome new site. Stay tuned for more information.
                             Subscribe to our newsletter to stay updated on our progress.</p>
@@ -34,7 +37,7 @@
             </div><!-- End .col-md-9 col-lg-8 -->
         </div><!-- End .row -->
     </div><!-- End .container -->
-    <div class="soon-bg bg-image" style="background-image: url(assets/images/backgrounds/soon-bg.jpg)"></div>
+    <div class="soon-bg bg-image" style="background-image: url(assets/images/backgrounds/soon-bg.jpg); background-size: cover;background-position: center;"></div>
     <!-- End .soon-bg bg-image -->
 </div><!-- End .soon -->
 <!-- Plugins JS File -->
@@ -49,7 +52,7 @@ $(function() {
     "use strict";
     if ($.fn.countdown) {
         $('.coming-countdown').countdown({
-            until: new Date(2021, 7, 20), // 7th month = August / Months 0 - 11 (January  - December)
+            until: new Date(2023, 10, 20), 
             format: 'DHMS',
             padZeroes: true
         });

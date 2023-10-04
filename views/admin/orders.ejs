@@ -9,6 +9,7 @@
                     <th scope="col">Username</th>
                     <th scope="col">Total items</th>
                     <th scope="col">Total amount</th>
+                    <th scope="col">Date Ordered</th>
                     <th scope="col">Status</th>
                     <th scope="col">View order</th>
                     <th scope="col">Cancel order</th>
@@ -22,6 +23,7 @@
                     <td><%= order.Username %></td>
                     <td><%= order.Items.length %></td>
                     <td>$<%= order.Totalamount %></td>
+                    <td><%= order.Orderdate.toDateString() %></td>
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -35,7 +37,7 @@
                           </div>
                     </td>
                     <td>
-                        <a href="/admin/vieworder" class="btn btn-primary">view</a>
+                        <a href="/admin/vieworder?oid=<%= order._id %>" class="btn btn-primary">view</a>
                     </td>
                     <td>
                         <a href="/admin/deleteorder/<%= order._id %>" class="btn btn-danger"

@@ -6,7 +6,7 @@ const fs = require("fs");
 
 const Product = require("../public/models/productmodel");
 
-let uniqueIdentifier = Date.now(); // Declare the variable in the outer scope
+let uniqueIdentifier = Date.now();
 
 const storage = multer.diskStorage({
   destination: "public/uploads/",
@@ -141,7 +141,7 @@ router.get('/orders', async (req, res, next) => {
   Ordercontroller.getOrders(req, res, next);
 })
 router.get('/vieworder', async (req, res, next) => {
-  res.render("admin/vieworder");
+  Ordercontroller.viewOrder(req, res, next);
 })
 router.get('/changeorderstatus/:orderid/:status', async (req, res, next) => {
   await Orders.findByIdAndUpdate(req.params.orderid, { $set: {Status: req.params.status} })

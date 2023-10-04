@@ -5,12 +5,20 @@ module.exports = {
   addcategory: async (req, res) => {
     console.log(req.body);
     try {
-      const category = new categoryCopy({
-        Catname: req.body.cname,
-        Subcat: req.body.scateg,
-      });
-      await category.save();
-      res.redirect("/admin/categories");
+      const catename = req.body.cname.toLowerCase()
+      categoryCopy.findOne({Catname: catename}).then(async (data)=> {
+        if(data){
+          return res.redirect("/admin/categories?err='The category is already exist Try to add a new one'");
+        }else{
+          const category = new categoryCopy({
+            Catname: catename,
+            Subcat: req.body.scateg,
+          });
+          await category.save();
+          return res.redirect("/admin/categories");
+        }
+      })
+      
     } catch (error) {
       res.send("Invalid server error: on saving category..");
     }
@@ -18,6 +26,7 @@ module.exports = {
   getCategory: async (req, res) => {
     if (req.cookies.admin) {
       const categories = await Categories.find({});
+      const err = req.query.err
       const productCount = await productCopy.aggregate([
         {
           $group: {
@@ -36,6 +45,7 @@ module.exports = {
       res.render("admin/categories", {
         categories: categories,
         pcount: productCount,
+        err: err?err:null,
       });
     } else {
       res.redirect("/admin");

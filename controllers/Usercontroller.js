@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 var Usercopy = require("../public/models/usermodel");
 var AddressCopy = require("../public/models/addressmodel");
 var nodemailer = require("nodemailer");
+const Orders = require("../public/models/ordermodel");
 
 // Set up nodemailer transporter (configure with your email service)
 var transporter = nodemailer.createTransport({
@@ -21,8 +22,7 @@ module.exports = {
     if (req.body.checkbox == "on") {
       try {
         const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-        Usercopy.findOne({ Email: req.body.email }).then(async (data) => {
+        Usercopy.findOne({ Email: req.body.email.trim() }).then(async (data) => {
           if (data) {
             console.log("User already registered bro");
             res.render("user/index", {
@@ -30,9 +30,9 @@ module.exports = {
               cdata: null,
             });
           } else {
-            const bpassword = await bcrypt.hash(req.body.password, 10);
+            const bpassword = await bcrypt.hash(req.body.password.trim(), 10);
             const user = new Usercopy({
-              Email: req.body.email,
+              Email: req.body.email.trim(),
               Username: req.body.uname,
               Password: bpassword,
               Phone: req.body.phone,
@@ -124,22 +124,18 @@ module.exports = {
     res.redirect("/verify");
   },
   userLogin: async (req, res) => {
-    Usercopy.findOne({ Email: req.body.email }).then(async (data) => {
-      if (data && (await bcrypt.compare(req.body.password, data.Password))) {
+    Usercopy.findOne({ Email: req.body.email.trim() }).then(async (data) => {
+      if (data && (await bcrypt.compare(req.body.password.trim(), data.Password))) {
         const cdata = {
           id: data._id,
           name: data.Username,
           email: data.Email,
           phone: data.Phone,
         };
-        res.cookie("user", cdata, { maxAge: 3600000, httpOnly: true });
+        res.cookie("user", cdata, { maxAge: 24*60*60*1000, httpOnly: true });
         res.redirect("/");
       } else {
-        // res.render("user/index", {
-        //   error: { form: "~ gmail and password not valid!⚠️" },
-        //   cdata: null,
-        // });
-        const err = "~ gmail and password not valid!⚠️"
+        const err = "~ gmail and password not valid!"
         res.redirect(`/?err=${err}`)
       }
     });
@@ -149,6 +145,8 @@ module.exports = {
       const address = await AddressCopy.findOne({
         Userid: req.cookies.user.id,
       });
+      // Find the order by cookies id and deliveer the items as array []
+      const orders = await Orders.find({Userid: req.cookies.user.id})
       const userdata = await Usercopy.findOne({
         Email: req.cookies.user.email,
       }).then((data) => {
@@ -164,9 +162,10 @@ module.exports = {
         cookies: userdata,
         address: address,
         error: req.query.error ? req.query.error : null,
+        orders: orders
       });
     } else {
-      res.render("user/account", { cookies: null, address: null, error: null });
+      res.render("user/account", { cookies: null, address: null, error: null, order:null });
     }
   },
   primaryAdrress: async (req, res) => {
@@ -175,6 +174,7 @@ module.exports = {
     const addressData = {
       Userid: userid,
       Firstaddress: {
+        Cname: req.body.cname,
         City: req.body.city,
         Country: req.body.country,
         Landmark: req.body.landmark,
@@ -197,6 +197,7 @@ module.exports = {
     const addressData = {
       Userid: userid,
       Secondaddress: {
+        Cname: req.body.cname,
         City: req.body.city,
         Country: req.body.country,
         Landmark: req.body.landmark,

@@ -72,11 +72,15 @@
                 <form action="/admin/addproduct" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label">Product Name</label>
-                        <input type="text" class="form-control" name="pname">
+                        <input type="text" class="form-control" name="pname" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Category</label>
-                        <input type="text" class="form-control" name="category">
+                        <select name="category" id="category" class="form-control" multiple required>
+                            <% categories.forEach(cat => { %>
+                                <option value="<%= cat.Catname %>"><%= cat.Catname %></option>
+                            <% }) %>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Specs</label>
@@ -84,30 +88,31 @@
                     </div>
                     <div class="form-floating mb-3">
                         <textarea class="form-control" name="desc" placeholder="Leave a comment here"
-                            id="floatingTextarea"></textarea>
+                            id="floatingTextarea" required></textarea>
                         <label for="floatingTextarea">Description</label>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Price</label>
-                        <input type="number" name="price" class="form-control">
+                        <input type="number" name="price" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Shipping cost</label>
-                        <input type="number" name="scost" class="form-control">
+                        <input type="number" name="scost" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Discount amount</label>
-                        <input type="number" name="discount" class="form-control">
+                        <input type="number" name="discount" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Total stock</label>
-                        <input type="number" name="stoke" class="form-control">
+                        <input type="number" name="stoke" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Select the images</label>
-                        <input type="file" class="form-control" id="fileUpload" name="images" multiple>
+                        <input type="file" class="form-control imageInput" id="fileUpload" name="images" required multiple>
                     </div>
                     <div id="imagePreview"></div>
+                    <h6 class="errorDisplayer"></h6>
                     <button type="submit" class="btn btn-primary">Add product</button>
                 </form>
             </div>
@@ -154,6 +159,7 @@
                         <label class="form-label">Select the images</label>
                         <input type="file" class="form-control" id="editfileUpload" name="images" multiple>
                     </div>
+                    <h6 class="errorDisplayer"></h6>
                     <h6>images</h6>
                     <div id="editImagePreview"></div>
                     <button type="submit" class="btn btn-primary">Edit product</button>
@@ -276,6 +282,9 @@
                     img.className = 'preview-image';
                     img.src = URL.createObjectURL(file);
                     imagePreview2.appendChild(img);
+                }else{
+                    fileInput2.value = ''
+                    document.querySelector('.errorDisplayer').innerHTML = "Only images allowed"
                 }
             }
         });
@@ -304,21 +313,16 @@
     <!-- SEARCHING SCRIPT -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-
             // Select the search input field
             const productSearchInput = document.getElementById('productSearch');
-
             // Select all product rows
             const productRows = document.querySelectorAll('.product-row');
-
             productSearchInput.addEventListener('input', () => {
                 const searchTerm = productSearchInput.value.toLowerCase();
-
                 // Loop through all product rows and hide those that don't match the search term
                 productRows.forEach((row) => {
                     const productName = row.querySelector('.product-name').textContent.toLowerCase();
                     const productCategory = row.querySelector('.product-category').textContent.toLowerCase();
-
                     if (
                         productName.includes(searchTerm) ||
                         productCategory.includes(searchTerm)
@@ -329,8 +333,11 @@
                     }
                 });
             });
-
         })
     </script>
+    <script>
+        new MultiSelectTag('category')  // id
+    </script>
+
 
     <%- include('foot.ejs') %>

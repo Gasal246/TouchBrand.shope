@@ -1,50 +1,80 @@
 <%- include('head.ejs') %>
 
-<div class="container">
-    <div class="row mb-4 mt-3">
-        <h5 class="text-center col-11">View order</h5>
-        <a href="/admin/orders" class="btn btn-dark col-1">close</a>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Costumer Name</span>
-                <input type="text" class="form-control " value="" aria-label="Username"
-                aria-describedby="basic-addon1">
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Order date</span>
-                <input type="text" class="form-control " value="" aria-label="Username"
-                aria-describedby="basic-addon1">
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Total amount</span>
-                <input type="text" class="form-control " value="" aria-label="Username"
-                aria-describedby="basic-addon1">
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="input-group mb-3">
-                <span class="input-group-text ">Delivery Adress</span>
-                <textarea class="form-control upaddress" aria-label="With textarea" rows="6"></textarea>
-            </div>
-        </div>
-        <!-- ITEMS -->
-        <div class="col-3">
-            <div class="card shadow" style="width: 18rem;">
-                <img src="/admin/images/gasal.jpg" class="card-img-top" style="height: 150px;object-fit: cover;" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">Product Name</h5>
-                  <p class="card-text">Quantity: 3 <br> <span style="font-weight: 500;">Total: $3000</span></p>
-                  <a href="#" class="btn btn-dark">cancel</a>
+    <div class="container">
+        <% if(order){ %>
+            <!-- Product listing -->
+            <div class="row ">
+                <div class="col-12 mt-4" style="display: flex; justify-content: space-between;">
+                    <h5><a href="/admin/orders" style="text-decoration: none; color: #000;"><i
+                                class="fa-solid fa-angle-left"></i> Back to Orders</a></h5>
+                    <h5 style="color: slategray;">On: <%= order.Orderdate.toDateString() %>
+                    </h5>
                 </div>
-              </div>
-        </div>
+                <div class="allProducts row col-12 mt-1">
+                    <% order.Items.map((item)=>{ %>
+                        <div class="gcard2 col-12 col-lg-4 mb-2">
+                            <div class="shadow" style="width: 100%; display: flex; padding: 10px 20px; border-radius: 10px;">
+                                <img src="<%= item.Productimg %>" alt="">
+                                <div class="gcard2-body p-3">
+                                    <h6>
+                                        <%= item.Productname %>
+                                    </h6>
+                                    <span>Quantity: <%= item.Quantity %></span><br>
+                                    <span>Price: $<%= item.Price %></span><br>
+                                    <span>Shipping cost: $<%= item.Shippingcost %></span><br>
+                                    <span>Total: $<%= item.Price + item.Shippingcost %></span>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-4" style="display: flex; justify-content: space-between;">
+                    <h5 style="color: slategray;"><i class="fa-solid fa-angle-down"></i> Order details</h5>
+                    <!-- <h5 style="color: slategray;">Arriving: <%= order.Orderdate.toDateString() %></h5> -->
+                </div>
+                <div class="col-12 row">
+                    <div class="col-12 col-lg-6">
+                        <h6 style="color: rgb(71, 88, 68);">Delivered to: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.cname %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">City: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.city %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Street/Home: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.streetaddress %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Landmark: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.landmark %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Country: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.country %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">State: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.state %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Pincode: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Deliveryaddress.pincode %>
+                            </span></h6>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <h6 style="color: rgb(71, 88, 68);">Expected delivery: <span style="color: rgb(146, 146, 146);">
+                                <% let edate=new Date(order.Orderdate); edate.setDate(edate.getDate()+3) %>
+                                    <%= edate.toDateString() %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Delivery Status: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Status %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Items count: <span style="color: rgb(146, 146, 146);">
+                                <%= order.Items.length %>
+                            </span></h6>
+                        <h6 style="color: rgb(71, 88, 68);">Total amount: <span style="color: rgb(146, 146, 146);">$<%=
+                                    order.Totalamount %></span></h6>
+                    </div>
+                </div>
+            </div>
+            <% } %>
     </div>
-</div>
 
-<%- include('foot.ejs') %>
+    <%- include('foot.ejs') %>

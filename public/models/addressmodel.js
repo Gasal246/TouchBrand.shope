@@ -6,6 +6,7 @@ const AddressSchema = new Schema({
   Userid: { type: Schema.Types.ObjectId, required: true, unique: true },
   Firstaddress: {
      City: { type: String, required: true },
+     Cname: { type: String, required: true },
      Country: { type: String, required: true },
      Landmark: { type: String, required: true },
      Pincode: { type: Number, required: true },
@@ -13,6 +14,7 @@ const AddressSchema = new Schema({
   },
   Secondaddress: {
      City: { type: String },
+     Cname: { type: String },
      Country: { type: String},
      Landmark: { type: String},
      Pincode: { type: Number },

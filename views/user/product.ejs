@@ -116,8 +116,8 @@
                                     </div><!-- End .details-filter-row -->
 
                                     <div class="product-details-action">
-                                        <a href="/addtocartproduct/<%= product._id %>"
-                                            class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <a onclick="addToCart('<%= product._id %>')"
+                                            class="btn-product btn-cart"><span class="addcartbtn" >add to cart</span></a>
 
                                         <div class="details-action-wrapper">
                                             <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to
@@ -407,7 +407,7 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>"
+                                    <a onclick="addToCart('<%= product._id %>')"
                                         class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
@@ -448,7 +448,7 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>"
+                                    <a onclick="addToCart('<%= product._id %>')"
                                         class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
@@ -501,7 +501,7 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>"
+                                    <a onclick="addToCart('<%= product._id %>')"
                                         class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
@@ -541,7 +541,7 @@
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="/addtocartproduct/<%= product._id %>"
+                                    <a onclick="addToCart('<%= product._id %>')"
                                         class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
@@ -688,6 +688,25 @@
     <!-- Plugins JS File -->
 
     <script>
+        function addToCart(productId) {
+            // AJAX request to update the quantity
+            $.ajax({
+                type: 'GET',
+                url: `/addtocart/${productId}`,
+                success: async function (response) {
+                    console.log('Item Aadded successfully:', response);
+                    // Update the total price and any other UI elements as needed
+                    // For simplicity, let's reload the page to update the UI after quantity change
+                    alert('Item Aadded successfully');
+                    await location.reload();
+                },
+                error: async function (error) {
+                    console.error('Error Adding cart item:', error);
+                    alert('Item Aadded successfully');
+                    await location.reload();
+                }
+            });
+        }
     </script>
 
     <%- include('foot.ejs') %>

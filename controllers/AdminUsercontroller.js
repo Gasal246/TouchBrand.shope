@@ -12,7 +12,7 @@ module.exports = {
       password: req.body.password,
     });
     if (admin) {
-      res.cookie("admin", req.body.email, { maxAge: 36000000, httpOnly: true });
+      res.cookie("admin", req.body.email, { maxAge: 24*60*60*1000, httpOnly: true });
       return res.redirect("/admin/dash");
     } else {
       console.log(" ADMIN LOGIN ERROR : ", err);

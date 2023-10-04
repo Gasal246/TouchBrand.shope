@@ -106,3 +106,12 @@
   left: 0;
   z-index: 100;
 }
+
+.gcard2{
+  display: flex;
+}
+.gcard2 img{
+  width: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+}
