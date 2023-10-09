@@ -8,6 +8,7 @@ const ProductsSchema = new Schema({
   Spec: { type: String, required: true },
   Dateadded: { type: Date, required: true },
   Category: { type: String, required: true },
+  SubCategory: [{ type: String, required: true }],
   Price: { type: Number, required: true },
   Discount: { type: Number },
   Shipingcost: { type: Number },

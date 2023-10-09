@@ -7,8 +7,12 @@ const Carts = require("../public/models/cartmodel");
 
 module.exports = {
   getOrders: async (req, res, next) => {
-    const orders = await Orders.find({});
-    res.render("admin/orders", { orders: orders });
+    try {
+      const orders = await Orders.find({}).sort({ Orderdate: -1 });
+      res.render("admin/orders", { orders: orders });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   },
   viewOrder: async (req, res, next) => {
     try {

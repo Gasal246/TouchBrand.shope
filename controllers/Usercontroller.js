@@ -124,29 +124,36 @@ module.exports = {
     res.redirect("/verify");
   },
   userLogin: async (req, res) => {
-    Usercopy.findOne({ Email: req.body.email.trim() }).then(async (data) => {
-      if (data && (await bcrypt.compare(req.body.password.trim(), data.Password))) {
-        const cdata = {
-          id: data._id,
-          name: data.Username,
-          email: data.Email,
-          phone: data.Phone,
-        };
-        res.cookie("user", cdata, { maxAge: 24*60*60*1000, httpOnly: true });
-        res.redirect("/");
-      } else {
-        const err = "~ gmail and password not valid!"
-        res.redirect(`/?err=${err}`)
-      }
-    });
+    try {
+      Usercopy.findOne({ Email: req.body.email.trim() }).then(async (data) => {
+        if (data && (await bcrypt.compare(req.body.password.trim(), data.Password))) {
+          if(data.Blocked == true){
+            const err = "~ THE SPECIFIED ACCOUND IS BLOCKED BY ADMIN!"
+            return res.redirect(`/?err=${err}`)
+          }
+          const cdata = {
+            id: data._id,
+            name: data.Username,
+            email: data.Email,
+            phone: data.Phone,
+          };
+          res.cookie("user", cdata, { maxAge: 24*60*60*1000, httpOnly: true });
+          res.redirect("/");
+        } else {
+          const err = "~ gmail and password not valid!"
+          res.redirect(`/?err=${err}`)
+        }
+      });
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
   },
   getUser: async (req, res) => {
     if (req.cookies.user) {
       const address = await AddressCopy.findOne({
         Userid: req.cookies.user.id,
       });
-      // Find the order by cookies id and deliveer the items as array []
-      const orders = await Orders.find({Userid: req.cookies.user.id})
+      const orders = await Orders.find({Userid: req.cookies.user.id}).sort({ Orderdate: -1 })
       const userdata = await Usercopy.findOne({
         Email: req.cookies.user.email,
       }).then((data) => {

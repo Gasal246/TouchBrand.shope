@@ -1,6 +1,7 @@
 const Product = require("../public/models/productmodel");
 const categoryCopy = require("../public/models/categorymodel");
 const cartModel = require("../public/models/cartmodel");
+const usermodel = require("../public/models/usermodel");
 
 module.exports = {
   loadHome: async (req, res) => {
@@ -9,6 +10,17 @@ module.exports = {
       const categories = await categoryCopy.find({});
       if (req.cookies.user) {
         let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
+        await usermodel.findById(req.cookies.user.id).then((data)=>{
+          if(data.Blocked == true){
+            res.render("user/index", {
+              error: req.query.err ? { form: req.query.err } : "Not logged in ??",
+              cdata: null,
+              products,
+              categories,
+              cart: "no",
+            });
+          }
+        })
         res.render("user/index", {
           cdata: req.cookies.user,
           error: null,

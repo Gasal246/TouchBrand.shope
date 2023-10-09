@@ -8,6 +8,7 @@ const fs = require("fs");
 const Product = require("../public/models/productmodel");
 const Admincopy = require("../public/models/adminmodel");
 const Categories = require("../public/models/categorymodel");
+const sharp = require("sharp");
 
 // ###########################################################################################
 
@@ -15,9 +16,8 @@ module.exports = {
   // GET PRODUCT
   getAdminProducts: async (req, res, uniqueIdentifier) => {
     const products = await Product.find({});
-    const categories = await Categories.find({});
     if (req.cookies.admin) {
-      res.render("admin/products", { products, categories });
+      res.render("admin/products", { products });
     } else {
       res.render("admin/login", {
         error: "Entered credentials are wrong!!",
@@ -27,25 +27,20 @@ module.exports = {
 
   //  ADD PRODUCT
   addProduct: async (req, res, uniqueIdentifier) => {
-    const uploadedImages = req.files;
-    const imagePaths = [];
-
     try {
+      const uploadedImages = req.files;
+      const imagePaths = [];
       for (const image of uploadedImages) {
         const imagePath = `/uploads/${uniqueIdentifier}_${image.originalname}`;
         imagePaths.push(imagePath);
       }
-      let category;
-      if(Array.isArray(req.body.category)){
-        category = req.body.category.toString()
-      }else{
-        category = req.body.category
-      }
+      const subcategories = req.body.subcategory.split(",");
       const newProduct = new Product({
         Description: req.body.desc,
         Productname: req.body.pname,
         Spec: req.body.specs,
         Category: req.body.category,
+        SubCategory: subcategories,
         Price: req.body.price,
         Discount: req.body.discount,
         Shipingcost: req.body.scost,
@@ -53,7 +48,6 @@ module.exports = {
         Imagepath: imagePaths,
         Dateadded: Date.now(),
       });
-
       await newProduct.save().then((data) => {
         return res.redirect("/admin/products");
       });
@@ -86,6 +80,21 @@ module.exports = {
     }
   },
 
+  getEditProduct: async (req, res) => {
+    try {
+      const pid = req.query.id;
+      let product;
+      const categories = await Categories.find({});
+      if (pid) {
+        product = await Product.findById(pid);
+      }
+      console.log(product);
+      res.render("admin/editproduct", { product, categories });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
   //   EDIT THE PRODUCT
   editProduct: async (req, res, uniqueIdentifier) => {
     const uploadedImages = req.files;
@@ -97,13 +106,15 @@ module.exports = {
       const imagePath = `/uploads/${uniqueIdentifier}_${image.originalname}`;
       imagePaths.push(imagePath);
     }
-    console.log(uploadedImages);
+
+    const subcategories = req.body.subcategory.split(",");
 
     const editedData = {
       Description: req.body.desc,
       Productname: req.body.pname,
       Spec: req.body.specs,
       Category: req.body.category,
+      SubCategory: req.body.subcategory,
       Price: req.body.price,
       Discount: req.body.discount,
       Shipingcost: req.body.scost,
@@ -128,6 +139,23 @@ module.exports = {
       const category = await Categories.findOne({ Catname: product.Category });
       res.render("user/product", { product: product, category: category });
       console.log("category : ", category);
+    }
+  },
+
+  deleteImage: async (req, res, next) => {
+    const imagePath = req.params.imgSrc;
+    const productid = req.params.pid;
+    const product = await Product.findById(productid);
+    try {
+      await Product.findByIdAndUpdate(productid, {
+        $pull: { Imagepath: imagePath },
+      });
+      const filePath = path.join(__dirname, "../public", imagePath);
+      fs.unlinkSync(filePath);
+      res.redirect(`/admin/editproduct?pid=${productid}`);
+    } catch (error) {
+      console.error("Error removing image path:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
 };

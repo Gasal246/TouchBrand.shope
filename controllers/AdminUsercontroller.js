@@ -39,18 +39,26 @@ module.exports = {
   },
   //   BLOCK AND UNBLOCK USER
   blockUser: async (req, res) => {
-    await Usercopy.updateOne(
-      { Email: req.params.email },
-      { $set: { Blocked: true } }
-    );
-    res.redirect("/admin/users");
-  },
-  unblockUser: async (req, res) => {
-    await Usercopy.updateOne(
-      { Email: req.params.email },
-      { $set: { Blocked: false } }
-    );
-    res.redirect("/admin/users");
+    try {
+      await Usercopy.updateOne(
+        { Email: req.params.email },
+        { $set: { Blocked: true } }
+        );
+        res.redirect("/admin/users");
+      } catch (error) {
+        res.status(500).send("Internal Server Error");
+      }
+    },
+    unblockUser: async (req, res) => {
+    try {
+      await Usercopy.updateOne(
+        { Email: req.params.email },
+        { $set: { Blocked: false } }
+      );
+      res.redirect("/admin/users");
+    } catch (error) {
+      res.status(500).send("Internal Server Error");
+    }
   },
   viewuser: async (req, res) => {
     try {

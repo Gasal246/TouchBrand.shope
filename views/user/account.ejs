@@ -134,7 +134,52 @@
                                                                     <h6>There is no orders yet !</h6>
                                                                     <% } %>
                                                         </div><!-- .End .tab-pane -->
+                                                        <div class="cancelled-orders">
+                                                            <div class="row">
+                                                                <h4>Cancelled Orders</h4>
+                                                            </div>
+                                                            <% orders.map((order)=>{ %>
+                                                                <div class="row mb-2"
+                                                                    style="background-color: rgba(233, 233, 233, 0.713); border-radius: 10px;">
+                                                                    <span class="col-6">
+                                                                        <%= order.Orderdate.toDateString() %>
+                                                                    </span>
+                                                                    <span class="col-6"
+                                                                        style="text-align: right;">Arriving: <%
+                                                                            let edate=new Date(order.Orderdate);
+                                                                            edate.setDate(edate.getDate()+3) %>
+                                                                            <%= edate.toDateString() %></span>
+                                                                    <% order.Items.map((item)=>{ %>
+                                                                        <% const odate=item.Orderdate %>
+                                                                            <div class="col-12">
+                                                                                <div class="gcard mb-1">
+                                                                                    <a href="/vieworder?id=<%= order._id %>"><img
+                                                                                            src="<%= item.Productimg %>"
+                                                                                            alt=""></a>
+                                                                                    <div class="gcard-body">
+                                                                                        <h6>
+                                                                                            <a href="/vieworder?id=<%= order._id %>">
+                                                                                                <%= item.Productname %>
+                                                                                            </a>
 
+                                                                                        </h6>
+                                                                                        <div
+                                                                                            style="display: flex;justify-content: space-between;">
+                                                                                            <p>Quantity: <%= item.Quantity  %> <br>
+                                                                                                    Amount: $<%= item.Quantity*item.Price %>
+                                                                                            </p>
+                                                                                            <a onclick="removeOrderItem('<%= item._id %>', '<%= order._id %>')"
+                                                                                                class="btn btn-dark">cancel
+                                                                                                item</a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                            <% }) %>
+                                                                </div>
+                                                                <% }) %>
+                                                        </div>
                                                         <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
                                                             aria-labelledby="tab-downloads-link">
                                                             <p>No downloads available yet.</p>
@@ -458,8 +503,9 @@
                                                                             <% const dobDate=new Date(cookies.dob); %>
                                                                                 <% if (!isNaN(dobDate)) { %>
                                                                                     <input type="date"
-                                                                                        class="form-control" name="dob"
-                                                                                        value="<%= dobDate.toISOString().split('T')[0] %>">
+                                                                                        class="form-control dateofbirth" name="dob"
+                                                                                        value="<%= dobDate.toISOString().split('T')[0] %>" onchange="dobvalidate()">
+                                                                                        <small class="text-danger dateErr"></small>
                                                                                     <% } else { %>
                                                                                         <input type="date"
                                                                                             class="form-control"
@@ -471,8 +517,9 @@
                                                                                         <% } %>
                                                                                             <% } else { %>
                                                                                                 <input type="date"
-                                                                                                    class="form-control"
-                                                                                                    name="dob" value="">
+                                                                                                    class="form-control dateofbirth"
+                                                                                                    name="dob" onchange="dobvalidate()" value="">
+                                                                                                    <small class="text-danger dateErr"></small>
                                                                                                 <% } %>
                                                                     </div>
                                                                     <!-- End .col-sm-6 -->
@@ -807,6 +854,19 @@
                 });
             }
 
+        }
+    </script>
+    <script>
+        function dobvalidate(){
+            let date = new Date(document.querySelector('.dateofbirth').value)
+            console.log(date);
+            let today = new Date();
+            if(today.getFullYear() - date.getFullYear() < 18){
+                document.querySelector('.dateErr').innerHTML = "You must be above 18 to continue"
+                document.querySelector('.dateofbirth').value = null
+            }else{
+                document.querySelector('.dateErr').innerHTML = ""
+            }
         }
     </script>
 

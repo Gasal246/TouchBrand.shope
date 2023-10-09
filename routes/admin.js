@@ -11,7 +11,7 @@ let uniqueIdentifier = Date.now();
 const storage = multer.diskStorage({
   destination: "public/uploads/",
   filename: (req, file, cb) => {
-    const filename = `${uniqueIdentifier}_${file.originalname}`;
+    let filename = `${uniqueIdentifier}_${file.originalname}`;
     cb(null, filename); // Use the unique file name
   },
 });
@@ -26,6 +26,9 @@ const Categorycontroller = require("../controllers/Categorycontroller");
 const usermodel = require("../public/models/usermodel");
 const Ordercontroller = require("../controllers/Ordercontroller");
 const Orders = require("../public/models/ordermodel");
+const Categories = require("../public/models/categorymodel");
+const Productcontroller = require("../controllers/Productcontroller");
+const sharp = require("sharp");
 
 // ############################### GET INTO DASHBOARD #########################
 
@@ -51,6 +54,10 @@ router.get("/products", async (req, res) => {
   productController.getAdminProducts(req, res, uniqueIdentifier);
 });
 
+router.get('/addproduct', async (req, res) => {
+  const categories = await Categories.find({})
+  res.render('admin/addproduct', { categories });
+})
 router.post("/addproduct", upload.array("images", 8), async (req, res) => {
   productController.addProduct(req, res, uniqueIdentifier);
 });
@@ -59,6 +66,7 @@ router.get("/deleteproduct/:pid", async (req, res) => {
   productController.deleteProduct(req, res);
 });
 
+router.get('/editproduct', Productcontroller.getEditProduct)
 router.post(
   "/editproduct/:pid",
   upload.array("images", 8),
@@ -67,21 +75,7 @@ router.post(
   }
 );
 
-router.get("/delproductimg/:imgSrc/:pid", async (req, res) => {
-  const imagePath = req.params.imgSrc;
-  const productid = req.params.pid;
-  const product = await Product.findById(productid);
-  try {
-    await Product.findByIdAndUpdate(productid, {
-      $pull: { Imagepath: imagePath },
-    });
-    const filePath = path.join(__dirname, "../public", imagePath);
-    fs.unlinkSync(filePath);
-  } catch (error) {
-    console.error("Error removing image path:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+router.get("/delproductimg/:imgSrc/:pid", Productcontroller.deleteImage);
 
 // #################################### USER CONTROLS ###########################################
 router.get("/deleteuser/:uid", async (req, res) => {

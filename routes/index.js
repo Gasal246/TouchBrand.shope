@@ -15,6 +15,7 @@ const Address = require("../public/models/addressmodel");
 const Carts = require("../public/models/cartmodel");
 const Orders = require("../public/models/ordermodel");
 const Products = require("../public/models/productmodel");
+const Shopepagecontroller = require("../controllers/Shopepagecontroller");
 
 router.get("/", Homepagecontroller.loadHome);
 
@@ -85,8 +86,8 @@ router.get('/removeorderitem/:id/:oid', Ordercontroller.removeOrderItem);
 router.get('/vieworder', Ordercontroller.viewOrderUser);
 
 // ####################### SHOP-PAGE CONTROLS #####################
-router.get('/shope', (req, res) => {
-  res.render('user/shopepage')
-})
+router.get('/shope', Shopepagecontroller.getShope)
+// QuickView
+router.get('/quickview', Shopepagecontroller.quickView)
 
 module.exports = router;
