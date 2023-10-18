@@ -86,9 +86,12 @@
                                                     <% } %>
                                                         <div class="tab-pane fade" id="tab-orders" role="tabpanel"
                                                             aria-labelledby="tab-orders-link">
-                                                            <% if(orders){ %>
+                                                            <% if(activeOrders){ %>
                                                                 <div>
-                                                                    <% orders.map((order)=>{ %>
+                                                                    <div class="row">
+                                                                        <h3>Active Orders</h3>
+                                                                    </div>
+                                                                    <% activeOrders.map((order)=>{ %>
                                                                         <div class="row mb-2"
                                                                             style="background-color: rgba(233, 233, 233, 0.713); border-radius: 10px;">
                                                                             <span class="col-6">
@@ -100,7 +103,6 @@
                                                                                     edate.setDate(edate.getDate()+3) %>
                                                                                     <%= edate.toDateString() %></span>
                                                                             <% order.Items.map((item)=>{ %>
-                                                                                <% const odate=item.Orderdate %>
                                                                                     <div class="col-12">
                                                                                         <div class="gcard mb-1">
                                                                                             <a href="/vieworder?id=<%= order._id %>"><img
@@ -118,7 +120,7 @@
                                                                                                     <p>Quantity: <%= item.Quantity  %> <br>
                                                                                                             Amount: $<%= item.Quantity*item.Price %>
                                                                                                     </p>
-                                                                                                    <a onclick="removeOrderItem('<%= item._id %>', '<%= order._id %>')"
+                                                                                                    <a onclick="cancelOrderItem('<%= item._id %>', '<%= order._id %>')"
                                                                                                         class="btn btn-dark">cancel
                                                                                                         item</a>
                                                                                                 </div>
@@ -128,58 +130,21 @@
                                                                                     </div>
                                                                                     <% }) %>
                                                                         </div>
-                                                                        <% }) %>
+                                                                    <% }) %>
                                                                 </div>
                                                                 <% }else{ %>
                                                                     <h6>There is no orders yet !</h6>
                                                                     <% } %>
-                                                        </div><!-- .End .tab-pane -->
-                                                        <div class="cancelled-orders">
-                                                            <div class="row">
-                                                                <h4>Cancelled Orders</h4>
-                                                            </div>
-                                                            <% orders.map((order)=>{ %>
-                                                                <div class="row mb-2"
-                                                                    style="background-color: rgba(233, 233, 233, 0.713); border-radius: 10px;">
-                                                                    <span class="col-6">
-                                                                        <%= order.Orderdate.toDateString() %>
-                                                                    </span>
-                                                                    <span class="col-6"
-                                                                        style="text-align: right;">Arriving: <%
-                                                                            let edate=new Date(order.Orderdate);
-                                                                            edate.setDate(edate.getDate()+3) %>
-                                                                            <%= edate.toDateString() %></span>
-                                                                    <% order.Items.map((item)=>{ %>
-                                                                        <% const odate=item.Orderdate %>
-                                                                            <div class="col-12">
-                                                                                <div class="gcard mb-1">
-                                                                                    <a href="/vieworder?id=<%= order._id %>"><img
-                                                                                            src="<%= item.Productimg %>"
-                                                                                            alt=""></a>
-                                                                                    <div class="gcard-body">
-                                                                                        <h6>
-                                                                                            <a href="/vieworder?id=<%= order._id %>">
-                                                                                                <%= item.Productname %>
-                                                                                            </a>
-
-                                                                                        </h6>
-                                                                                        <div
-                                                                                            style="display: flex;justify-content: space-between;">
-                                                                                            <p>Quantity: <%= item.Quantity  %> <br>
-                                                                                                    Amount: $<%= item.Quantity*item.Price %>
-                                                                                            </p>
-                                                                                            <a onclick="removeOrderItem('<%= item._id %>', '<%= order._id %>')"
-                                                                                                class="btn btn-dark">cancel
-                                                                                                item</a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-
-                                                                            </div>
-                                                                            <% }) %>
+                                                                    <% if(cancelledOrders){ %>
+                                                                <div class="cancelled-orders">
+                                                                    <div class="row">
+                                                                        <a href="/cancelledorders" >Cancelled Orders</a>
+                                                                    </div>
+                                                                    <% } %>
                                                                 </div>
-                                                                <% }) %>
-                                                        </div>
+                                                                
+                                                        </div><!-- .End .tab-pane -->
+                                                        
                                                         <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
                                                             aria-labelledby="tab-downloads-link">
                                                             <p>No downloads available yet.</p>
@@ -834,13 +799,13 @@
     <script src="assets/js/main.js"></script>
 
     <script>
-        async function removeOrderItem(productId, orderId) {
+        async function cancelOrderItem(productId, orderId) {
             // AJAX request to update the quantity
             const prompt = confirm('Are you sure you want to cancel the order?');
             if (prompt) {
                 $.ajax({
                     type: 'GET',
-                    url: '/removeorderitem/' + productId + '/' + orderId,
+                    url: '/cancelorderitem/' + productId + '/' + orderId,
                     success: function (response) {
                         console.log('Order Item Removed successfully:', response);
                         // Update the total price and any other UI elements as needed

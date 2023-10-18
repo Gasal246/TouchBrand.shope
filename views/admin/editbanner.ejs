@@ -1,0 +1,57 @@
+<%- include('head.ejs')%>
+
+<div class="container">
+    <div class="row">
+        <h4>Edit this Banner</h4>
+        <% if(err){ %><h6><i class="fa-solid fa-error"></i><%= err %></h6><% } %>
+    </div>
+    <div class="row">
+        <form action="/admin/editbanner/<%= banner._id %>" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Banner Title</label>
+                <input class="form-control" type="text" name="title" value="<%= banner.Title %>" >
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-control" >
+                    <option value="<%= banner.Category %>"><%= banner.Category %></option>
+                    <% categories.map((cat)=>{ %>
+                        <option value="<%= cat.Catname %>"><%= cat.Catname %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input class="form-control" type="number" name="price" value="<%= banner.Price %>" >
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Image</label>
+                <input class="form-control" type="file" name="Image" id="imageInput" >
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Image Preview</label>
+                <img id="image-preview" src="<%= banner.Image %>" alt="Image Preview" style="max-width: 150px; ">
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Banner</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('image-preview');
+
+    imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+        };
+
+        reader.readAsDataURL(file);
+    });
+</script>
+
+<%- include('foot.ejs')%> 

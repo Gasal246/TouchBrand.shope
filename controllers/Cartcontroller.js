@@ -24,6 +24,7 @@ module.exports = {
     }
   },
   cartCheckout: async (req, res) => {
+    console.log(req.body);
     try {
       const user = await usermodel.findById(req.cookies.user.id);
       const address = await Address.findOne({ Userid: user._id });

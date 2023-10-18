@@ -83,11 +83,20 @@ router.get('/placeorder', (req, res) => {
 
 router.get('/removeorderitem/:id/:oid', Ordercontroller.removeOrderItem);
 
+router.get('/cancelorderitem/:id/:oid', Ordercontroller.cancelOrderItem);
+
 router.get('/vieworder', Ordercontroller.viewOrderUser);
+
+router.get('/cancelledorders', Ordercontroller.viewCancelledOrders)
 
 // ####################### SHOP-PAGE CONTROLS #####################
 router.get('/shope', Shopepagecontroller.getShope)
 // QuickView
 router.get('/quickview', Shopepagecontroller.quickView)
+
+// ########################## VERIFY PAYMENT #########################
+router.post('/verify-payment', (req, res) => {
+  console.log(req.body);
+})
 
 module.exports = router;

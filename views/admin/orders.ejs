@@ -1,7 +1,16 @@
 <%- include('head.ejs') %>
 
     <div style="width: 100%;">
-        <h3 class="headtext p-3 mb-5"><i class="fa-solid fa-cog"></i> Order Controls</h3>
+        <h3 class="headtext p-3 mb-1"><i class="fa-solid fa-cog"></i> Order Controls</h3>
+        <a href="/admin/cancelledorders">
+            <button type="button" class="btn btn-warning position-relative mb-4">
+                Cancelled Orders
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                    <%= ccount %>
+                    <span class="visually-hidden">cancelled orders</span>
+                </span>
+            </button>
+        </a>
         <table class="table">
             <thead>
                 <tr>
@@ -17,35 +26,50 @@
             </thead>
             <tbody>
                 <% if(orders){ %>
-                <% orders.map((order, index)=>{ %>
-                <tr>
-                    <th scope="row"><%= index+1 %></th>
-                    <td><%= order.Username %></td>
-                    <td><%= order.Items.length %></td>
-                    <td>$<%= order.Totalamount %></td>
-                    <td><%= order.Orderdate.toDateString() %></td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <%= order.Status %>
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="/admin/changeorderstatus/<%= order._id %>/active">Active</a></li>
-                              <li><a class="dropdown-item" href="/admin/changeorderstatus/<%= order._id %>/shipped">Shipped</a></li>
-                              <li><a class="dropdown-item" href="/admin/changeorderstatus/<%= order._id %>/delivered">Delivered</a></li>
-                            </ul>
-                          </div>
-                    </td>
-                    <td>
-                        <a href="/admin/vieworder?oid=<%= order._id %>" class="btn btn-primary">view</a>
-                    </td>
-                    <td>
-                        <a href="/admin/deleteorder/<%= order._id %>" class="btn btn-danger"
-                            onclick="return confirm('Are you sure you want to cancel the order?')">cancel</a>
-                    </td>
-                </tr>
-                <% }) %>
-                <% } %>
+                    <% orders.map((order, index)=>{ %>
+                        <tr>
+                            <th scope="row">
+                                <%= index+1 %>
+                            </th>
+                            <td>
+                                <%= order.Username %>
+                            </td>
+                            <td>
+                                <%= order.Items.length %>
+                            </td>
+                            <td>$<%= order.Totalamount %>
+                            </td>
+                            <td>
+                                <%= order.Orderdate.toDateString() %>
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <%= order.Status %>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item"
+                                                href="/admin/changeorderstatus/<%= order._id %>/active">Active</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="/admin/changeorderstatus/<%= order._id %>/shipped">Shipped</a>
+                                        </li>
+                                        <li><a class="dropdown-item"
+                                                href="/admin/changeorderstatus/<%= order._id %>/delivered">Delivered</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="/admin/vieworder?oid=<%= order._id %>" class="btn btn-primary">view</a>
+                            </td>
+                            <td>
+                                <a href="/admin/deleteorder/<%= order._id %>" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure you want to cancel the order?')">delete</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <% } %>
             </tbody>
         </table>
     </div>

@@ -10393,7 +10393,7 @@ button:focus {
 .filter-colors a.selected,
 .filter-colors a:hover,
 .filter-colors a:focus {
-  box-shadow: 0 0 0 0.1rem #cccccc;
+  box-shadow: 0 0 0 0.1rem black;
 }
 .filter-colors a.selected:after {
   visibility: visible;
@@ -10408,7 +10408,7 @@ button:focus {
   letter-spacing: -0.01em;
 }
 #filter-price-range {
-  color: #c96;
+  color: black;
 }
 @media screen and (min-width: 576px) {
   .toolbox-right {

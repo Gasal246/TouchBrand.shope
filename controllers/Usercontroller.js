@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-
+const mongoose = require("mongoose");
 var Usercopy = require("../public/models/usermodel");
 var AddressCopy = require("../public/models/addressmodel");
 var nodemailer = require("nodemailer");
@@ -49,7 +49,7 @@ module.exports = {
                   email: data.Email,
                   phone: data.Phone,
                 };
-                res.cookie("user", cdata, { maxAge: 3600000, httpOnly: true });
+                res.cookie("user", cdata, { maxAge: 24*60*60*1000, httpOnly: true });
                 const mailOptions = {
                   from: "gasalgasal246@gmail.com",
                   to: data.Email,
@@ -150,31 +150,76 @@ module.exports = {
   },
   getUser: async (req, res) => {
     if (req.cookies.user) {
-      const address = await AddressCopy.findOne({
-        Userid: req.cookies.user.id,
-      });
-      const orders = await Orders.find({Userid: req.cookies.user.id}).sort({ Orderdate: -1 })
-      const userdata = await Usercopy.findOne({
-        Email: req.cookies.user.email,
-      }).then((data) => {
-        return {
-          name: data.Username,
-          phone: data.Phone,
-          email: data.Email,
-          gender: data.Gender,
-          dob: data.Dob,
-        };
-      });
-      res.render("user/account", {
-        cookies: userdata,
-        address: address,
-        error: req.query.error ? req.query.error : null,
-        orders: orders
-      });
+      try {
+        const cancelledOrders = await Orders.find({
+          Userid: req.cookies.user.id,
+          "Items.cancelled": true
+        }).sort({ Orderdate: -1 });
+  
+        const activeOrders = await Orders.aggregate([
+          {
+            $match: {
+              Userid: new mongoose.Types.ObjectId(req.cookies.user.id)  // Convert the user ID to ObjectId type
+            }
+          },
+          {
+            $unwind: "$Items"  // Split the array into separate documents for each item
+          },
+          {
+            $match: {
+              "Items.cancelled": false  // Filter only the items with cancelled set to true
+            }
+          },
+          {
+            $group: {
+              _id: "$_id",  // Group by order ID
+              Userid: { $first: "$Userid" },
+              Username: { $first: "$Username" },
+              Orderdate: { $first: "$Orderdate" },
+              Deliveryaddress: { $first: "$Deliveryaddress" },
+              Status: { $first: "$Status" },
+              Totalamount: { $first: "$Totalamount" },
+              Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
+            }
+          }
+        ]).sort({ Orderdate: -1 });
+  
+        const address = await AddressCopy.findOne({
+          Userid: req.cookies.user.id,
+        });
+  
+        const userdata = await Usercopy.findOne({
+          Email: req.cookies.user.email,
+        }).then((data) => {
+          return {
+            name: data.Username,
+            phone: data.Phone,
+            email: data.Email,
+            gender: data.Gender,
+            dob: data.Dob,
+          };
+        });
+  
+        res.render("user/account", {
+          cookies: userdata,
+          address: address,
+          error: req.query.error ? req.query.error : null,
+          cancelledOrders: cancelledOrders,
+          activeOrders: activeOrders
+        });
+      } catch (error) {
+        res.status(500).json(error.message);
+      }
     } else {
-      res.render("user/account", { cookies: null, address: null, error: null, order:null });
+      res.render("user/account", {
+        cookies: null,
+        address: null,
+        error: null,
+        order: null
+      });
     }
   },
+  
   primaryAdrress: async (req, res) => {
     const userid = req.cookies.user.id;
     const data = await AddressCopy.findOne({ Userid: userid });

@@ -7,13 +7,14 @@ const OrdersSchema = new Schema({
   Username: { type: String },
   Items: [
     {
-      Paymet: { type: String, required: true, enum: ["pod", " online"] },
+      Paymet: { type: String, required: true },
       Productid: { type: Schema.Types.ObjectId, required: true },
       Productname: { type: String, required: true },
       Price: { type: Number, required: true },
       Quantity: { type: Number, required: true },
       Productimg: { type: String },
       Shippingcost: { type: Number },
+      cancelled: { type: Boolean, default: false }
     },
   ],
   Orderdate: { type: Date, required: true },

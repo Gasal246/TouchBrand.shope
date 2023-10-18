@@ -2,15 +2,17 @@
 
     <div class="container">
         <% if(order){ %>
+            <% order.map((order)=>{ %>
             <!-- Product listing -->
             <div class="row ">
                 <div class="col-12 mt-4" style="display: flex; justify-content: space-between;">
                     <h5><a href="/admin/orders" style="text-decoration: none; color: #000;"><i
                                 class="fa-solid fa-angle-left"></i> Back to Orders</a></h5>
-                    <h5 style="color: slategray;">On: <%= order.Orderdate.toDateString() %>
+                    <h5 style="color: slategray;">On: <% let odate = new Date(order.Orderdate) %> <%= odate.toDateString() %>
                     </h5>
                 </div>
                 <div class="allProducts row col-12 mt-1">
+                    <% if(order.Items){ %>
                     <% order.Items.map((item)=>{ %>
                         <div class="gcard2 col-12 col-lg-4 mb-2">
                             <div class="shadow" style="width: 100%; display: flex; padding: 10px 20px; border-radius: 10px;">
@@ -27,12 +29,12 @@
                             </div>
                         </div>
                         <% }) %>
+                        <% } %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 mt-4" style="display: flex; justify-content: space-between;">
                     <h5 style="color: slategray;"><i class="fa-solid fa-angle-down"></i> Order details</h5>
-                    <!-- <h5 style="color: slategray;">Arriving: <%= order.Orderdate.toDateString() %></h5> -->
                 </div>
                 <div class="col-12 row">
                     <div class="col-12 col-lg-6">
@@ -74,6 +76,7 @@
                     </div>
                 </div>
             </div>
+            <% }) %>
             <% } %>
     </div>
 

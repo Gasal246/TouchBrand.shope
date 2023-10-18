@@ -4,22 +4,97 @@ const Orders = require("../public/models/ordermodel");
 const Products = require("../public/models/productmodel");
 const usermodel = require("../public/models/usermodel");
 const Carts = require("../public/models/cartmodel");
+const mongoose = require("mongoose");
+const { default: Stripe } = require("stripe");
+const { response } = require("../app");
+const paymentHelper = require("../helpers/paymentHelper");
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 
 module.exports = {
   getOrders: async (req, res, next) => {
     try {
-      const orders = await Orders.find({}).sort({ Orderdate: -1 });
-      res.render("admin/orders", { orders: orders });
+      const orders = await Orders.aggregate([
+        {
+          $unwind: "$Items"  // Split the array into separate documents for each item
+        },
+        {
+          $match: {
+            "Items.cancelled": false  // Filter only the items with cancelled set to true
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",  // Group by order ID
+            Userid: { $first: "$Userid" },
+            Username: { $first: "$Username" },
+            Orderdate: { $first: "$Orderdate" },
+            Deliveryaddress: { $first: "$Deliveryaddress" },
+            Status: { $first: "$Status" },
+            Totalamount: { $first: "$Totalamount" },
+            Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
+          }
+        }
+      ]).sort({ Orderdate: -1 });
+      const cancelled = await Orders.aggregate([
+        {
+          $unwind: "$Items"  // Split the array into separate documents for each item
+        },
+        {
+          $match: {
+            "Items.cancelled": true  // Filter only the items with cancelled set to true
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",  // Group by order ID
+            Userid: { $first: "$Userid" },
+            Username: { $first: "$Username" },
+            Orderdate: { $first: "$Orderdate" },
+            Deliveryaddress: { $first: "$Deliveryaddress" },
+            Status: { $first: "$Status" },
+            Totalamount: { $first: "$Totalamount" },
+            Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
+          }
+        }
+      ])
+      res.render("admin/orders", { orders: orders, ccount: cancelled.length });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
   viewOrder: async (req, res, next) => {
     try {
-      const order = await Orders.findById(req.query.oid);
+      const order = await Orders.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(req.query.oid)
+          }
+        },
+        {
+          $unwind: "$Items"
+        },
+        {
+          $match: {
+            "Items.cancelled": false
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",
+            Userid: { $first: "$Userid" },
+            Username: { $first: "$Username" },
+            Orderdate: { $first: "$Orderdate" },
+            Deliveryaddress: { $first: "$Deliveryaddress" },
+            Status: { $first: "$Status" },
+            Totalamount: { $first: "$Totalamount" },
+            Items: { $push: "$Items" }
+          }
+        }
+      ])
+      console.log(order);
       res.render("admin/vieworder", { order: order });
     } catch (error) {
-      res.status(400).json({ message: "Order not found" });
+      res.status(400).json(error.message);
     }
   },
   saveOrder: async (req, res, next) => {
@@ -46,7 +121,7 @@ module.exports = {
         }
         orderItems = [
           {
-            Paymet: "pod",
+            Paymet: req.body.payby,
             Productid: productDetails._id,
             Productname: productDetails.Productname,
             Price: productDetails.Price - productDetails.Discount,
@@ -65,7 +140,7 @@ module.exports = {
         isCart = true;
         orderItems = productDetails.map((product, index) => {
           return {
-            Paymet: "pod",
+            Paymet: req.body.payby,
             Productid: product._id,
             Productname: product.Productname,
             Price: product.Price,
@@ -106,26 +181,35 @@ module.exports = {
       };
 
       const order = await Orders.create(orderData);
+      console.log("ORDER" + order);
 
-      if(isCart == true){
-        await Carts.findOneAndRemove({Userid: userId})
+      if (isCart == true) {
+        await Carts.findOneAndRemove({ Userid: userId });
       }
 
-      res.redirect("/placeorder");
+      const payby = req.body.payby
+      if(payby == 'cod'){
+        res.json({codsuccess:true});
+      }else{
+        paymentHelper.generateRazorpay(order._id, order.Totalamount).then((response)=>{
+          res.json(response);
+        })
+      }
+      
+      // res.redirect("/placeorder");
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
+
   removeOrderItem: async (req, res, next) => {
     try {
       const orderId = req.params.id;
       const Ordersid = req.params.oid;
       console.log("orderid : " + orderId, "userid : " + Ordersid);
 
-      // Find the order and update the Items array
       const order = await Orders.findById(Ordersid);
 
-      // Filter out the item with the given _id
       const index = order.Items.findIndex((item) => item._id == orderId);
       order.Totalamount = order.Totalamount - order.Items[index].Price;
 
@@ -145,6 +229,29 @@ module.exports = {
       res.status(500).send("Internal Server Error");
     }
   },
+  cancelOrderItem: async (req, res, next) => {
+    try {
+      const pid = req.params.id;
+      const oid = req.params.oid;
+
+      const order = await Orders.findById(oid);
+
+      const index = order.Items.findIndex((item) => item._id == pid);
+      order.Totalamount = order.Totalamount - order.Items[index].Price;
+      order.Items[index].cancelled = true;
+
+      if (order.Items.length < 1) {
+        await Orders.findByIdAndRemove(oid);
+      }
+      // Save the updated order
+      await order.save();
+
+      next();
+    } catch (error) {
+      console.error("Error removing item:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  },
   viewOrderUser: async (req, res) => {
     try {
       const orderId = req.query.id;
@@ -153,6 +260,89 @@ module.exports = {
     } catch (error) {
       console.error("Error showing order:", error);
       res.status(500).send("Error showing order");
+    }
+  },
+  viewCancelledOrders: async (req, res) => {
+    try {
+      const uid = req.cookies.user.id;
+      const corders = await Orders.aggregate([
+        {
+          $match: {
+            Userid: new mongoose.Types.ObjectId(uid), // Convert the user ID to ObjectId type
+          },
+        },
+        {
+          $unwind: "$Items", // Split the array into separate documents for each item
+        },
+        {
+          $match: {
+            "Items.cancelled": true, // Filter only the items with cancelled set to true
+          },
+        },
+        {
+          $group: {
+            _id: "$_id", // Group by order ID
+            Userid: { $first: "$Userid" },
+            Username: { $first: "$Username" },
+            Orderdate: { $first: "$Orderdate" },
+            Deliveryaddress: { $first: "$Deliveryaddress" },
+            Status: { $first: "$Status" },
+            Totalamount: { $first: "$Totalamount" },
+            Items: { $push: "$Items" }, // Reconstruct the items array with cancelled items
+          },
+        },
+      ]);
+      res.render("user/cancelledorders", { corders });
+    } catch (error) {
+      console.log("cancell Error ", error.message);
+    }
+  },
+  updateStatus: async (req, res) => {
+    try {
+      await Orders.findByIdAndUpdate(req.params.orderid, {
+        $set: { Status: req.params.status },
+      });
+      res.redirect("/admin/orders");
+    } catch (error) {
+      res.status(500).send("Internal Server Error");
+    }
+  },
+  deleteOrder: async (req, res) => {
+    try {
+      await Orders.findByIdAndDelete(req.params.orderid);
+      res.redirect("/admin/orders");
+    } catch (error) {
+      res.status(500).send("Internal Server Error");
+    }
+  },
+  viewCancelledOrdersAdmin: async (req, res) => {
+    try {
+      const uid = req.query.uid;
+      const corders = await Orders.aggregate([
+        {
+          $unwind: "$Items", // Split the array into separate documents for each item
+        },
+        {
+          $match: {
+            "Items.cancelled": true, // Filter only the items with cancelled set to true
+          },
+        },
+        {
+          $group: {
+            _id: "$_id", // Group by order ID
+            Userid: { $first: "$Userid" },
+            Username: { $first: "$Username" },
+            Orderdate: { $first: "$Orderdate" },
+            Deliveryaddress: { $first: "$Deliveryaddress" },
+            Status: { $first: "$Status" },
+            Totalamount: { $first: "$Totalamount" },
+            Items: { $push: "$Items" }, // Reconstruct the items array with cancelled items
+          },
+        },
+      ]);
+      res.render("admin/cancelledorders", { orders: corders });
+    } catch (error) {
+      console.log("cancell Error ", error.message);
     }
   },
 };

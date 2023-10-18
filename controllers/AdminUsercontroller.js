@@ -1,24 +1,27 @@
 const Usercopy = require("../public/models/usermodel");
-const Admincopy = require("../public/models/adminmodel");
 var AddressCopy = require("../public/models/addressmodel");
 const usermodel = require("../public/models/usermodel");
+const Admin = require("../public/models/adminmodel");
 
 module.exports = {
+  getAdmin: async(req, res)=>{
+    try {
+      res.redirect('/admin/dash')
+    } catch (error) {
+      res.status(500).json(error.message)
+    }
+  },
   // ADMIN LOGIN CHECK
   adminLogin: async (req, res) => {
-    console.log();
-    const admin = await Admincopy.find({
-      email: req.body.email,
-      password: req.body.password,
-    });
-    if (admin) {
-      res.cookie("admin", req.body.email, { maxAge: 24*60*60*1000, httpOnly: true });
-      return res.redirect("/admin/dash");
-    } else {
-      console.log(" ADMIN LOGIN ERROR : ", err);
-      return res.render("admin/login", {
-        error: "Entered credentials are wrong!!",
-      });
+    try {
+      const admin = await Admin.findOne({ email: req.body.email , password: req.body.password });
+      if(admin){
+        res.cookie("admin", admin.email, { maxAge: 24*60*60*1000, httpOnly: true });
+        res.redirect('/admin/dash')
+      }
+      res.render("admin/login", { error: "Invalid Credentials" });
+    } catch (error) {
+      res.status(500).json(error.message)
     }
   },
   // GET USERS

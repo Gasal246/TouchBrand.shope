@@ -1,0 +1,57 @@
+<%- include('head.ejs')%>
+
+    <div class="container">
+        <div class="row">
+            <h4>Add new Banner</h4>
+            <% if(err){ %><h6><i class="fa-solid fa-error"></i><%= err %></h6><% } %>
+        </div>
+        <div class="row">
+            <form action="/admin/addbanner" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Banner Title</label>
+                    <input class="form-control" type="text" name="title" placeholder="This will describe the event" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-control" required>
+                        <option value="">Select the category of items belongs</option>
+                        <% categories.map((cat)=>{ %>
+                            <option value="<%= cat.Catname %>"><%= cat.Catname %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input class="form-control" type="number" name="price" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Image</label>
+                    <input class="form-control" type="file" name="Image" id="imageInput" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Image Preview</label>
+                    <img id="image-preview" src="#" alt="Image Preview" style="max-width: 100px; display: none;">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Banner</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('image-preview');
+    
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+    
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+    
+            reader.readAsDataURL(file);
+        });
+    </script>
+
+    <%- include('foot.ejs')%> 

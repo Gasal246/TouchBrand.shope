@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session')
 
+const Razorpay = require('razorpay');
+
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
 

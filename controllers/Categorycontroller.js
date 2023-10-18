@@ -24,7 +24,7 @@ module.exports = {
     }
   },
   getCategory: async (req, res) => {
-    if (req.cookies.admin) {
+    try {
       const categories = await Categories.find({});
       const err = req.query.err
       const productCount = await productCopy.aggregate([
@@ -47,8 +47,8 @@ module.exports = {
         pcount: productCount,
         err: err?err:null,
       });
-    } else {
-      res.redirect("/admin");
+    } catch (error) {
+      res.status(error.status).json(error.message);
     }
   },
   editCategory: async (req, res) => {

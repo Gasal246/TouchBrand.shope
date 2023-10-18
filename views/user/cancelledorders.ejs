@@ -1,0 +1,77 @@
+<%- include('head.ejs') %>
+
+<div class="container">
+    <div class="row">
+        <h4 class="mt-3 mb-4" >Cancelled Orders</h4>
+    </div>
+    <div class="row">
+        <a href="/account"> <h6 class="col-12" >back to orders</h6></a>
+    </div>
+    <div class="row mb-5">
+        <% corders.map((order)=>{ %>
+            <div class="col-12 col-lg-6">
+            <div class="col-12 p-2 shadow mt-2"
+                style="background-color: rgba(255, 230, 230, 0.713); border-radius: 10px;">
+                <span class="col-6">
+                    <%= order.Orderdate.toDateString() %>
+                </span>
+                <% order.Items.map((item)=>{ %>
+                        <div class="col-12">
+                            <div class="gcard mb-1">
+                                <a href="/viewproduct/<%= item.Productid %>"><img
+                                        src="<%= item.Productimg %>"
+                                        alt=""></a>
+                                <div class="gcard-body">
+                                    <h6>
+                                        <a href="/viewproduct/<%= item.Productid %>">
+                                            <%= item.Productname %>
+                                        </a>
+
+                                    </h6>
+                                    <div
+                                        style="display: flex;justify-content: space-between;">
+                                        <p>Quantity: <%= item.Quantity  %> <br>
+                                                Amount: $<%= item.Quantity*item.Price %>
+                                        </p>
+                                        <a onclick="removeOrderItem('<%= item._id %>', '<%= order._id %>')"
+                                            class="btn btn-dark">remove order</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <% }) %>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    </div>
+</div>
+
+<%- include('footer.ejs') %>
+
+<script>
+    async function removeOrderItem(productId, orderId) {
+        // AJAX request to update the quantity
+        const prompt = confirm('Are you sure you want to delete the order item?');
+        if (prompt) {
+            $.ajax({
+                type: 'GET',
+                url: '/removeorderitem/' + productId + '/' + orderId,
+                success: function (response) {
+                    console.log('Order Item Removed successfully:', response);
+                    // Update the total price and any other UI elements as needed
+                    // For simplicity, let's reload the page to update the UI after quantity change
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Error removing order item:', error);
+                    location.reload();
+                }
+            });
+        }
+
+    }
+</script>
+
+<%- include('foot.ejs') %>

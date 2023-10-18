@@ -2,12 +2,14 @@ const Product = require("../public/models/productmodel");
 const categoryCopy = require("../public/models/categorymodel");
 const cartModel = require("../public/models/cartmodel");
 const usermodel = require("../public/models/usermodel");
+const Banners = require("../public/models/bannermodel");
 
 module.exports = {
   loadHome: async (req, res) => {
     try {
       const products = await Product.find({});
       const categories = await categoryCopy.find({});
+      const banners = await Banners.find({});
       if (req.cookies.user) {
         let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
         await usermodel.findById(req.cookies.user.id).then((data)=>{
@@ -17,6 +19,7 @@ module.exports = {
               cdata: null,
               products,
               categories,
+              banners,
               cart: "no",
             });
           }
@@ -26,6 +29,7 @@ module.exports = {
           error: null,
           products,
           categories,
+          banners,
           cart: cart ? cart.Products : null,
         });
       } else {
@@ -34,6 +38,7 @@ module.exports = {
           cdata: null,
           products,
           categories,
+          banners,
           cart: "no",
         });
       }
@@ -46,21 +51,21 @@ module.exports = {
     try {
       const product = await Product.findById(req.params.pid);
       let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
-
+      const qty = req.query.qty
       if (cart) {
         const existingProduct = cart.Products.find(
           (item) => item.Productid.toString() === product._id.toString()
         );
 
         if (existingProduct) {
-          existingProduct.Quantity += 1;
+          existingProduct.Quantity += qty ? parseInt(qty) : 1;
         } else {
           cart.Products.push({
             Productid: product._id,
             Productname: product.Productname,
             Productimg: product.Imagepath[0],
             Price: product.Price - product.Discount,
-            Quantity: 1,
+            Quantity: qty ? parseInt(qty) : 1,
           });
           await cart.save();
         }

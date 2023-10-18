@@ -17,7 +17,7 @@
                     <span>Quantity: <%= item.Quantity %></span><br>
                     <span>Price: $<%= item.Price %></span><br>
                     <span>Shipping cost: $<%= item.Shippingcost %></span><br>
-                    <span>Total: $<%= item.Price + item.Shippingcost %></span>
+                    <span>Total: $<%= (item.Price + item.Shippingcost) * item.Quantity  %></span>
                 </div>
             </div>
             <% }) %>

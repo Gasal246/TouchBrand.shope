@@ -131,3 +131,28 @@
     padding: 10px 10px;
     border-radius: 10px;
 }
+
+.quantity-field{
+    background: rgb(253, 250, 237);
+    width: fit-content;
+    padding: 10px 7px;
+    min-width: 90px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-field span{
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.quantity-field span.num{
+    border-right: 1px solid rgba(45, 45, 45, 0.756);
+    border-left: 1px solid rgba(45, 45, 45, 0.756);
+    pointer-events: none;
+}

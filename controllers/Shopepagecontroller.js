@@ -1,14 +1,40 @@
+const Categories = require("../public/models/categorymodel");
 const Products = require("../public/models/productmodel");
 
 module.exports = {
   getShope: async (req, res, next) => {
     console.log("reachead");
     try {
-      let queryObj = req.query.qobj || {};
+      let min = req.query.min || 0;
+      let max = req.query.max || 5000;
+      let queryObj = req.query.qobj || {Price: { $gte: min, $lte: max }};
       let query = Products.find(queryObj);
+      const categorydata = await Categories.find({});
+      const productCount = await Products.aggregate([
+        {
+          $match: {
+            Price: {
+              $gte: min,
+              $lte: max
+            }
+          }
+        },
+        {
+          $group: {
+            _id: { $toLower: "$Category" }, // Convert category to lowercase
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            category: "$_id",
+            count: 1,
+          },
+        },
+      ]);
       let cat = req.query.categories || null;
       let categories = cat?req.query.categories.split(","):null;
-      console.log(categories);
 
       const page = req.query.page * 1 || 1;
       const limit = req.query.limit * 1 || 8;
@@ -26,7 +52,7 @@ module.exports = {
       // if(skip >= docCount){
       //   res.render('user/shope', {products: null, err: "No more pages"})
       // }
-      res.render('user/shopepage', {products: products, err: null, pagecount, docCount, page, skip})
+      res.render('user/shopepage', {products: products, err: null, pagecount, docCount, page, skip, categorydata, productCount})
 
     } catch (error) {
       res.status(400).json({ message: error.message });

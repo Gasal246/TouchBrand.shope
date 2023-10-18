@@ -15,17 +15,28 @@ const sharp = require("sharp");
 module.exports = {
   // GET PRODUCT
   getAdminProducts: async (req, res, uniqueIdentifier) => {
-    const products = await Product.find({});
-    if (req.cookies.admin) {
-      res.render("admin/products", { products });
-    } else {
-      res.render("admin/login", {
-        error: "Entered credentials are wrong!!",
-      });
+    try {
+      const products = await Product.find({});
+      if (req.cookies.admin) {
+        res.render("admin/products", { products });
+      } else {
+        res.render("admin/login", {
+          error: "Entered credentials are wrong!!",
+        });
+      }
+    } catch (error) {
+      res.status(error.status).json({ error: error.message });
     }
   },
-
   //  ADD PRODUCT
+  getAddProduct: async (req, res) => {
+    try {
+      const categories = await Categories.find({});
+      res.render("admin/addproduct", { categories });
+    } catch (error) {
+      res.status(error.status).json({ error: error.message });
+    }
+  },
   addProduct: async (req, res, uniqueIdentifier) => {
     try {
       const uploadedImages = req.files;
