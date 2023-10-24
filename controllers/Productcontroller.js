@@ -21,11 +21,13 @@ module.exports = {
         res.render("admin/products", { products });
       } else {
         res.render("admin/login", {
-          error: "Entered credentials are wrong!!",
+          error: "Entered credentials are wrong!!"
         });
       }
     } catch (error) {
-      res.status(error.status).json({ error: error.message });
+      const on = "On Getting productpage";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   //  ADD PRODUCT
@@ -34,7 +36,9 @@ module.exports = {
       const categories = await Categories.find({});
       res.render("admin/addproduct", { categories });
     } catch (error) {
-      res.status(error.status).json({ error: error.message });
+      const on = "On rendering addproduct Page";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   addProduct: async (req, res, uniqueIdentifier) => {
@@ -57,16 +61,15 @@ module.exports = {
         Shipingcost: req.body.scost,
         Stoke: req.body.stoke,
         Imagepath: imagePaths,
-        Dateadded: Date.now(),
+        Dateadded: Date.now()
       });
       await newProduct.save().then((data) => {
         return res.redirect("/admin/products");
       });
-    } catch (err) {
-      // Handle error
-      console.error(err);
-      // You can send an error response or render an error page as needed
-      return res.status(500).send("Internal Server Error");
+    } catch (error) {
+      const on = "On Add Product";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 
@@ -85,9 +88,10 @@ module.exports = {
       });
 
       return res.redirect("/admin/products");
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Internal Server Error");
+    } catch (error) {
+      const on = "On Delete Product";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 
@@ -102,54 +106,65 @@ module.exports = {
       console.log(product);
       res.render("admin/editproduct", { product, categories });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const on = "On Geting Edit Product page";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 
   //   EDIT THE PRODUCT
   editProduct: async (req, res, uniqueIdentifier) => {
-    const uploadedImages = req.files;
-    console.log(uploadedImages);
-    const productId = req.params.pid;
-    const theproduct = await Product.findById(productId);
-    const imagePaths = theproduct.Imagepath;
-    for (const image of uploadedImages) {
-      const imagePath = `/uploads/${uniqueIdentifier}_${image.originalname}`;
-      imagePaths.push(imagePath);
-    }
-
-    const subcategories = req.body.subcategory.split(",");
-
-    const editedData = {
-      Description: req.body.desc,
-      Productname: req.body.pname,
-      Spec: req.body.specs,
-      Category: req.body.category,
-      SubCategory: req.body.subcategory,
-      Price: req.body.price,
-      Discount: req.body.discount,
-      Shipingcost: req.body.scost,
-      Stoke: req.body.stoke,
-      Imagepath: imagePaths,
-    };
-
     try {
+      const uploadedImages = req.files;
+      console.log(uploadedImages);
+      const productId = req.params.pid;
+      const theproduct = await Product.findById(productId);
+      const imagePaths = theproduct.Imagepath;
+      for (const image of uploadedImages) {
+        const imagePath = `/uploads/${uniqueIdentifier}_${image.originalname}`;
+        imagePaths.push(imagePath);
+      }
+
+      const subcategories = req.body.subcategory.split(",");
+
+      const editedData = {
+        Description: req.body.desc,
+        Productname: req.body.pname,
+        Spec: req.body.specs,
+        Category: req.body.category,
+        SubCategory: req.body.subcategory,
+        Price: req.body.price,
+        Discount: req.body.discount,
+        Shipingcost: req.body.scost,
+        Stoke: req.body.stoke,
+        Imagepath: imagePaths
+      };
       await Product.findByIdAndUpdate(productId, {
-        $set: editedData,
+        $set: editedData
       });
       res.redirect("/admin/products");
-    } catch (err) {
-      console.log("Error on updating the data : " + err);
+    } catch (error) {
+      const on = "On Edit Product";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 
   getProduct: async (req, res, next) => {
-    const pid = req.query.pid;
-    if (pid) {
-      const product = await Product.findById(pid);
-      const category = await Categories.findOne({ Catname: product.Category });
-      res.render("user/product", { product: product, category: category });
-      console.log("category : ", category);
+    try {
+      const pid = req.query.pid;
+      if (pid) {
+        const product = await Product.findById(pid);
+        const category = await Categories.findOne({
+          Catname: product.Category
+        });
+        res.render("user/product", { product: product, category: category });
+        console.log("category : ", category);
+      }
+    } catch (error) {
+      const on = "On Finding product";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
 
@@ -159,14 +174,15 @@ module.exports = {
     const product = await Product.findById(productid);
     try {
       await Product.findByIdAndUpdate(productid, {
-        $pull: { Imagepath: imagePath },
+        $pull: { Imagepath: imagePath }
       });
       const filePath = path.join(__dirname, "../public", imagePath);
       fs.unlinkSync(filePath);
       res.redirect(`/admin/editproduct?pid=${productid}`);
     } catch (error) {
-      console.error("Error removing image path:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      const on = "On Removing image path";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
-  },
+  }
 };

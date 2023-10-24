@@ -20,7 +20,9 @@ module.exports = {
       })
       
     } catch (error) {
-      res.send("Invalid server error: on saving category..");
+      const on = "On Adding Category";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   getCategory: async (req, res) => {
@@ -48,7 +50,9 @@ module.exports = {
         err: err?err:null,
       });
     } catch (error) {
-      res.status(error.status).json(error.message);
+      const on = "On get Category";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   editCategory: async (req, res) => {
@@ -62,8 +66,10 @@ module.exports = {
         $set: editedData,
       });
       res.redirect("/admin/categories");
-    } catch (err) {
-      console.log("Error on updating the data : " + err);
+    } catch (error) {
+      const on = "On Edit Category";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   deleteCategory: async (req, res) => {
@@ -71,9 +77,10 @@ module.exports = {
     try {
       await categoryCopy.findByIdAndRemove(catid);
       res.redirect("/admin/categories");
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Internal Server Error");
+    } catch (error) {
+      const on = "On Delete Category";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 };

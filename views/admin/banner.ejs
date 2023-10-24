@@ -1,35 +1,37 @@
-<%- include('head.ejs') %>
+<%- include('chead.ejs') %>
 
-    <div style="width: 100%;">
-        <h3 class="headtext p-3"><i class="fa-solid fa-cog"></i> Banner management</h3>
-        <div class="productsNav mt-3 mb-5">
-            <a href="/admin/addbanner" class="btn btn-success" id="openAddBanner"><i class="fa-solid fa-plus"></i>
-                Banner</a>
-        </div>
-        <div class="banners">
-            <div class="row">
-                <% banners.map((banner)=>{ %>
-                    <div class="col-12 col-lg-4 mb-4">
-                        <div class="banner-card">
-                            <img src="<%= banner.Image %>" alt="bannerImage" class="mb-2">
-                            <div class="texts">
-                                <h6>
-                                    <%= banner.Category %>
-                                </h6>
-                                <h4>
-                                    <%= banner.Title %>
-                                </h4>
-                                <h5>$<%= banner.Price %>
-                                </h5>
-                            </div>
-                            <div class="action">
-                                <a class="btn btn-primary" href="/admin/editbanner?bid=<%= banner._id %>">Change</a>
-                                <button class="btn btn-danger"
-                                    onclick="deleteBanner('<%= banner._id %>')">Delete</button>
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <h3 class="headtext p-3"><i class="fa-solid fa-cog"></i> Banner management</h3>
+            <div class="productsNav mt-3 mb-5">
+                <a href="/admin/addbanner" class="btn btn-success" id="openAddBanner"><i class="mdi mdi-plus"></i>
+                    Banner</a>
+            </div>
+            <div class="banners">
+                <div class="row">
+                    <% banners.map((banner)=>{ %>
+                        <div class="col-12 col-lg-4 mb-4">
+                            <div class="banner-card">
+                                <img src="<%= banner.Image %>" alt="bannerImage" class="mb-2">
+                                <div class="texts">
+                                    <h6>
+                                        <%= banner.Category %>
+                                    </h6>
+                                    <h4>
+                                        <%= banner.Title %>
+                                    </h4>
+                                    <h5>$<%= banner.Price %>
+                                    </h5>
+                                </div>
+                                <div class="action">
+                                    <a class="btn btn-primary" href="/admin/editbanner?bid=<%= banner._id %>">Change</a>
+                                    <button class="btn btn-danger"
+                                        onclick="deleteBanner('<%= banner._id %>')">Delete</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <% }) %>
+                        <% }) %>
+                </div>
             </div>
         </div>
     </div>
@@ -56,4 +58,4 @@
         }
     </script>
 
-    <%- include('foot.ejs') %>
+    <%- include('cfoot.ejs') %>

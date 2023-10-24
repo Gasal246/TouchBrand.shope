@@ -11,7 +11,9 @@ module.exports = {
       const banners = await Banners.find({});
       res.render("admin/banner", { banners });
     } catch (error) {
-      res.status(500).json(error.message);
+      const on = "On Get Banner";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   getaddBanner: async (req, res) => {
@@ -23,7 +25,9 @@ module.exports = {
       const categories = await Categories.find({});
       res.render("admin/addnewbanner", { categories, err });
     } catch (error) {
-      res.status(500).json(error.message);
+      const on = "On Get Add Banner";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   addBanner: async (req, res, uniqueIdentifier) => {
@@ -46,7 +50,9 @@ module.exports = {
         res.redirect("/admin/banner");
       });
     } catch (error) {
-      res.status(500).json(error.message);
+      const on = "On Adding Banner";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   deleteBanner: async (req, res) => {
@@ -57,7 +63,9 @@ module.exports = {
       fs.unlinkSync(filePath);
       res.json({ deleted: true });
     } catch (error) {
-      res.status(500).json(error.message);
+      const on = "On Deleting Banner";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   editBannerForm: async (req, res) => {
@@ -68,7 +76,9 @@ module.exports = {
       const categories = await Categories.find({});
       res.render("admin/editbanner", { banner, categories, err });
     } catch (error) {
-      res.status(500).json(error.message);
+      const on = "On Get Edit Banner";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   editBanner: async (req, res, uniqueIdentifier) => {
@@ -93,7 +103,9 @@ module.exports = {
       });
       res.redirect('/admin/banner')
     } catch (error) {
-        res.status(500).json(error.message);
+      const on = "On Editing Banner";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 };

@@ -65,7 +65,7 @@ router.get("/deleteproduct/:pid", checkAuth.checkAdmin, productController.delete
 router.get('/editproduct', checkAuth.checkAdmin, Productcontroller.getEditProduct)
 
 router.post(
-  "/editproduct/:pid",
+  "/editproduct/:pid", checkAuth.checkAdmin,
   upload.array("images", 8),
   async (req, res) => {
     productController.editProduct(req, res, uniqueIdentifier);
@@ -127,10 +127,13 @@ router.get('/orders', Ordercontroller.getOrders)
 
 router.get('/vieworder', Ordercontroller.viewOrder)
 
-router.get('/changeorderstatus/:orderid/:status', Ordercontroller.updateStatus)
+router.post('/changeorderstatus', Ordercontroller.updateStatus)
 
 router.get('/deleteorder/:orderid', Ordercontroller.deleteOrder)
 
 router.get('/cancelledorders', Ordercontroller.viewCancelledOrdersAdmin)
+
+// ###################### ERROR PAAGE #########
+router.get('/error', AdminDashboard.renderError)
 
 module.exports = router;

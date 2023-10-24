@@ -49,13 +49,13 @@ module.exports = {
       console.log(products);
       const docCount = await Products.countDocuments();
       const pagecount = Math.ceil(docCount / limit);
-      // if(skip >= docCount){
-      //   res.render('user/shope', {products: null, err: "No more pages"})
-      // }
+
       res.render('user/shopepage', {products: products, err: null, pagecount, docCount, page, skip, categorydata, productCount})
 
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      const on = "On ShopePage";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   quickView: async(req, res, next)=>{
@@ -64,8 +64,9 @@ module.exports = {
       const product = await Products.findById(pid);
       res.render('user/quickview', {product})
     } catch (error) {
-      res.status(400)
-      console.log(error.message);
+      const on = "On Quick view";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
 };

@@ -19,7 +19,7 @@ module.exports = {
         },
         {
           $match: {
-            "Items.cancelled": false  // Filter only the items with cancelled set to true
+            "Items.cancelled": false  // Filter only the items with cancelled set to false
           }
         },
         {
@@ -59,7 +59,9 @@ module.exports = {
       ])
       res.render("admin/orders", { orders: orders, ccount: cancelled.length });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const on = "On Getting Order data";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   viewOrder: async (req, res, next) => {
@@ -94,7 +96,9 @@ module.exports = {
       console.log(order);
       res.render("admin/vieworder", { order: order });
     } catch (error) {
-      res.status(400).json(error.message);
+      const on = "On View Order";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   saveOrder: async (req, res, next) => {
@@ -181,12 +185,31 @@ module.exports = {
       };
 
       const order = await Orders.create(orderData);
-      console.log("ORDER" + order);
 
+      // UPDATING THE STOKE AFTER SAVING THE ORDER
+      for (const item of orderItems) {
+        const product = await Products.findById(item.Productid);
+        if (!product) {
+          return res
+            .status(400)
+            .json({ message: "Product not found for ID: " + item.Productid });
+        }
+        // Calculate the new stock after the order
+        const newStock = product.Stoke - item.Quantity;
+        if (newStock < 0) {
+          return res.status(400).json({ message: "Not enough stock for the product: " + product.Productname });
+        }
+        // Update the stock in the database
+        product.Stoke = newStock;
+        await product.save();
+      }
+
+      // CLEAR THE CART AFTER ODERING FROM CART
       if (isCart == true) {
         await Carts.findOneAndRemove({ Userid: userId });
       }
 
+      // CHECK THE PAYMENT CRITERIA
       const payby = req.body.payby
       if(payby == 'cod'){
         res.json({codsuccess:true});
@@ -195,10 +218,11 @@ module.exports = {
           res.json(response);
         })
       }
-      
-      // res.redirect("/placeorder");
+
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const on = "On Saving Order";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 
@@ -225,8 +249,9 @@ module.exports = {
 
       next();
     } catch (error) {
-      console.error("Error removing item:", error);
-      res.status(500).send("Internal Server Error");
+      const on = "On Remove Item Order";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   cancelOrderItem: async (req, res, next) => {
@@ -248,8 +273,9 @@ module.exports = {
 
       next();
     } catch (error) {
-      console.error("Error removing item:", error);
-      res.status(500).send("Internal Server Error");
+      const on = "On Cancel Order";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   viewOrderUser: async (req, res) => {
@@ -258,8 +284,9 @@ module.exports = {
       const order = await Orders.findById(orderId);
       res.render("user/vieworder", { order });
     } catch (error) {
-      console.error("Error showing order:", error);
-      res.status(500).send("Error showing order");
+      const on = "On View Order";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   viewCancelledOrders: async (req, res) => {
@@ -294,17 +321,23 @@ module.exports = {
       ]);
       res.render("user/cancelledorders", { corders });
     } catch (error) {
-      console.log("cancell Error ", error.message);
+      const on = "On View Cancelled Orders";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   updateStatus: async (req, res) => {
     try {
-      await Orders.findByIdAndUpdate(req.params.orderid, {
-        $set: { Status: req.params.status },
+      const oid = req.body.orderid
+      const status = req.body.status
+      await Orders.findByIdAndUpdate(oid, {
+        $set: { Status: status },
       });
-      res.redirect("/admin/orders");
+      res.json({ status:true, message: 'Status updated'})
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      const on = "On Update Order Status";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   deleteOrder: async (req, res) => {
@@ -312,7 +345,9 @@ module.exports = {
       await Orders.findByIdAndDelete(req.params.orderid);
       res.redirect("/admin/orders");
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      const on = "On Delete Order";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   viewCancelledOrdersAdmin: async (req, res) => {
@@ -342,7 +377,9 @@ module.exports = {
       ]);
       res.render("admin/cancelledorders", { orders: corders });
     } catch (error) {
-      console.log("cancell Error ", error.message);
+      const on = "On View Cancelled Order";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 };

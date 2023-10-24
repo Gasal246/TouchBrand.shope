@@ -8,7 +8,9 @@ module.exports = {
     try {
       res.redirect('/admin/dash')
     } catch (error) {
-      res.status(500).json(error.message)
+      const on = "On Get Admin";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   // ADMIN LOGIN CHECK
@@ -21,7 +23,9 @@ module.exports = {
       }
       res.render("admin/login", { error: "Invalid Credentials" });
     } catch (error) {
-      res.status(500).json(error.message)
+      const on = "On AdminLogin";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   // GET USERS
@@ -35,9 +39,10 @@ module.exports = {
     try {
       await Usercopy.findByIdAndRemove(userId);
       return res.redirect("/admin/users");
-    } catch (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
+    } catch (error) {
+      const on = "On Delete user";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   //   BLOCK AND UNBLOCK USER
@@ -49,7 +54,9 @@ module.exports = {
         );
         res.redirect("/admin/users");
       } catch (error) {
-        res.status(500).send("Internal Server Error");
+        const on = "On Get Block user";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
       }
     },
     unblockUser: async (req, res) => {
@@ -60,7 +67,9 @@ module.exports = {
       );
       res.redirect("/admin/users");
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      const on = "On Get Unblock user";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
   viewuser: async (req, res) => {
@@ -69,7 +78,9 @@ module.exports = {
       let address = await AddressCopy.findOne({Userid: req.params.uid})
       res.render('admin/viewuser', { user: user,  address: address })
     } catch (error) {
-      console.log(error.message);
+      const on = "On Get ViewUserr";
+      const err = error.message;
+      res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
 };

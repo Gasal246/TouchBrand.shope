@@ -16,6 +16,8 @@ const Carts = require("../public/models/cartmodel");
 const Orders = require("../public/models/ordermodel");
 const Products = require("../public/models/productmodel");
 const Shopepagecontroller = require("../controllers/Shopepagecontroller");
+const paymentHelper = require("../helpers/paymentHelper");
+const Paymentcontroller = require("../controllers/Paymentcontroller");
 
 router.get("/", Homepagecontroller.loadHome);
 
@@ -95,8 +97,9 @@ router.get('/shope', Shopepagecontroller.getShope)
 router.get('/quickview', Shopepagecontroller.quickView)
 
 // ########################## VERIFY PAYMENT #########################
-router.post('/verify-payment', (req, res) => {
-  console.log(req.body);
-})
+router.post('/verify-payment', Paymentcontroller.verifyThePayment)
+
+// ########################## ERROR WRAPPER #########################
+router.get('/error', Homepagecontroller.errorPage)
 
 module.exports = router;

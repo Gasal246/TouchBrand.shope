@@ -1,8 +1,8 @@
 
 const Razorpay = require('razorpay')
 var instance = new Razorpay({
-  key_id: 'rzp_test_0adB9GE35CFKPI',
-  key_secret: 'BEp7pBeltrCNbnx7DzPaLIoN',
+  key_id: 'rzp_test_gL0J7DIqai39TQ',
+  key_secret: 'w384loH3yO6KUXL2Sp9q06FL',
 });
 instance.payments.all({
   from: '2023-08-01',
@@ -18,7 +18,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             var options = {
                 amount: amount*100,  // amount in the smallest currency unit
-                currency: "USD",
+                currency: "INR",
                 receipt: oid
               };
               instance.orders.create(options, function(err, order) {
@@ -27,4 +27,17 @@ module.exports = {
               });
         })
     },
+    verifyPayment: async (details)=>{
+      return new Promise((resolve, reject) => {
+        const crypto = require('crypto')
+        let hmac = crypto.createHmac('sha256', 'w384loH3yO6KUXL2Sp9q06FL')
+        hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]'])
+        hmac = hmac.digest('hex')
+        if(hmac == details['payment[razorpay_signature]']){
+          resolve(details['order[receipt]'])
+        }else{
+          reject(error)
+        }
+      })
+    }
 }

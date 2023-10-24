@@ -1,55 +1,60 @@
-<%- include('head.ejs') %>
+<%- include('chead.ejs') %>
 
-    <div class="container">
-        <div class="row">
-            <h5><a href="/admin/orders" style="text-decoration: none; color: #000;"><i
-                        class="fa-solid fa-angle-left"></i> Back to Orders</a></h5>
-        </div>
-        <div class="row">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Total items</th>
-                        <th scope="col">Date Ordered</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">View order</th>
-                        <th scope="col">Cancel order</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if(orders){ %>
-                        <% orders.map((order, index)=>{ %>
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container">
+                <div class="row">
+                    <h5><a href="/admin/orders" style="text-decoration: none; color: #000;"><i
+                                class="fa-solid fa-angle-left"></i> Back to Orders</a></h5>
+                </div>
+                <div class="row">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <th scope="row">
-                                    <%= index+1 %>
-                                </th>
-                                <td>
-                                    <%= order.Username %>
-                                </td>
-                                <td>
-                                    <%= order.Items.length %>
-                                </td>
-                                <td>
-                                    <%= order.Orderdate.toDateString() %>
-                                </td>
-                                <td>
-                                    <button class="btn btn-dark">cancelled</button>
-                                </td>
-                                <td>
-                                    <a href="/admin/vieworder?oid=<%= order._id %>" class="btn btn-primary">view</a>
-                                </td>
-                                <td>
-                                    <a href="/admin/deleteorder/<%= order._id %>" class="btn btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete the order?')">remove</a>
-                                </td>
+                                <th scope="col">#</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Total items</th>
+                                <th scope="col">Date Ordered</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">View order</th>
+                                <th scope="col">Cancel order</th>
                             </tr>
-                            <% }) %>
-                                <% } %>
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            <% if(orders){ %>
+                                <% orders.map((order, index)=>{ %>
+                                    <tr>
+                                        <th scope="row">
+                                            <%= index+1 %>
+                                        </th>
+                                        <td>
+                                            <%= order.Username %>
+                                        </td>
+                                        <td>
+                                            <%= order.Items.length %>
+                                        </td>
+                                        <td>
+                                            <%= order.Orderdate.toDateString() %>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-dark">cancelled</button>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/vieworder?oid=<%= order._id %>"
+                                                class="btn btn-primary">view</a>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/deleteorder/<%= order._id %>" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete the order?')">remove</a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <%- include('foot.ejs') %>
+    <%- include('cfoot.ejs') %>

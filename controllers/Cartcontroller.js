@@ -19,8 +19,9 @@ module.exports = {
       await cart.save();
       res.status(200).json({ message: "Quantity updated successfully" });
     } catch (error) {
-      console.log("Product NOT saved : " + error.message);
-      res.status(500).json({ error: "Error updating quantity" });
+      const on = "On Updating Quantity";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   cartCheckout: async (req, res) => {
@@ -36,8 +37,9 @@ module.exports = {
         cart: cart.Products,
       });
     } catch (error) {
-      console.log("Cart check-out error  : " + error.message);
-      res.status(500).json({ error: "Error Cart checkout" });
+      const on = "On Checkout From Cart";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
 };

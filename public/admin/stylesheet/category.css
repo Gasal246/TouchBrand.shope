@@ -10,10 +10,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 2000;
 }
 .catpop .formDiv {
-  background: white;
+  background: rgb(32, 32, 32);
   padding: 15px 20px;
   border-radius: 10px;
   min-width: 45%;
@@ -37,10 +37,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 2000;
 }
 .editcatpop .formDiv {
-  background: white;
+  background: rgb(32, 32, 32);
   padding: 15px 20px;
   border-radius: 10px;
   min-width: 45%;

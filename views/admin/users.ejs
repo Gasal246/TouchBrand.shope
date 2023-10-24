@@ -1,15 +1,16 @@
-<%- include('head.ejs') %>
-    <div style="width: 100%;">
+<%- include('chead.ejs') %>
+<div class="main-panel">
+    <div class="content-wrapper">
         <h3 class="headtext p-3"><i class="fa-solid fa-cog"></i> User control</h3>
 
         <div class="productsNav mt-3 mb-5">
             <div class="searchBar">
                 <input type="search" placeholder="Search by name or email" id="userSearch">
-                <i class="las la-search"></i>
+                <i class="fa-solid fa-magnifying-glass"></i>
             </div>
         </div>
         <div class="div tableWrapper">
-            <table class="table table-light">
+            <table class="table table-dark table-hover">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -60,6 +61,7 @@
             </table>
         </div>
     </div>
+</div>
     
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -91,4 +93,4 @@
 
         })
     </script>
-    <%- include('foot.ejs') %>
+    <%- include('cfoot.ejs') %>

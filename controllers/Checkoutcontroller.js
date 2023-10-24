@@ -20,7 +20,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      res.status(error.status).json(error.message);
+      const on = "On Checkout Order";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
 };

@@ -71,57 +71,71 @@ module.exports = {
           }
         });
       } catch (e) {
-        console.log("FAIL TO EXECUTE YOUR ROUTE: " + e);
+        const on = "On Register User";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
       }
     }
   },
   verifyUser: async (req, res) => {
-    const verificationCode = req.body.vcode;
-    const userEmail = req.cookies.user.email;
-
-    // Check if verification code matches
-    const user = await Usercopy.findOne({
-      Email: userEmail,
-      verifycode: verificationCode,
-    });
-
-    if (user) {
-      await Usercopy.updateOne(
-        { Email: userEmail },
-        { $set: { verify: true } }
-      );
-      res.redirect("/");
-    } else {
-      res.render("user/verify", {
-        error: "Invalid verification code. Please try again.",
-        cookies: req.cookies.user,
+    try {
+      const verificationCode = req.body.vcode;
+      const userEmail = req.cookies.user.email;
+  
+      // Check if verification code matches
+      const user = await Usercopy.findOne({
+        Email: userEmail,
+        verifycode: verificationCode,
       });
+  
+      if (user) {
+        await Usercopy.updateOne(
+          { Email: userEmail },
+          { $set: { verify: true } }
+        );
+        res.redirect("/");
+      } else {
+        res.render("user/verify", {
+          error: "Invalid verification code. Please try again.",
+          cookies: req.cookies.user,
+        });
+      }
+    } catch (error) {
+      const on = "On Verify User";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   resendVerification: async (req, res) => {
-    const userEmail = req.params.email;
-    // Generate a new verification code
-    const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
-    // Update user's verification code in the database
-    await Usercopy.updateOne(
-      { Email: userEmail },
-      { $set: { verifycode: newVerificationCode } }
-    );
-    // Send verification email with the new code
-    const mailOptions = {
-      from: "gasalgasal246@gmail.com",
-      to: userEmail,
-      subject: "New Verification Code",
-      text: `Your new verification code is: ${newVerificationCode}`,
-    };
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error sending email: " + error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
-    res.redirect("/verify");
+    try {
+      const userEmail = req.params.email;
+      // Generate a new verification code
+      const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
+      // Update user's verification code in the database
+      await Usercopy.updateOne(
+        { Email: userEmail },
+        { $set: { verifycode: newVerificationCode } }
+      );
+      // Send verification email with the new code
+      const mailOptions = {
+        from: "gasalgasal246@gmail.com",
+        to: userEmail,
+        subject: "New Verification Code",
+        text: `Your new verification code is: ${newVerificationCode}`,
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log("Error sending email: " + error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+      res.redirect("/verify");
+    } catch (error) {
+      const on = "On Recent Verification Code";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
+    }
   },
   userLogin: async (req, res) => {
     try {
@@ -145,125 +159,145 @@ module.exports = {
         }
       });
     } catch (error) {
-      res.status(500).json(error.message);
+      const on = "On User Login";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   getUser: async (req, res) => {
-    if (req.cookies.user) {
-      try {
-        const cancelledOrders = await Orders.find({
-          Userid: req.cookies.user.id,
-          "Items.cancelled": true
-        }).sort({ Orderdate: -1 });
-  
-        const activeOrders = await Orders.aggregate([
-          {
-            $match: {
-              Userid: new mongoose.Types.ObjectId(req.cookies.user.id)  // Convert the user ID to ObjectId type
+    try {
+      if (req.cookies.user) {
+        try {
+          const cancelledOrders = await Orders.find({
+            Userid: req.cookies.user.id,
+            "Items.cancelled": true
+          }).sort({ Orderdate: -1 });
+    
+          const activeOrders = await Orders.aggregate([
+            {
+              $match: {
+                Userid: new mongoose.Types.ObjectId(req.cookies.user.id)  // Convert the user ID to ObjectId type
+              }
+            },
+            {
+              $unwind: "$Items"  // Split the array into separate documents for each item
+            },
+            {
+              $match: {
+                "Items.cancelled": false  // Filter only the items with cancelled set to true
+              }
+            },
+            {
+              $group: {
+                _id: "$_id",  // Group by order ID
+                Userid: { $first: "$Userid" },
+                Username: { $first: "$Username" },
+                Orderdate: { $first: "$Orderdate" },
+                Deliveryaddress: { $first: "$Deliveryaddress" },
+                Status: { $first: "$Status" },
+                Totalamount: { $first: "$Totalamount" },
+                Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
+              }
             }
-          },
-          {
-            $unwind: "$Items"  // Split the array into separate documents for each item
-          },
-          {
-            $match: {
-              "Items.cancelled": false  // Filter only the items with cancelled set to true
-            }
-          },
-          {
-            $group: {
-              _id: "$_id",  // Group by order ID
-              Userid: { $first: "$Userid" },
-              Username: { $first: "$Username" },
-              Orderdate: { $first: "$Orderdate" },
-              Deliveryaddress: { $first: "$Deliveryaddress" },
-              Status: { $first: "$Status" },
-              Totalamount: { $first: "$Totalamount" },
-              Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
-            }
-          }
-        ]).sort({ Orderdate: -1 });
-  
-        const address = await AddressCopy.findOne({
-          Userid: req.cookies.user.id,
-        });
-  
-        const userdata = await Usercopy.findOne({
-          Email: req.cookies.user.email,
-        }).then((data) => {
-          return {
-            name: data.Username,
-            phone: data.Phone,
-            email: data.Email,
-            gender: data.Gender,
-            dob: data.Dob,
-          };
-        });
-  
+          ]).sort({ Orderdate: -1 });
+    
+          const address = await AddressCopy.findOne({
+            Userid: req.cookies.user.id,
+          });
+    
+          const userdata = await Usercopy.findOne({
+            Email: req.cookies.user.email,
+          }).then((data) => {
+            return {
+              name: data.Username,
+              phone: data.Phone,
+              email: data.Email,
+              gender: data.Gender,
+              dob: data.Dob,
+            };
+          });
+    
+          res.render("user/account", {
+            cookies: userdata,
+            address: address,
+            error: req.query.error ? req.query.error : null,
+            cancelledOrders: cancelledOrders,
+            activeOrders: activeOrders
+          });
+        } catch (error) {
+          res.status(500).json(error.message);
+        }
+      } else {
         res.render("user/account", {
-          cookies: userdata,
-          address: address,
-          error: req.query.error ? req.query.error : null,
-          cancelledOrders: cancelledOrders,
-          activeOrders: activeOrders
+          cookies: null,
+          address: null,
+          error: null,
+          order: null
         });
-      } catch (error) {
-        res.status(500).json(error.message);
       }
-    } else {
-      res.render("user/account", {
-        cookies: null,
-        address: null,
-        error: null,
-        order: null
-      });
+    } catch (error) {
+      const on = "On User Login";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   
   primaryAdrress: async (req, res) => {
-    const userid = req.cookies.user.id;
-    const data = await AddressCopy.findOne({ Userid: userid });
-    const addressData = {
-      Userid: userid,
-      Firstaddress: {
-        Cname: req.body.cname,
-        City: req.body.city,
-        Country: req.body.country,
-        Landmark: req.body.landmark,
-        Pincode: req.body.pincode,
-        Place: req.body.place,
-      },
-    };
-    if (data) {
-      await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
-      res.redirect("/account");
-    } else {
-      const newAddress = new AddressCopy(addressData);
-      await newAddress.save();
-      res.redirect("/account");
+    try {
+      const userid = req.cookies.user.id;
+      const data = await AddressCopy.findOne({ Userid: userid });
+      const addressData = {
+        Userid: userid,
+        Firstaddress: {
+          Cname: req.body.cname,
+          City: req.body.city,
+          Country: req.body.country,
+          Landmark: req.body.landmark,
+          Pincode: req.body.pincode,
+          Place: req.body.place,
+        },
+      };
+      if (data) {
+        await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
+        res.redirect("/account");
+      } else {
+        const newAddress = new AddressCopy(addressData);
+        await newAddress.save();
+        res.redirect("/account");
+      }
+    } catch (error) {
+      const on = "On Primary Address";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   secondaryAdress: async (req, res) => {
-    const userid = req.cookies.user.id;
-    const data = await AddressCopy.findOne({ Userid: userid });
-    const addressData = {
-      Userid: userid,
-      Secondaddress: {
-        Cname: req.body.cname,
-        City: req.body.city,
-        Country: req.body.country,
-        Landmark: req.body.landmark,
-        Pincode: req.body.pincode,
-        Place: req.body.place,
-      },
-    };
-    if (data) {
-      await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
-      res.redirect("/account");
-    } else {
-      const newAddress = new AddressCopy(addressData);
-      await newAddress.save();
-      res.redirect("/account");
+    try {
+      const userid = req.cookies.user.id;
+      const data = await AddressCopy.findOne({ Userid: userid });
+      const addressData = {
+        Userid: userid,
+        Secondaddress: {
+          Cname: req.body.cname,
+          City: req.body.city,
+          Country: req.body.country,
+          Landmark: req.body.landmark,
+          Pincode: req.body.pincode,
+          Place: req.body.place,
+        },
+      };
+      if (data) {
+        await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
+        res.redirect("/account");
+      } else {
+        const newAddress = new AddressCopy(addressData);
+        await newAddress.save();
+        res.redirect("/account");
+      }
+    } catch (error) {
+      const on = "On Secondary Address";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   editProfile: async (req, res, next) => {
@@ -295,10 +329,9 @@ module.exports = {
         return res.status(404).send("User not found.");
       }
     } catch (error) {
-      console.error("Error updating user information:", error);
-      res
-        .status(500)
-        .send("An error occurred while updating user information.");
+      const on = "On Edit Profile";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
 };

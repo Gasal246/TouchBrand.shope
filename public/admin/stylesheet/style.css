@@ -30,6 +30,8 @@
   outline: none;
   border: none;
   width: 90%;
+  background: none;
+  color: white;
 }
 .tableWrapper {
   padding: 0 30px;

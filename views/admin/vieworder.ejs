@@ -1,12 +1,13 @@
-<%- include('head.ejs') %>
+<%- include('chead.ejs') %>
 
-    <div class="container">
+<div class="main-panel">
+    <div class="content-wrapper">
         <% if(order){ %>
             <% order.map((order)=>{ %>
             <!-- Product listing -->
             <div class="row ">
                 <div class="col-12 mt-4" style="display: flex; justify-content: space-between;">
-                    <h5><a href="/admin/orders" style="text-decoration: none; color: #000;"><i
+                    <h5><a href="/admin/orders" style="text-decoration: none; color: #494949;"><i
                                 class="fa-solid fa-angle-left"></i> Back to Orders</a></h5>
                     <h5 style="color: slategray;">On: <% let odate = new Date(order.Orderdate) %> <%= odate.toDateString() %>
                     </h5>
@@ -15,7 +16,7 @@
                     <% if(order.Items){ %>
                     <% order.Items.map((item)=>{ %>
                         <div class="gcard2 col-12 col-lg-4 mb-2">
-                            <div class="shadow" style="width: 100%; display: flex; padding: 10px 20px; border-radius: 10px;">
+                            <div class="shadow" style="width: 100%; display: flex; padding: 10px 20px; border-radius: 10px; background: rgb(27, 31, 27);">
                                 <img src="<%= item.Productimg %>" alt="">
                                 <div class="gcard2-body p-3">
                                     <h6>
@@ -79,5 +80,6 @@
             <% }) %>
             <% } %>
     </div>
+</div>
 
-    <%- include('foot.ejs') %>
+    <%- include('cfoot.ejs') %>

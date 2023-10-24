@@ -1,6 +1,7 @@
-<%- include('head.ejs')%>
+<%- include('chead.ejs')%>
 
-    <div class="container">
+<div class="main-panel">
+    <div class="content-wrapper">
         <div class="row">
             <h4>Add new Banner</h4>
             <% if(err){ %><h6><i class="fa-solid fa-error"></i><%= err %></h6><% } %>
@@ -36,6 +37,7 @@
             </form>
         </div>
     </div>
+</div>
 
     <script>
         const imageInput = document.getElementById('imageInput');
@@ -54,4 +56,4 @@
         });
     </script>
 
-    <%- include('foot.ejs')%> 
+    <%- include('cfoot.ejs')%> 

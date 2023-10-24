@@ -409,7 +409,7 @@
         }
     </script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+ 
     <script>
         document.getElementById('the-checkout-form').addEventListener('submit', (e) => {
             console.log("AAh pressed");
@@ -432,42 +432,55 @@
 
         function razorpayPayment(order) {
             var options = {
-                "key": "rzp_test_0adB9GE35CFKPI",
+                "key": "rzp_test_gL0J7DIqai39TQ", // Enter the Key ID generated from the Dashboard
                 "amount": order.amount,
-                "currency": "USD",
-                "name": "TouchBrand",
-                "description": "Test transaction for " + order.receipt,
+                "currency": "INR",
+                "description": "TouchBrand",
+                "image": "https://s3.amazonaws.com/rzp-mobile/images/rzp.jpg",
                 "order_id": order.id,
-                "handler": function (response) {
-                    alert(response.razorpay_payment_id);
-                    alert(response.razorpay_order_id);
-                    alert(response.razorpay_signature);
-
-                    verifyPayment(response, order);
+                "prefill":
+                {
+                    "email": "gasalplay@gmail.com",
+                    "contact": +919447771103,
                 },
-                "prefill": {
-                    "name": "Gaurav Kumar",
-                    "email": "gaurav.kumar@example.com",
-                    "contact": "9000090000"
+                "handler": function (response) {
+                    verifyPayment(response, order)
+                },
+                "modal": {
+                    "ondismiss": function () {
+                        if (confirm("Are you sure, you want to close the form?")) {
+                            txt = "You pressed OK!";
+                            console.log("Checkout form closed by the user");
+                        } else {
+                            txt = "You pressed Cancel!";
+                            console.log("Complete the Payment")
+                        }
+                    }
                 },
                 "notes": {
-                    "address": "Razorpay Corporate Office"
+                    "address": "User Address"
                 },
                 "theme": {
                     "color": "#3399cc"
-                }
+                },
             };
-
             var rzp1 = new Razorpay(options);
-            rzp1.open();  // corrected the variable name here
+            rzp1.open();
         }
         function verifyPayment(payment, order) {
             $.ajax({
                 url: '/verify-payment',
-                method: 'POST',
-                data: {
+                data:{
                     payment,
                     order
+                },
+                method: 'POST',
+                success: (response)=>{
+                    if(response.status){
+                        location.href = "/placeorder"
+                    }else{
+                        alert("Error: " + response.error.message)
+                    }
                 }
             })
         }

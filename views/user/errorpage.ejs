@@ -1,0 +1,12 @@
+<%- include('head.ejs') %>
+
+<div class="brandName">
+    <h5>TouchBrand</h5>
+</div>
+    <div class="error-wrapper">
+        <h3>ERROR <%= on?on:'' %></h3>
+        <h5><%= error?error:'' %></h5>
+        <a href="/" class="btn btn-primary">Go back to Home</a>
+    </div>
+
+<%- include('foot.ejs') %>

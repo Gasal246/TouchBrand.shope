@@ -150,4 +150,9 @@ module.exports = {
     const pid = req.params.pid;
     res.redirect(`/product?pid=${pid}`);
   },
+  errorPage: async (req, res) => {
+    const error = req.query.err || null
+    const on = req.query.on || null;
+    res.render('user/errorpage', { error, on })
+  }
 };

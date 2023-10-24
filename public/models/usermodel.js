@@ -10,7 +10,7 @@ const UsersSchema = new mongoose.Schema({
   Dob: { type: Date },
   verifycode:{ type: Number},
   verify: { type: Boolean },
-  Blocked: { type: Boolean }
+  Blocked: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model("users", UsersSchema);

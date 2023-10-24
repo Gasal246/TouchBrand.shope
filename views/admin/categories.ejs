@@ -1,6 +1,7 @@
-<%- include('head.ejs') %>
+<%- include('chead.ejs') %>
 
-    <div style="width: 100%;">
+<div class="main-panel">
+    <div class="content-wrapper">
         <h3 class="headtext p-3"><i class="fa-solid fa-cog"></i> Category control</h3>
         <h6 style="color: red;"><%= err?err:'' %></h6>
         <div class="category-wrapper">
@@ -12,7 +13,7 @@
                 <button class="btn btn-success" id="openAddCategory"><i class="fa-solid fa-plus"></i> Category</button>
             </div>
             <div class="div tableWrapper">
-                <table class="table table-light">
+                <table class="table table-hover table-dark">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -97,6 +98,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -162,4 +164,4 @@
         })
     </script>
 
-    <%- include('foot.ejs') %>
+    <%- include('cfoot.ejs') %>

@@ -1,17 +1,16 @@
-<%- include('head.ejs') %>
-
-    <div style="width: 100%;">
+<%- include('chead.ejs') %>
+<div class="main-panel">
+    <div class="content-wrapper">
         <h3 class="headtext p-3 mb-1"><i class="fa-solid fa-cog"></i> Order Controls</h3>
         <a href="/admin/cancelledorders">
             <button type="button" class="btn btn-warning position-relative mb-4">
                 Cancelled Orders
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
                     <%= ccount %>
-                    <span class="visually-hidden">cancelled orders</span>
                 </span>
             </button>
         </a>
-        <table class="table">
+        <table class="table table-dark table-hover">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -44,21 +43,16 @@
                             </td>
                             <td>
                                 <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= order.Status %>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item"
-                                                href="/admin/changeorderstatus/<%= order._id %>/active">Active</a></li>
-                                        <li><a class="dropdown-item"
-                                                href="/admin/changeorderstatus/<%= order._id %>/shipped">Shipped</a>
-                                        </li>
-                                        <li><a class="dropdown-item"
-                                                href="/admin/changeorderstatus/<%= order._id %>/delivered">Delivered</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <button class="btn btn-outline-warning dropdown-toggle" type="button" id="dropdownMenuOutlineButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <%= order.Status %> </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuOutlineButton1">
+                                      <h6 class="dropdown-header">Status</h6>
+                                      <a class="dropdown-item" onclick="changeStatus('<%= order._id %>', 'active')">Active</a>
+                                      <a class="dropdown-item"
+                                      onclick="changeStatus('<%= order._id %>', 'shipped')">Shipped</a>
+                                                <a class="dropdown-item"
+                                                onclick="changeStatus('<%= order._id %>', 'delivered')">Delivered</a>
+                                    </div>
+                                  </div>
                             </td>
                             <td>
                                 <a href="/admin/vieworder?oid=<%= order._id %>" class="btn btn-primary">view</a>
@@ -73,5 +67,22 @@
             </tbody>
         </table>
     </div>
+    </div>
 
-    <%- include('foot.ejs') %>
+    <script>
+        function changeStatus(oid, status){
+            $.ajax({
+                url: '/admin/changeorderstatus',
+                data:{
+                    orderid: oid,
+                    status: status
+                },
+                method: 'POST',
+                success: (response)=>{
+                    location.reload();
+                }
+            })
+        }
+    </script>
+
+    <%- include('cfoot.ejs') %>
