@@ -254,15 +254,17 @@
                                                         <input type="radio" name="payby" role="button"
                                                             data-toggle="collapse" href="#collapse-4"
                                                             aria-expanded="true" aria-controls="collapse-4"
-                                                            value="paypal" required> PayPal
+                                                            value="online" required> Razorpay <br>
+                                                            <img src="assets/images/payments-summary.png"
+                                                            alt="payments cards">
                                                     </h2>
                                                 </div><!-- End .card-header -->
                                                 <div id="collapse-4" class="collapse" aria-labelledby="heading-4"
                                                     data-parent="#accordion-payment">
                                                     <div class="card-body">
-                                                        Purchase the item directly from your paypal balance or paypal
+                                                        Online Banking.. Purchase the item directly from your Bank or
                                                         debitcard, This is a UPI based payment support provided by our
-                                                        trusted partners from Paypal
+                                                        trusted partners from Razorpay
                                                     </div><!-- End .card-body -->
                                                 </div><!-- End .collapse -->
                                             </div><!-- End .card -->
@@ -273,15 +275,13 @@
                                                         <input type="radio" name="payby" role="button"
                                                             data-toggle="collapse" href="#collapse-5"
                                                             aria-expanded="true" aria-controls="collapse-5"
-                                                            value="credit" required> Credit Card [Stripe] <br>
-                                                        <img src="assets/images/payments-summary.png"
-                                                            alt="payments cards">
+                                                            value="wallet" required> Wallet <br>
+                                                        
                                                     </h2>
                                                 </div><!-- End .card-header -->
                                                 <div id="collapse-5" class="collapse" aria-labelledby="heading-5"
                                                     data-parent="#accordion-payment">
-                                                    <div class="card-body"> Purchase the item directly from your Credit
-                                                        card, you can also go with Gpay through this,
+                                                    <div class="card-body"> <span class="text-success">balance: $<%= wallet.Balance %></span> <br> Purchase the item directly from your TouchBrand Wallet
                                                     </div><!-- End .card-body -->
                                                 </div><!-- End .collapse -->
                                             </div><!-- End .card -->
@@ -422,6 +422,12 @@
                     alert(response)
                     if (response.codsuccess) {
                         location.href = "/placeorder"
+                    }else if(response.walletpay == 'success') {
+                        alert(response)
+                        location.href = "/placeorder"
+                    }else if(response.walletpay == 'failed'){
+                        alert('Payment Failed Insuficiant wallet Balance');
+                        location.reload()
                     } else {
                         console.log(response);
                         razorpayPayment(response)

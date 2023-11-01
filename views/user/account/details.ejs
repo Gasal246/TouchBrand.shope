@@ -1,0 +1,73 @@
+<form action="/editprofile" method="post">
+    <label>Display Name *</label>
+    <input type="text" class="form-control" name="name"
+        value="<%= cookies?cookies.name:null %>">
+    <small class="form-text">This will be how your name will
+        be displayed in the
+        account section and in reviews</small>
+
+    <label>Email address *</label>
+    <input type="email" class="form-control" name="email"
+        value="<%= cookies?cookies.email:null %>" required>
+
+    <label>Phone number</label>
+    <input type="tel" class="form-control" name="phone"
+        value="<%= cookies?cookies.phone:null %>">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <label>Dob</label>
+            <% if (cookies && cookies.dob) { %>
+                <% const dobDate=new Date(cookies.dob); %>
+                    <% if (!isNaN(dobDate)) { %>
+                        <input type="date"
+                            class="form-control dateofbirth" name="dob"
+                            value="<%= dobDate.toISOString().split('T')[0] %>" onchange="dobvalidate()">
+                            <small class="text-danger dateErr"></small>
+                        <% } else { %>
+                            <input type="date"
+                                class="form-control"
+                                name="dob" value="">
+                            <small
+                                class="text-danger">Invalid
+                                date format in
+                                cookies.</small>
+                            <% } %>
+                                <% } else { %>
+                                    <input type="date"
+                                        class="form-control dateofbirth"
+                                        name="dob" onchange="dobvalidate()" value="">
+                                        <small class="text-danger dateErr"></small>
+                                    <% } %>
+        </div>
+        <!-- End .col-sm-6 -->
+
+        <div class="col-sm-6">
+            <label>Gender</label>
+            <select name="gender" class="form-control"
+                value="<%= cookies?cookies.gender:null %>">
+                <option value="male" selected>Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div><!-- End .col-sm-6 -->
+    </div><!-- End .row -->
+
+    <label>Current password (leave blank to leave
+        unchanged)</label>
+    <input type="password" class="form-control"
+        name="currentpass">
+
+    <label>New password (leave blank to leave
+        unchanged)</label>
+    <input type="password" class="form-control"
+        name="newpass">
+
+    <label>Confirm new password</label>
+    <input type="password" class="form-control mb-2"
+        name="cpass">
+
+    <button type="submit" class="btn btn-outline-primary-2">
+        <span>SAVE CHANGES</span>
+        <i class="icon-long-arrow-right"></i>
+    </button>
+</form>

@@ -8932,31 +8932,31 @@ small.form-text {
     justify-content: center;
   }
 }
-.table {
+/* .table {
   margin-bottom: 3rem;
 }
 .table th {
   font-weight: 400;
   font-size: 1.4rem;
-  line-height: 1.5;
+  line-height: 0.5;
   color: #999;
 }
 .table th,
 .table thead th,
 .table td {
   border-top: none;
-  border-bottom: 0.1rem solid #ebebeb;
+  border-bottom: 0.2rem solid #ebebeb;
 }
 .table th,
 .table td {
   padding-left: 0;
   padding-right: 0;
-  padding-top: 1.4rem;
-  padding-bottom: 1.4rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 .table td {
   vertical-align: middle;
-}
+} */
 .count-container {
   margin-bottom: 3.3rem;
 }

@@ -1,181 +1,230 @@
 <%- include('chead.ejs') %>
 
-    <div class="main-panel">
-        <div class="content-wrapper">
-            <!-- Reveniew Repotrs per Month -->
-            <div class="row">
-                <div class="col-sm-4 grid-margin">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5>Orders</h5>
-                      <div class="row">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                          <div class="d-flex d-sm-block d-md-flex align-items-center">
-                            <h2 class="mb-0"><%= orderCount<10 ? '00' + orderCount : orderCount<100 ? '0' + orderCount : orderCount %></h2>
-                            <p class="text-success ml-2 mb-0 font-weight-medium">left</p>
-                          </div>
-                          <h6 class="text-muted font-weight-normal">For this week shipment</h6>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                          <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
-                        </div>
-                      </div>
-                    </div>
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row pl-3">
+        <h4>Current Statistics</h4>
+      </div>
+      <div class="row">
+        <div class="col-sm-4 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h5>Orders</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">
+                      <%= orderCount<10 ? '00' + orderCount : orderCount<100 ? '0' + orderCount : orderCount %>
+                    </h2>
+                    <p class="text-success ml-2 mb-0 font-weight-medium">left</p>
+                  </div>
+                  <h6 class="text-muted font-weight-normal">For this week shipment</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h5>Products</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">
+                      <%= totalStoke<10 ? '00' + totalStoke : totalStoke<100 ? '0' + totalStoke : totalStoke %>
+                    </h2>
+                    <p class="text-success ml-2 mb-0 font-weight-medium">from <%= productCount %>
+                    </p>
+                  </div>
+                  <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h5>Users</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">
+                      <%= (userCount-blockedUsers)<10 ? '00' + (userCount-blockedUsers) : (userCount-blockedUsers)<100
+                        ? '0' + (userCount-blockedUsers) : (userCount-blockedUsers) %>
+                    </h2>
+                    <p class="text-success ml-2 mb-0 font-weight-medium"><i class="mdi mdi-trending-up"></i> active</p>
+                  </div>
+                  <h6 class="text-muted font-weight-normal">From <%= userCount<10 ? '00' + userCount : userCount<100
+                      ? '0' + userCount : userCount %> users</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-account-multiple-outline text-success ml-auto"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Yearly Monthly and Daily, Gained income  -->
+      <div class="row p-3">
+        <input class="form-control w-25 ml-auto" type="date" name="status-date" id="status-date"
+          value="<%= new Date(currentDate).toISOString().split('T')[0] %>">
+          <button onclick="dateChange()" class="btn btn-info">GO</button>
+      </div>
+      <div class="pl-3 row">
+        <h3>Sales Report</h3>
+      </div>
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h5>Today</h5>
+              <div class="row">
+                <div class="col-9">
+                  <div class="d-flex align-items-center align-self-start">
+                    <h3 class="mb-0">$<%= dailySales.revenue %>
+                    </h3>
+                    <p class="text-success ml-2 mb-0 font-weight-medium">done</p>
                   </div>
                 </div>
-                <div class="col-sm-4 grid-margin">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5>Products</h5>
-                      <div class="row">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                          <div class="d-flex d-sm-block d-md-flex align-items-center">
-                            <h2 class="mb-0"><%= totalStoke<10 ? '00' + totalStoke : totalStoke<100 ? '0' + totalStoke : totalStoke %></h2>
-                            <p class="text-success ml-2 mb-0 font-weight-medium">from <%= productCount %></p>
-                          </div>
-                          <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                          <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-4 grid-margin">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5>Users</h5>
-                      <div class="row">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                          <div class="d-flex d-sm-block d-md-flex align-items-center">
-                            <h2 class="mb-0"><%= (userCount-blockedUsers)<10 ? '00' + (userCount-blockedUsers) : (userCount-blockedUsers)<100 ? '0' + (userCount-blockedUsers) : (userCount-blockedUsers) %></h2>
-                            <p class="text-success ml-2 mb-0 font-weight-medium"><i class="mdi mdi-trending-up"></i> active</p>
-                          </div>
-                          <h6 class="text-muted font-weight-normal">From <%= userCount<10 ? '00' + userCount : userCount<100 ? '0' + userCount : userCount %> users</h6>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                          <i class="icon-lg mdi mdi-account-multiple-outline text-success ml-auto"></i>
-                        </div>
-                      </div>
-                    </div>
+                <div class="col-3">
+                  <div class="icon icon-box-success ">
+                    <span class="mdi mdi-arrow-top-right icon-item"></span>
                   </div>
                 </div>
               </div>
-            <!-- Yearly Monthly and Daily, Gained income  -->
-            <div class="row">
-                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-9">
-                                    <div class="d-flex align-items-center align-self-start">
-                                        <h3 class="mb-0">$12.34</h3>
-                                        <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="icon icon-box-success ">
-                                        <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <h6 class="text-muted font-weight-normal">Yealy Gain</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-9">
-                                    <div class="d-flex align-items-center align-self-start">
-                                        <h3 class="mb-0">$12.34</h3>
-                                        <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="icon icon-box-success ">
-                                        <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <h6 class="text-muted font-weight-normal">Monthly Gain</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-9">
-                                    <div class="d-flex align-items-center align-self-start">
-                                        <h3 class="mb-0">$12.34</h3>
-                                        <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="icon icon-box-success ">
-                                        <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <h6 class="text-muted font-weight-normal">Daily Gain</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="row">
-                          <div class="col-9">
-                            <div class="d-flex align-items-center align-self-start">
-                              <h3 class="mb-0">$12.34</h3>
-                              <p class="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
-                            </div>
-                          </div>
-                          <div class="col-3">
-                            <div class="icon icon-box-danger">
-                              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
-                            </div>
-                          </div>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">Daily Income</h6>
-                      </div>
-                    </div>
-                  </div>
+              <h6 class="text-muted font-weight-normal">From <span class="text-warning">
+                  <%= dailySales.count %> Sales
+                </span> of day</h6>
             </div>
-            <!-- Graphical Representaion -->
-            <div class="row">
-                <div class="col-md-4 grid-margin stretch-card">
-                    <div class="card">
-                      <div class="card-body">
-                        <h4 class="card-title">Transaction History</h4>
-                        <canvas id="transaction-history" class="transaction-chart"></canvas>
-                        <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                          <div class="text-md-center text-xl-left">
-                            <h6 class="mb-1">Transfer to Paypal</h6>
-                            <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                          </div>
-                          <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                            <h6 class="font-weight-bold mb-0">$236</h6>
-                          </div>
-                        </div>
-                        <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                          <div class="text-md-center text-xl-left">
-                            <h6 class="mb-1">Tranfer to Stripe</h6>
-                            <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                          </div>
-                          <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                            <h6 class="font-weight-bold mb-0">$593</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-            </div>
+          </div>
         </div>
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h5>This Week</h5>
+              <div class="row">
+                <div class="col-9">
+                  <div class="d-flex align-items-center align-self-start">
+                    <h3 class="mb-0">$<%= weeklySales.revenue %>
+                    </h3>
+                    <p class="text-success ml-2 mb-0 font-weight-medium">active</p>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="icon icon-box-success ">
+                    <span class="mdi mdi-arrow-top-right icon-item"></span>
+                  </div>
+                </div>
+              </div>
+              <h6 class="text-muted font-weight-normal">From <span class="text-warning">
+                  <%= weeklySales.count %> Sales
+                </span> of this week</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h5>This Month</h5>
+              <div class="row">
+                <div class="col-9">
+                  <div class="d-flex align-items-center align-self-start">
+                    <h3 class="mb-0">$<%= monthlySales.revenue %>
+                    </h3>
+                    <p class="text-success ml-2 mb-0 font-weight-medium">active</p>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="icon icon-box-success ">
+                    <span class="mdi mdi-arrow-top-right icon-item"></span>
+                  </div>
+                </div>
+              </div>
+              <h6 class="text-muted font-weight-normal">From <span class="text-warning">
+                  <%= monthlySales.count %> Sales
+                </span> of month <span class="text-info">
+                  <%= new Date(currentDate).getMonth()+1 %>
+                </span></h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h5>This Year</h5>
+              <div class="row">
+                <div class="col-9">
+                  <div class="d-flex align-items-center align-self-start">
+                    <h3 class="mb-0">$<%= yearlySales.revenue %>
+                    </h3>
+                    <p class="text-success ml-2 mb-0 font-weight-medium">active</p>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="icon icon-box-success ">
+                    <span class="mdi mdi-arrow-top-right icon-item"></span>
+                  </div>
+                </div>
+              </div>
+              <h6 class="text-muted font-weight-normal">From <span class="text-warning">
+                  <%= yearlySales.count %> Sales
+                </span> of year <span class="text-info">
+                  <%= new Date(currentDate).getFullYear() %>
+                </span></h6>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Graphical Representaion -->
+      <div class="row pl-3">
+        <h4>Transaction Rates</h4>
+      </div>
+      <div class="row">
+        <div class="col-md-4 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Transaction History</h4>
+              <canvas id="transaction-history" class="transaction-chart"></canvas>
+              <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                <div class="text-md-center text-xl-left">
+                  <h6 class="mb-1">Transfer to Paypal</h6>
+                  <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
+                </div>
+                <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                  <h6 class="font-weight-bold mb-0">$236</h6>
+                </div>
+              </div>
+              <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                <div class="text-md-center text-xl-left">
+                  <h6 class="mb-1">Tranfer to Stripe</h6>
+                  <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
+                </div>
+                <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                  <h6 class="font-weight-bold mb-0">$593</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
+  <script>
+    function dateChange() {
+      let selectedDate = document.getElementById('status-date').value
+      location.href = '/admin/dash?date='+selectedDate
+    }
+  </script>
 
-    <%- include('cfoot.ejs') %>
+  <%- include('cfoot.ejs') %>

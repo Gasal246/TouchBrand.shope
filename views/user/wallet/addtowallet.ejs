@@ -1,0 +1,48 @@
+<div class="modal fade" id="addtowallet" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-4">
+                <h6>Add Money to wallet</h6>
+                <form id="addmoneyform" onsubmit="addmoneyform()">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Amount to add</label>
+                        <input type="number" name="amount" class="form-control" id="amount" min="10" value="10"
+                            onchange="checkamount()">
+                    </div>
+                    <div class="mb-3">
+                        <input type="hidden" name="type" value="direct">
+                    </div>
+                    <div class="mb-3">
+                        <p class="text-danger" id="adderror"></p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div><!-- End .modal-body -->
+        </div><!-- End .modal-content -->
+    </div><!-- End .modal-dialog -->
+</div><!-- End .modal -->
+
+<script>
+    const error = document.getElementById("adderror");
+    const amount = document.getElementById("amount").value;
+
+    function checkamount() {
+        if (amount > 5000) {
+            error.innerHTML = "Amount upto 5000 is only allowed to add once"
+        } else {
+            error.innerHTML = ""
+        }
+    }
+
+    function addmoneyform() {
+        $.ajax({
+            url: '/addmoneytowallet',
+            method: 'post',
+            data: $('#addmoneyform').serialize(),
+            success: (async (response) => {
+                await alert("Money added successfully");
+                location.reload();
+            })
+        })
+    }
+</script>

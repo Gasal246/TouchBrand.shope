@@ -8,6 +8,9 @@ const mongoose = require("mongoose");
 const { default: Stripe } = require("stripe");
 const { response } = require("../app");
 const paymentHelper = require("../helpers/paymentHelper");
+const Sales = require("../public/models/salesmodel");
+const Wallets = require("../public/models/walletmodel");
+const orderhelper = require("../helpers/orderhelper");
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 
 module.exports = {
@@ -184,20 +187,33 @@ module.exports = {
         Orderdate: new Date(),
       };
 
-      const order = await Orders.create(orderData);
+      
+      const newSale = new Sales({
+        Date: new Date(),
+        Userid: userId,
+        Amount: totalAmount,
+        Products: orderItems.map((product) => {
+          return product.Productid
+        }),
+        Payby: req.body.payby
+      })
 
+      const order = await Orders.create(orderData);
+      
       // UPDATING THE STOKE AFTER SAVING THE ORDER
       for (const item of orderItems) {
         const product = await Products.findById(item.Productid);
         if (!product) {
-          return res
-            .status(400)
-            .json({ message: "Product not found for ID: " + item.Productid });
+          const on = "On Saving Order";
+          const err = "Product not Found for id "+ item.Productid;
+          res.redirect("/error?err=" + err + "&on=" + on);
         }
         // Calculate the new stock after the order
         const newStock = product.Stoke - item.Quantity;
         if (newStock < 0) {
-          return res.status(400).json({ message: "Not enough stock for the product: " + product.Productname });
+          const on = "On Saving Order";
+          const err = "Not enough stock for the product: " + product.Productname;
+          res.redirect("/error?err=" + err + "&on=" + on);
         }
         // Update the stock in the database
         product.Stoke = newStock;
@@ -212,17 +228,28 @@ module.exports = {
       // CHECK THE PAYMENT CRITERIA
       const payby = req.body.payby
       if(payby == 'cod'){
+        await newSale.save();
         res.json({codsuccess:true});
+      }else if(payby == 'wallet'){
+        const sale = await newSale.save();
+        paymentHelper.paybyWallet(userId, totalAmount, order._id).then(async (data)=>{
+          await orderhelper.recheckOrder(order._id, sale._id)
+          res.json({ walletpay: 'success'})
+        }).catch(async (error)=>{
+          await orderhelper.recheckOrder(order._id, sale._id)
+          res.json({walletpay: 'failed'})
+        })
       }else{
-        paymentHelper.generateRazorpay(order._id, order.Totalamount).then((response)=>{
+        paymentHelper.generateRazorpay(order._id, totalAmount).then(async (response)=>{
+          const sale = await newSale.save();
           res.json(response);
         })
       }
-
+      
     } catch (error) {
       const on = "On Saving Order";
       const err = error.message;
-      res.redirect("/admin/error?err=" + err + "&on=" + on);
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
 

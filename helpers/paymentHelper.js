@@ -1,5 +1,8 @@
 
-const Razorpay = require('razorpay')
+const Razorpay = require('razorpay');
+const Wallets = require('../public/models/walletmodel');
+const wallet = require('./wallet');
+const Orders = require('../public/models/ordermodel');
 var instance = new Razorpay({
   key_id: 'rzp_test_gL0J7DIqai39TQ',
   key_secret: 'w384loH3yO6KUXL2Sp9q06FL',
@@ -38,6 +41,20 @@ module.exports = {
         }else{
           reject(error)
         }
+      })
+    },
+    paybyWallet: async (uid, amount, oid)=>{
+      return new Promise((resolve, reject) =>{
+        Wallets.findOne({ Userid: uid }).then(async(data)=>{
+          if(data.Balance >= amount){
+            await wallet.transaction('debit', amount, data._id).then(async (udata)=>{
+              await Orders.findByIdAndUpdate(oid, {$set:{Status: 'active'}})
+              resolve(udata);
+            })
+          }else{
+            reject("Insufficiant Balance in wallet ")
+          }
+        })
       })
     }
 }

@@ -1,0 +1,20 @@
+<% if(wallet){ %>
+<h5>Wallet Balance</h5>
+<h4 class="text-primary">₹ <%= wallet.Balance %></h4>
+
+<div class="row">
+    <div class="col-12 col-lg-4">
+        <a class="btn btn-outline-primary btn-round w-100" href="/wallet?uid=<%= cookies.id %>" >My wallet and transactions</a>
+    </div>
+    <div class="col-12 col-lg-4">
+        <a class="btn btn-outline-primary btn-round w-100">Explore Coupan and Vouchers </a>
+    </div>
+</div>
+<% }else{ %>
+    <h6>Add Money to start using wallet</h6>
+    <div class="row">
+        <div class="col-12 col-lg-4">
+            <a class="btn btn-outline-primary btn-round w-100" href="/wallet?uid=<%= cookies.id %>" >Get the wallet</a>
+        </div>
+    </div>
+    <% } %>

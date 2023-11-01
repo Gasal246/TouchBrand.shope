@@ -1,0 +1,102 @@
+<%- include('head.ejs')%>
+    <div class="page-wrapper">
+        <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+            <div class="container">
+                <h1 class="page-title">My Wallet<span>TouchBrand</span></h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/account">Account</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My Wallet</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+        <div class="container">
+            <!-- Balance -->
+            <div class="row">
+                <% if(wallet){ %>
+                    <h5>Current Balance : <span class="text-primary">₹ <%= wallet.Balance %></span></h5>
+                    <% }else{ %>
+                        <h6 class="text-warning">Add Money to Start using wallet</h6>
+                        <% } %>
+            </div>
+            <!-- Some navigations -->
+            <div class="row mt-3">
+                <div class="col-12 col-lg-3">
+                    <a class="btn btn-outline-primary btn-round w-100">Show Transactions</a>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <a href="#addtowallet" id="addtowallet-link" data-toggle="modal"
+                        class="btn btn-outline-primary btn-round w-100">Add Money to wallet </a>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <a class="btn btn-outline-primary btn-round w-100">Add Money From Coupan </a>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <a class="btn btn-outline-primary btn-round w-100">Explore Vouchers and Coupans </a>
+                </div>
+            </div>
+            <!-- Transaction History -->
+            <% if(wallet){ %>
+            <div class="row mt-3" style="max-height: 400px; overflow-y: scroll;">
+                <table class="table" >
+                    <thead>
+                        <tr>
+                            <th scope="col">S.no</th>
+                            <th scope="col">Transacton date</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% wallet.Transactions.map((data, index)=>{ %>
+                            <% if(data.Status=='credit' ){ %>
+                                <tr>
+                                    <th scope="row">
+                                        <%= index+1 %>
+                                    </th>
+                                    <td class="text-primary h6">
+                                        <%= new Date(data.Transdate).toDateString() %>
+                                    </td>
+                                    <td class="text-success h6">
+                                        + ₹<%= data.Amount %>
+                                    </td>
+                                    <td class="text-primary h6">
+                                        Credited
+                                    </td>
+                                </tr>
+                                <% }else{ %>
+                                    <tr>
+                                        <th scope="row">
+                                            <%= index+1 %>
+                                        </th>
+                                        <td class="text-primary h6">
+                                            <%= new Date(data.Transdate).toDateString() %>
+                                        </td>
+                                        <td class="text-danger h6">
+                                            - ₹<%= data.Amount %>
+                                        </td>
+                                        <td class="text-warning h6">
+                                            Debited
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% }else{ %>
+                <h6 class="text-primary mt-4">Add Money First time in a while to See your Transactions</h6>
+                <% } %>
+        </div>
+    </div>
+
+    <!-- ADD TO WALLET FORM -->
+    <%- include('wallet/addtowallet.ejs')%>
+
+        <%- include('footer.ejs')%>
+
+            <%- include('foot.ejs')%>

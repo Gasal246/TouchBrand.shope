@@ -18,18 +18,17 @@ const Products = require("../public/models/productmodel");
 const Shopepagecontroller = require("../controllers/Shopepagecontroller");
 const paymentHelper = require("../helpers/paymentHelper");
 const Paymentcontroller = require("../controllers/Paymentcontroller");
+const Walletcontroller = require("../controllers/Walletcontroller");
+
+const { checkUser } = require("../middlewares/checkAuth");
 
 router.get("/", Homepagecontroller.loadHome);
 
-router.get("/registernow", (req, res) => {
-  res.render("user/register");
-});
+router.get("/registernow", (req, res) => res.render("user/register"));
 
 router.post("/registeruser", Usercontroller.registerUser);
 
-router.get("/verify", (req, res) => {
-  res.render("user/verify", { error: null, cookies: req.cookies.user });
-});
+router.get("/verify", (req, res) => res.render("user/verify", { error: null, cookies: req.cookies.user }));
 
 router.post("/verify", Usercontroller.verifyUser);
 
@@ -43,63 +42,64 @@ router.get("/logout", (req, res) => {
 });
 
 // ################## ACCOUNT SECTION ROUTES ################
-router.get("/account", Usercontroller.getUser);
+router.get("/account", checkUser, Usercontroller.getUser);
 
-router.post("/primaryaddress", Usercontroller.primaryAdrress);
+router.post("/primaryaddress", checkUser, Usercontroller.primaryAdrress);
 
-router.post("/secondaryaddress", Usercontroller.secondaryAdress);
+router.post("/secondaryaddress", checkUser, Usercontroller.secondaryAdress);
 
-router.post("/editprofile", Usercontroller.editProfile);
+router.post("/editprofile", checkUser, Usercontroller.editProfile);
 
 // ################## CART CONTROL ################
-router.get("/addtocart/:pid", Homepagecontroller.addToCart);
+router.get("/addtocart/:pid", checkUser, Homepagecontroller.addToCart);
 
-router.get("/removefromcart/:pid", Homepagecontroller.deleteCartItem);
+router.get("/removefromcart/:pid", checkUser, Homepagecontroller.deleteCartItem);
 
-router.get("/viewcart", Homepagecontroller.getCart);
+router.get("/viewcart", checkUser, Homepagecontroller.getCart);
 
-router.get("/deletecartitems", Homepagecontroller.deleteallCart);
+router.get("/deletecartitems", checkUser, Homepagecontroller.deleteallCart);
 
 // ######################## PRODUCT CONTROLLERS #####################
 router.get("/product", Productcontroller.getProduct);
 
 router.get("/viewproduct/:pid", Homepagecontroller.productView);
 
-router.put("/updateQuantity/:id", Cartcontroller.Quantityupdate);
+router.put("/updateQuantity/:id", checkUser, Cartcontroller.Quantityupdate);
 
 // ######################## CHECKOUT CONTROL #####################
-router.get("/checkout", Checkoutcontroller.getCheckout);
+router.get("/checkout", checkUser, Checkoutcontroller.getCheckout);
 
-router.get("/checkoutitem/:pid", (req, res) => {
-  res.redirect(`/checkout?pid=${req.params.pid}`);
-});
+router.get("/checkoutitem/:pid", checkUser, (req, res) => res.redirect(`/checkout?pid=${req.params.pid}`));
 
-router.get("/cartcheckout", Cartcontroller.cartCheckout);
+router.get("/cartcheckout", checkUser, Cartcontroller.cartCheckout);
 
 // ##################### ORDER CONTROLs #####################
-router.post('/saveorder', Ordercontroller.saveOrder);
+router.post('/saveorder', checkUser, Ordercontroller.saveOrder);
 
-router.get('/placeorder', (req, res) => {
-  res.render('user/ordercomplete')
-})
+router.get('/placeorder', checkUser, (req, res) => res.render('user/ordercomplete'))
 
-router.get('/removeorderitem/:id/:oid', Ordercontroller.removeOrderItem);
+router.get('/removeorderitem/:id/:oid', checkUser, Ordercontroller.removeOrderItem);
 
-router.get('/cancelorderitem/:id/:oid', Ordercontroller.cancelOrderItem);
+router.get('/cancelorderitem/:id/:oid', checkUser, Ordercontroller.cancelOrderItem);
 
-router.get('/vieworder', Ordercontroller.viewOrderUser);
+router.get('/vieworder', checkUser, Ordercontroller.viewOrderUser);
 
-router.get('/cancelledorders', Ordercontroller.viewCancelledOrders)
+router.get('/cancelledorders', checkUser, Ordercontroller.viewCancelledOrders)
 
 // ####################### SHOP-PAGE CONTROLS #####################
 router.get('/shope', Shopepagecontroller.getShope)
 // QuickView
-router.get('/quickview', Shopepagecontroller.quickView)
+router.get('/quickview', checkUser, Shopepagecontroller.quickView)
 
 // ########################## VERIFY PAYMENT #########################
-router.post('/verify-payment', Paymentcontroller.verifyThePayment)
+router.post('/verify-payment', checkUser, Paymentcontroller.verifyThePayment)
+
+// ########################## WALLET #########################
+router.get('/wallet', checkUser, Walletcontroller.getWallet)
+
+router.post('/addmoneytowallet', checkUser, Walletcontroller.addToWallet)
 
 // ########################## ERROR WRAPPER #########################
-router.get('/error', Homepagecontroller.errorPage)
+router.get('/error', checkUser, Homepagecontroller.errorPage)
 
 module.exports = router;

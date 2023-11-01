@@ -4,6 +4,7 @@ var Usercopy = require("../public/models/usermodel");
 var AddressCopy = require("../public/models/addressmodel");
 var nodemailer = require("nodemailer");
 const Orders = require("../public/models/ordermodel");
+const Wallets = require("../public/models/walletmodel");
 
 // Set up nodemailer transporter (configure with your email service)
 var transporter = nodemailer.createTransport({
@@ -13,8 +14,8 @@ var transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: "gasalgasal246@gmail.com",
-    pass: "szglvviqkkjbywad",
-  },
+    pass: "szglvviqkkjbywad"
+  }
 });
 
 module.exports = {
@@ -22,58 +23,63 @@ module.exports = {
     if (req.body.checkbox == "on") {
       try {
         const verificationCode = Math.floor(100000 + Math.random() * 900000);
-        Usercopy.findOne({ Email: req.body.email.trim() }).then(async (data) => {
-          if (data) {
-            console.log("User already registered bro");
-            res.render("user/index", {
-              error: { form: "User already registered.. Login Here." },
-              cdata: null,
-            });
-          } else {
-            const bpassword = await bcrypt.hash(req.body.password.trim(), 10);
-            const user = new Usercopy({
-              Email: req.body.email.trim(),
-              Username: req.body.uname,
-              Password: bpassword,
-              Phone: req.body.phone,
-              Addedon: Date.now(),
-              verifycode: verificationCode,
-            });
-            user
-              .save()
-              .then((data) => {
-                console.log("saved to db" + data);
-                const cdata = {
-                  id: data._id,
-                  name: data.Username,
-                  email: data.Email,
-                  phone: data.Phone,
-                };
-                res.cookie("user", cdata, { maxAge: 24*60*60*1000, httpOnly: true });
-                const mailOptions = {
-                  from: "gasalgasal246@gmail.com",
-                  to: data.Email,
-                  subject: "Account Verification",
-                  text: `Your verification code is: ${verificationCode}`,
-                };
-                transporter.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                    console.log("Error sending email: " + error);
-                  } else {
-                    console.log("Email sent: " + info.response);
-                  }
-                });
-                res.redirect("/verify");
-              })
-              .catch((err) => {
-                console.log("ERROR ON SAVING DATA " + err);
+        Usercopy.findOne({ Email: req.body.email.trim() }).then(
+          async (data) => {
+            if (data) {
+              console.log("User already registered bro");
+              res.render("user/index", {
+                error: { form: "User already registered.. Login Here." },
+                cdata: null
               });
+            } else {
+              const bpassword = await bcrypt.hash(req.body.password.trim(), 10);
+              const user = new Usercopy({
+                Email: req.body.email.trim(),
+                Username: req.body.uname,
+                Password: bpassword,
+                Phone: req.body.phone,
+                Addedon: Date.now(),
+                verifycode: verificationCode
+              });
+              user
+                .save()
+                .then((data) => {
+                  console.log("saved to db" + data);
+                  const cdata = {
+                    id: data._id,
+                    name: data.Username,
+                    email: data.Email,
+                    phone: data.Phone
+                  };
+                  res.cookie("user", cdata, {
+                    maxAge: 24 * 60 * 60 * 1000,
+                    httpOnly: true
+                  });
+                  const mailOptions = {
+                    from: "gasalgasal246@gmail.com",
+                    to: data.Email,
+                    subject: "Account Verification",
+                    text: `Your verification code is: ${verificationCode}`
+                  };
+                  transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                      console.log("Error sending email: " + error);
+                    } else {
+                      console.log("Email sent: " + info.response);
+                    }
+                  });
+                  res.redirect("/verify");
+                })
+                .catch((err) => {
+                  console.log("ERROR ON SAVING DATA " + err);
+                });
+            }
           }
-        });
+        );
       } catch (e) {
         const on = "On Register User";
-      const err = error.message;
-      res.redirect("/error?err=" + err + "&on=" + on);
+        const err = error.message;
+        res.redirect("/error?err=" + err + "&on=" + on);
       }
     }
   },
@@ -81,13 +87,13 @@ module.exports = {
     try {
       const verificationCode = req.body.vcode;
       const userEmail = req.cookies.user.email;
-  
+
       // Check if verification code matches
       const user = await Usercopy.findOne({
         Email: userEmail,
-        verifycode: verificationCode,
+        verifycode: verificationCode
       });
-  
+
       if (user) {
         await Usercopy.updateOne(
           { Email: userEmail },
@@ -97,7 +103,7 @@ module.exports = {
       } else {
         res.render("user/verify", {
           error: "Invalid verification code. Please try again.",
-          cookies: req.cookies.user,
+          cookies: req.cookies.user
         });
       }
     } catch (error) {
@@ -121,7 +127,7 @@ module.exports = {
         from: "gasalgasal246@gmail.com",
         to: userEmail,
         subject: "New Verification Code",
-        text: `Your new verification code is: ${newVerificationCode}`,
+        text: `Your new verification code is: ${newVerificationCode}`
       };
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -140,22 +146,28 @@ module.exports = {
   userLogin: async (req, res) => {
     try {
       Usercopy.findOne({ Email: req.body.email.trim() }).then(async (data) => {
-        if (data && (await bcrypt.compare(req.body.password.trim(), data.Password))) {
-          if(data.Blocked == true){
-            const err = "~ THE SPECIFIED ACCOUND IS BLOCKED BY ADMIN!"
-            return res.redirect(`/?err=${err}`)
+        if (
+          data &&
+          (await bcrypt.compare(req.body.password.trim(), data.Password))
+        ) {
+          if (data.Blocked == true) {
+            const err = "~ THE SPECIFIED ACCOUND IS BLOCKED BY ADMIN!";
+            return res.redirect(`/?err=${err}`);
           }
           const cdata = {
             id: data._id,
             name: data.Username,
             email: data.Email,
-            phone: data.Phone,
+            phone: data.Phone
           };
-          res.cookie("user", cdata, { maxAge: 24*60*60*1000, httpOnly: true });
+          res.cookie("user", cdata, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true
+          });
           res.redirect("/");
         } else {
-          const err = "~ gmail and password not valid!"
-          res.redirect(`/?err=${err}`)
+          const err = "~ gmail and password not valid!";
+          res.redirect(`/?err=${err}`);
         }
       });
     } catch (error) {
@@ -166,82 +178,74 @@ module.exports = {
   },
   getUser: async (req, res) => {
     try {
-      if (req.cookies.user) {
-        try {
-          const cancelledOrders = await Orders.find({
-            Userid: req.cookies.user.id,
-            "Items.cancelled": true
-          }).sort({ Orderdate: -1 });
-    
-          const activeOrders = await Orders.aggregate([
-            {
-              $match: {
-                Userid: new mongoose.Types.ObjectId(req.cookies.user.id)  // Convert the user ID to ObjectId type
-              }
-            },
-            {
-              $unwind: "$Items"  // Split the array into separate documents for each item
-            },
-            {
-              $match: {
-                "Items.cancelled": false  // Filter only the items with cancelled set to true
-              }
-            },
-            {
-              $group: {
-                _id: "$_id",  // Group by order ID
-                Userid: { $first: "$Userid" },
-                Username: { $first: "$Username" },
-                Orderdate: { $first: "$Orderdate" },
-                Deliveryaddress: { $first: "$Deliveryaddress" },
-                Status: { $first: "$Status" },
-                Totalamount: { $first: "$Totalamount" },
-                Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
-              }
-            }
-          ]).sort({ Orderdate: -1 });
-    
-          const address = await AddressCopy.findOne({
-            Userid: req.cookies.user.id,
-          });
-    
-          const userdata = await Usercopy.findOne({
-            Email: req.cookies.user.email,
-          }).then((data) => {
-            return {
-              name: data.Username,
-              phone: data.Phone,
-              email: data.Email,
-              gender: data.Gender,
-              dob: data.Dob,
-            };
-          });
-    
-          res.render("user/account", {
-            cookies: userdata,
-            address: address,
-            error: req.query.error ? req.query.error : null,
-            cancelledOrders: cancelledOrders,
-            activeOrders: activeOrders
-          });
-        } catch (error) {
-          res.status(500).json(error.message);
+      const cancelledOrders = await Orders.find({
+        Userid: req.cookies.user.id,
+        "Items.cancelled": true
+      }).sort({ Orderdate: -1 });
+
+      const activeOrders = await Orders.aggregate([
+        {
+          $match: {
+            Userid: new mongoose.Types.ObjectId(req.cookies.user.id) // Convert the user ID to ObjectId type
+          }
+        },
+        {
+          $unwind: "$Items" // Split the array into separate documents for each item
+        },
+        {
+          $match: {
+            "Items.cancelled": false // Filter only the items with cancelled set to true
+          }
+        },
+        {
+          $group: {
+            _id: "$_id", // Group by order ID
+            Userid: { $first: "$Userid" },
+            Username: { $first: "$Username" },
+            Orderdate: { $first: "$Orderdate" },
+            Deliveryaddress: { $first: "$Deliveryaddress" },
+            Status: { $first: "$Status" },
+            Totalamount: { $first: "$Totalamount" },
+            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
+          }
         }
-      } else {
-        res.render("user/account", {
-          cookies: null,
-          address: null,
-          error: null,
-          order: null
-        });
-      }
+      ]).sort({ Orderdate: -1 });
+
+      const address = await AddressCopy.findOne({
+        Userid: req.cookies.user.id
+      });
+
+      const wallet = await Wallets.findOne({ Userid: req.cookies.user.id });
+
+      const userdata = await Usercopy.findOne({
+        Email: req.cookies.user.email
+      }).then((data) => {
+        return {
+          id: data._id,
+          name: data.Username,
+          phone: data.Phone,
+          email: data.Email,
+          gender: data.Gender,
+          dob: data.Dob
+        };
+      });
+
+      res.render("user/account", {
+        cookies: userdata,
+        address: address,
+        error: req.query.error ? req.query.error : null,
+        cancelledOrders: cancelledOrders,
+        activeOrders: activeOrders,
+        wallet: wallet
+      });
+
     } catch (error) {
       const on = "On User Login";
       const err = error.message;
       res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
-  
+
   primaryAdrress: async (req, res) => {
     try {
       const userid = req.cookies.user.id;
@@ -254,8 +258,8 @@ module.exports = {
           Country: req.body.country,
           Landmark: req.body.landmark,
           Pincode: req.body.pincode,
-          Place: req.body.place,
-        },
+          Place: req.body.place
+        }
       };
       if (data) {
         await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
@@ -283,8 +287,8 @@ module.exports = {
           Country: req.body.country,
           Landmark: req.body.landmark,
           Pincode: req.body.pincode,
-          Place: req.body.place,
-        },
+          Place: req.body.place
+        }
       };
       if (data) {
         await AddressCopy.updateOne({ Userid: userid }, { $set: addressData });
@@ -333,5 +337,5 @@ module.exports = {
       const err = error.message;
       res.redirect("/error?err=" + err + "&on=" + on);
     }
-  },
+  }
 };
