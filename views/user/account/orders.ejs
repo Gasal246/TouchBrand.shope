@@ -1,58 +1,108 @@
 <% if(activeOrders){ %>
-    <div>
+    <div style="max-height: 420px; overflow-y: scroll; padding-left: 5%;padding-right: 5%;">
         <div class="row">
-            <h3>Active Orders</h3>
+            <h4>Active Orders</h4>
         </div>
-        <% activeOrders.map((order)=>{ %>
-            <% if(order.Status != 'delivered' ){ %>
-            <div class="row mb-2"
-                style="background-color: rgba(233, 233, 233, 0.713); border-radius: 10px;">
-                <span class="col-6">
-                    <%= order.Orderdate.toDateString() %>
-                </span>
-                <span class="col-6"
-                    style="text-align: right;">Arriving: <%
-                        let edate=new Date(order.Orderdate);
-                        edate.setDate(edate.getDate()+3) %>
-                        <%= edate.toDateString() %></span>
-                <% order.Items.map((item)=>{ %>
-                        <div class="col-12">
-                            <div class="gcard mb-1">
-                                <a href="/vieworder?id=<%= order._id %>"><img
-                                        src="<%= item.Productimg %>"
-                                        alt=""></a>
-                                <div class="gcard-body">
-                                    <h6>
-                                        <a href="/vieworder?id=<%= order._id %>">
-                                            <%= item.Productname %>
-                                        </a>
+            <% activeOrders.map((order)=>{ %>
+                <% if(order.Status !== 'delivered' && order.Status !== 'returned'){ %>
+                    <div class="row mb-2" style="background-color: rgba(233, 233, 233, 0.713); border-radius: 10px;">
+                        <span class="col-6">
+                            <%= order.Orderdate.toDateString() %>
+                        </span>
+                        <span class="col-6" style="text-align: right;">Arriving: <% let edate=new Date(order.Orderdate);
+                                edate.setDate(edate.getDate()+3) %>
+                                <%= edate.toDateString() %></span>
+                        <% order.Items.map((item)=>{ %>
+                            <div class="col-12">
+                                <div class="gcard mb-1">
+                                    <a href="/vieworder?id=<%= order._id %>"><img src="<%= item.Productimg %>"
+                                            alt=""></a>
+                                    <div class="gcard-body">
+                                        <h6>
+                                            <a href="/vieworder?id=<%= order._id %>">
+                                                <%= item.Productname %>
+                                            </a>
 
-                                    </h6>
-                                    <div
-                                        style="display: flex;justify-content: space-between;">
-                                        <p>Quantity: <%= item.Quantity  %> <br>
-                                                Amount: $<%= item.Quantity*item.Price %>
-                                        </p>
-                                        <a onclick="cancelOrderItem('<%= item._id %>', '<%= order._id %>')"
-                                            class="btn btn-dark">cancel
-                                            item</a>
+                                        </h6>
+                                        <div style="display: flex;justify-content: space-between;">
+                                            <p>Quantity: <%= item.Quantity %> <br>
+                                                    Amount: $<%= item.Quantity*item.Price %>
+                                            </p>
+                                            <a onclick="cancelOrderItem('<%= item._id %>', '<%= order._id %>')"
+                                                class="btn btn-dark">cancel
+                                                item</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
                         <% }) %>
-            </div>
-            <% } %>
-        <% }) %>
+    </div>
+    <hr>
+    <div style="max-height: 400px; overflow-y: scroll; padding-left: 5%;padding-right: 5%;" class="mt-4">
+        <div class="row">
+            <h4>Delivered Orders</h4>
+        </div>
+            <% activeOrders.map((order)=>{ %>
+                <% if(order.Status =='delivered' ){ %>
+                    <div class="row mb-2" style="background-color: rgba(233, 233, 233, 0.713); border-radius: 10px;">
+                        <span class="col-6">
+                            Delivered on: <%= order.Deliverydate.toDateString() %>
+                        </span>
+                        <% order.Items.map((item)=>{ %>
+                            <div class="col-12">
+                                <div class="gcard mb-1">
+                                    <a href="/vieworder?id=<%= order._id %>"><img src="<%= item.Productimg %>"
+                                            alt=""></a>
+                                    <div class="gcard-body">
+                                        <h6>
+                                            <a href="/vieworder?id=<%= order._id %>">
+                                                <%= item.Productname %>
+                                            </a>
+
+                                        </h6>
+                                        <div style="display: flex;justify-content: space-between;">
+                                            <p>Quantity: <%= item.Quantity %> <br>
+                                                    Amount: $<%= item.Quantity*item.Price %>
+                                            </p>
+                                            <a onclick="itemReturn('<%= item._id %>', '<%= order._id %>')"
+                                                class="btn btn-dark">Return item</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
+                        <% }) %>
     </div>
     <% }else{ %>
         <h6>There is no orders yet !</h6>
         <% } %>
-        <% if(cancelledOrders){ %>
-    <div class="cancelled-orders">
-        <div class="row">
-            <a href="/cancelledorders" >Cancelled Orders</a>
-        </div>
-        <% } %>
-    </div>
+            <% if(cancelledOrders){ %>
+                <div class="cancelled-orders">
+                    <div class="row">
+                        <a class="btn btn-primary" href="/cancelledorders">Show Cancelled Orders <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                    <% } %>
+                </div>
+
+<script>
+    function itemReturn (pid, oid){
+        $.ajax({
+            url: '/return-item',
+            method: 'POST',
+            data:{
+                pid: pid,
+                oid: oid
+            },
+            success: ((response)=>{
+                location.reload();
+            })
+        })
+    }
+</script>

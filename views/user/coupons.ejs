@@ -1,0 +1,60 @@
+<%- include('head.ejs') %>
+
+<div class="page-wrapper ">
+    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Coupons and Vouchers<span>TouchBrand</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/account">Account</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Owned</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+    <div class="container">
+    <div class="row">
+        <% oc.forEach( c => { %>
+            <div class="col-12 col-lg-3 mb-3">
+                <div class="coupon-card p-3 shadow">
+                    <h4>
+                        <span class="text-info" id="couponCode"><%= c.coupons.Code %></span>
+                    </h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h6><span class="text-success ml-2 mb-0 font-weight-medium"><%= c.coupons.Discount %>%</span> off</h6>
+                        <a style="cursor:pointer;" onclick="copyCouponCode()"><i class="fa fa-solid fa-copy h5"></i></a>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+</div>
+
+<script>
+    function copyCouponCode() {
+    var couponCode = document.getElementById("couponCode");
+    
+    // Create a temporary textarea element to hold the code
+    var tempTextarea = document.createElement("textarea");
+    tempTextarea.value = couponCode.textContent;
+    document.body.appendChild(tempTextarea);
+    
+    // Select and copy the code
+    tempTextarea.select();
+    document.execCommand("copy");
+    
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextarea);
+    
+    // Provide feedback to the user (optional)
+    alert("Coupon code copied to clipboard: " + couponCode.textContent);
+}
+
+</script>
+
+<%- include('footer.ejs') %>
+<%- include('foot.ejs') %>

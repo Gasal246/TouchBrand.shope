@@ -18,6 +18,7 @@ const OrdersSchema = new Schema({
     },
   ],
   Orderdate: { type: Date, required: true },
+  Deliverydate: { type: Date, },
   Deliveryaddress: {
     cname: { type: String },
     country: { type: String },

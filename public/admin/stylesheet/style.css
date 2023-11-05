@@ -117,3 +117,15 @@
   border-radius: 10px;
   object-fit: cover;
 }
+.coupon-card{
+  background: rgb(26, 33, 42);
+  border-radius: 7px;
+  border: 1px solid grey;
+}
+
+.coupon-card h4 span{
+  border: 2px solid orange;
+  border-style: dotted;
+  padding: 0 5px;
+  border-radius: 5px;
+}

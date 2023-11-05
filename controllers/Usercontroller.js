@@ -186,7 +186,7 @@ module.exports = {
       const activeOrders = await Orders.aggregate([
         {
           $match: {
-            Userid: new mongoose.Types.ObjectId(req.cookies.user.id) // Convert the user ID to ObjectId type
+            Userid: new mongoose.Types.ObjectId(req.cookies.user.id), // Convert the user ID to ObjectId type
           }
         },
         {
@@ -203,6 +203,7 @@ module.exports = {
             Userid: { $first: "$Userid" },
             Username: { $first: "$Username" },
             Orderdate: { $first: "$Orderdate" },
+            Deliverydate: { $first: "$Deliverydate" },
             Deliveryaddress: { $first: "$Deliveryaddress" },
             Status: { $first: "$Status" },
             Totalamount: { $first: "$Totalamount" },

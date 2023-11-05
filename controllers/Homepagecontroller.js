@@ -3,11 +3,27 @@ const categoryCopy = require("../public/models/categorymodel");
 const cartModel = require("../public/models/cartmodel");
 const usermodel = require("../public/models/usermodel");
 const Banners = require("../public/models/bannermodel");
+const Products = require("../public/models/productmodel");
 
 module.exports = {
   loadHome: async (req, res) => {
     try {
-      const products = await Product.find({});
+      const Products = await Product.aggregate([
+        {
+          $group: {
+            _id: "$Category",
+            products: { $push: "$$ROOT" },
+          },
+        },
+        {
+          $project: {
+            category: "$_id",
+            products: {
+              $slice: ["$products", 10], // Limit to 10 products per category
+            },
+          },
+        },
+      ]);
       const categories = await categoryCopy.find({});
       const banners = await Banners.find({});
       if (req.cookies.user) {
@@ -17,7 +33,7 @@ module.exports = {
             res.render("user/index", {
               error: req.query.err ? { form: req.query.err } : "Not logged in ??",
               cdata: null,
-              products,
+              Products,
               categories,
               banners,
               cart: "no",
@@ -27,7 +43,7 @@ module.exports = {
         res.render("user/index", {
           cdata: req.cookies.user,
           error: null,
-          products,
+          Products,
           categories,
           banners,
           cart: cart ? cart.Products : null,
@@ -36,15 +52,16 @@ module.exports = {
         res.render("user/index", {
           error: req.query.err ? { form: req.query.err } : "Not logged in ??",
           cdata: null,
-          products,
+          Products,
           categories,
           banners,
           cart: "no",
         });
       }
     } catch (error) {
-      console.log("Loding Home error: ", error);
-      return res.status(500).json({ message: "Internal error." });
+      const on = "On Homepage render";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   addToCart: async (req, res, next) => {
@@ -142,8 +159,9 @@ module.exports = {
 
       res.redirect("/viewcart");
     } catch (error) {
-      console.error("Error deleting products:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      const on = "On Deleting all Cart Products";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
     }
   },
   productView: async (req, res) => {
@@ -154,5 +172,15 @@ module.exports = {
     const error = req.query.err || null
     const on = req.query.on || null;
     res.render('user/errorpage', { error, on })
+  },
+  searchControl: async (req, res)=>{
+    try {
+      const term = req.body.q
+      res.redirect('/result?term=' + term)
+    } catch (error) {
+      const on = "On Search Proccessing...";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
+    }
   }
 };

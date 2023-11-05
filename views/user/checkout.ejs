@@ -22,11 +22,11 @@
                 <div class="checkout">
                     <div class="container">
                         <div class="checkout-discount">
-                            <form action="#">
-                                <input type="text" class="form-control" required id="checkout-discount-input">
-                                <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click
-                                        here to enter your code</span></label>
-                            </form>
+                            <div style="display: flex;align-items: center;justify-content: center;">
+                                <input type="text" class="form-control" id="coupon-input"
+                                    placeholder="Paste or enter your coupon code here" value="<%= coupon?coupon.Code:'' %>">
+                                    <button id="apply-coupon-button" >Apply</button>
+                            </div>
                         </div><!-- End .checkout-discount -->
                         <form id="the-checkout-form" method="post" action="/saveorder">
                             <div class="row">
@@ -187,44 +187,51 @@
                                                                 <td>$<%= product.Price * product.Quantity %>
                                                                 </td>
                                                             </tr>
-                                                            <% subtotal +=product.Price * product.Quantity %>
-                                                                <% }) %>
-                                                                    <% } else {%>
-                                                                        <input type="hidden" name="productId"
-                                                                            value="<%= product._id %>">
-                                                                        <input type="hidden" name="quantity"
-                                                                            value="<%= quantity %>">
-                                                                        <input type="hidden" name="pimage"
-                                                                            value="<%= product.Imagepath[0] %>">
-                                                                        <tr>
-                                                                            <td><a href="#">
-                                                                                    <%= product.Productname %>
-                                                                                </a><i
-                                                                                    style="color: rgb(0, 0, 0);font-weight: 500;">
-                                                                                    x
-                                                                                    <%= quantity %>
-                                                                                </i></td>
-                                                                            <td>$<% subtotal=(product.Price -
-                                                                                    product.Discount) * quantity %>
-                                                                                    <%= subtotal %>
-                                                                            </td>
+                                                            <% }) %>
+                                                                <% } else {%>
+                                                                    <input type="hidden" name="productId"
+                                                                        value="<%= product._id %>">
+                                                                    <input type="hidden" name="quantity"
+                                                                        value="<%= quantity %>">
+                                                                    <input type="hidden" name="pimage"
+                                                                        value="<%= product.Imagepath[0] %>">
+                                                                    <tr>
+                                                                        <td><a href="#">
+                                                                                <%= product.Productname %>
+                                                                            </a><i
+                                                                                style="color: rgb(0, 0, 0);font-weight: 500;">
+                                                                                x
+                                                                                <%= quantity %>
+                                                                            </i></td>
+                                                                        <td>$<%= (product.Price - product.Discount) * quantity %>
+                                                                        </td>
 
-                                                                        </tr>
+                                                                    </tr>
+                                                                    <% } %>
+                                                                    <% if(coupon){ %>
+                                                                        <tr class="summary-subtotal">
+                                                                            <td>Applied discount:</td>
+                                                                            <td><%= coupon.Discount %>%
+                                                                            </td>
+                                                                        </tr><!-- End .summary-subtotal -->
                                                                         <% } %>
-                                                                            <tr class="summary-subtotal">
-                                                                                <td>Subtotal:</td>
-                                                                                <td>$<%= subtotal %>
-                                                                                </td>
-                                                                            </tr><!-- End .summary-subtotal -->
-                                                                            <tr>
-                                                                                <td>Shipping:</td>
-                                                                                <td>Free shipping</td>
-                                                                            </tr>
-                                                                            <tr class="summary-total">
-                                                                                <td>Total:</td>
-                                                                                <td>$<%= subtotal %>
-                                                                                </td>
-                                                                            </tr><!-- End .summary-total -->
+                                                                        <tr class="summary-subtotal">
+                                                                            <td>Subtotal:</td>
+                                                                            <td>$<%= total %>
+                                                                            </td>
+                                                                        </tr><!-- End .summary-subtotal -->
+                                                                        <tr>
+                                                                            <td>Shipping:</td>
+                                                                            <td>Free shipping</td>
+                                                                        </tr>
+                                                                        <tr class="summary-total">
+                                                                            <td>Total:</td>
+                                                                            <td>$<%= total %>
+                                                                                    <input type="hidden"
+                                                                                        name="totalAmount"
+                                                                                        value="<%= total %>">
+                                                                            </td>
+                                                                        </tr><!-- End .summary-total -->
                                             </tbody>
                                         </table><!-- End .table table-summary -->
 
@@ -255,7 +262,7 @@
                                                             data-toggle="collapse" href="#collapse-4"
                                                             aria-expanded="true" aria-controls="collapse-4"
                                                             value="online" required> Razorpay <br>
-                                                            <img src="assets/images/payments-summary.png"
+                                                        <img src="assets/images/payments-summary.png"
                                                             alt="payments cards">
                                                     </h2>
                                                 </div><!-- End .card-header -->
@@ -276,12 +283,14 @@
                                                             data-toggle="collapse" href="#collapse-5"
                                                             aria-expanded="true" aria-controls="collapse-5"
                                                             value="wallet" required> Wallet <br>
-                                                        
+
                                                     </h2>
                                                 </div><!-- End .card-header -->
                                                 <div id="collapse-5" class="collapse" aria-labelledby="heading-5"
                                                     data-parent="#accordion-payment">
-                                                    <div class="card-body"> <span class="text-success">balance: $<%= wallet.Balance %></span> <br> Purchase the item directly from your TouchBrand Wallet
+                                                    <div class="card-body"> <span class="text-success">balance: $<%=
+                                                                wallet.Balance %></span> <br> Purchase the item directly
+                                                        from your TouchBrand Wallet
                                                     </div><!-- End .card-body -->
                                                 </div><!-- End .collapse -->
                                             </div><!-- End .card -->
@@ -409,7 +418,7 @@
         }
     </script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
- 
+
     <script>
         document.getElementById('the-checkout-form').addEventListener('submit', (e) => {
             console.log("AAh pressed");
@@ -422,10 +431,10 @@
                     alert(response)
                     if (response.codsuccess) {
                         location.href = "/placeorder"
-                    }else if(response.walletpay == 'success') {
+                    } else if (response.walletpay == 'success') {
                         alert(response)
                         location.href = "/placeorder"
-                    }else if(response.walletpay == 'failed'){
+                    } else if (response.walletpay == 'failed') {
                         alert('Payment Failed Insuficiant wallet Balance');
                         location.reload()
                     } else {
@@ -476,19 +485,42 @@
         function verifyPayment(payment, order) {
             $.ajax({
                 url: '/verify-payment',
-                data:{
+                data: {
                     payment,
                     order
                 },
                 method: 'POST',
-                success: (response)=>{
-                    if(response.status){
+                success: (response) => {
+                    if (response.status) {
                         location.href = "/placeorder"
-                    }else{
+                    } else {
                         alert("Error: " + response.error.message)
                     }
                 }
             })
         }
+    </script>
+    <script>
+        // Get references to the input fields and the button
+        const couponInput = document.getElementById("coupon-input");
+        const applyButton = document.getElementById("apply-coupon-button");
+
+        // Define the click event for the "Apply" button
+        applyButton.addEventListener("click", function () {
+            // Get product ID and quantity from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get("pid");
+            const quantity = urlParams.get("qty");
+
+            // Get the coupon code from the input field
+            const couponCode = couponInput.value;
+
+            if(!productId){
+                location.href = `/cartcheckout?coupon=${couponCode}`
+            }else{
+                location.href = `/checkout?pid=${productId}&qty=${quantity}&coupon=${couponCode}`
+            }
+
+        });
     </script>
     <%- include('foot.ejs') %>

@@ -1,0 +1,105 @@
+<%- include('chead.ejs') %>
+
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container" >
+                <div class="row">
+                    <h4>Active Coupans</h4>
+                    <a href="#" class="btn btn-info ml-auto" id="openAddCategory" >Add Coupons</a>
+                </div>
+                <div class="row mt-2">
+                    <% coupons.forEach(coupon => { %>
+                        <% if(coupon.Status == 'active'){ %>
+                    <div class="col-12 col-lg-3 mt-3">
+                        <div class="coupon-card p-3">
+                            <h4>Coupan <span class="text-info"><%= coupon.Code %></span></h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h6>Discount <span class="text-success ml-2 mb-0 font-weight-medium"><%= coupon.Discount %>%</span></h6>
+                                <a onclick="deleteCoupon('<%= coupon._id %>')" style="cursor:pointer;"><i class="mdi mdi-delete-forever h3 text-danger"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% }) %>
+                    <% if(coupons.length < 1){ %>
+                        <p>There is no coupons to show..</p>
+                        <% } %>
+                </div>
+                <div class="row mt-5">
+                    <h4>Used Coupans</h4>
+                </div>
+                <div class="row mt-3">
+                    <% coupons.forEach(coupon => { %>
+                        <% if(coupon.Status != 'active'){ %>
+                    <div class="col-12 col-lg-3 mt-3">
+                        <div class="coupon-card p-3">
+                            <h4>Coupan <span class="text-info"><%= coupon.Code %></span></h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h6>Discount <span class="text-success ml-2 mb-0 font-weight-medium"><%= coupon.Discount %>%</span></h6>
+                                <a onclick="deleteCoupon('<%= coupon._id %>')" style="cursor:pointer;"><i class="mdi mdi-delete-forever h3 text-danger"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% }) %>
+                </div>
+            </div>
+            <!-- COUPON POP -->
+            <div class="catpop" style="display: none;">
+                <div><button class="btn btn-danger closeBtn">close</button></div>
+                <div class="formDiv">
+                    <h6 class="text-center">Add New coupans</h6>
+                    <form id="addcoupon">
+                        <div class="mb-3">
+                            <label class="form-label">Number of coupons</label>
+                            <input type="number" class="form-control" min="1" max="15" value="" name="num"
+                                placeholder="Enter a number of coupons to add">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Discount</label>
+                            <input type="number" class="form-control" value="" name="discount" min="1" max="100"
+                                placeholder="Enter the percentage of discount">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Coupons</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("addcoupon").addEventListener('submit', ()=>{
+            $.ajax({
+                url: '/admin/addcoupons',
+                method: 'POST',
+                data: $('#addcoupon').serialize(),
+                success: (response)=>{
+                    location.reload();
+                }
+            })
+        })
+
+        function deleteCoupon(cid){
+            $.ajax({
+                url: '/admin/deletecoupons',
+                method: 'POST',
+                data: { cid: cid },
+                success: (response)=>{
+                    location.reload();
+                }
+            })
+        }
+    </script>
+
+    <script>
+        $(document).ready(() => {
+            $("#openAddCategory").click(() => {
+                $(".catpop").toggle(300);
+            })
+            $(".catpop .closeBtn").click(() => {
+                $(".catpop").toggle(300);
+            })
+        })
+    </script>
+
+    <%- include('cfoot.ejs') %>

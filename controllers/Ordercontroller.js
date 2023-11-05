@@ -11,55 +11,56 @@ const paymentHelper = require("../helpers/paymentHelper");
 const Sales = require("../public/models/salesmodel");
 const Wallets = require("../public/models/walletmodel");
 const orderhelper = require("../helpers/orderhelper");
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+const wallethelper = require("../helpers/wallet");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 module.exports = {
   getOrders: async (req, res, next) => {
     try {
       const orders = await Orders.aggregate([
         {
-          $unwind: "$Items"  // Split the array into separate documents for each item
+          $unwind: "$Items" // Split the array into separate documents for each item
         },
         {
           $match: {
-            "Items.cancelled": false  // Filter only the items with cancelled set to false
+            "Items.cancelled": false // Filter only the items with cancelled set to false
           }
         },
         {
           $group: {
-            _id: "$_id",  // Group by order ID
+            _id: "$_id", // Group by order ID
             Userid: { $first: "$Userid" },
             Username: { $first: "$Username" },
             Orderdate: { $first: "$Orderdate" },
             Deliveryaddress: { $first: "$Deliveryaddress" },
             Status: { $first: "$Status" },
             Totalamount: { $first: "$Totalamount" },
-            Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
+            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
           }
         }
       ]).sort({ Orderdate: -1 });
       const cancelled = await Orders.aggregate([
         {
-          $unwind: "$Items"  // Split the array into separate documents for each item
+          $unwind: "$Items" // Split the array into separate documents for each item
         },
         {
           $match: {
-            "Items.cancelled": true  // Filter only the items with cancelled set to true
+            "Items.cancelled": true // Filter only the items with cancelled set to true
           }
         },
         {
           $group: {
-            _id: "$_id",  // Group by order ID
+            _id: "$_id", // Group by order ID
             Userid: { $first: "$Userid" },
             Username: { $first: "$Username" },
             Orderdate: { $first: "$Orderdate" },
             Deliveryaddress: { $first: "$Deliveryaddress" },
             Status: { $first: "$Status" },
             Totalamount: { $first: "$Totalamount" },
-            Items: { $push: "$Items" }  // Reconstruct the items array with cancelled items
+            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
           }
         }
-      ])
+      ]);
       res.render("admin/orders", { orders: orders, ccount: cancelled.length });
     } catch (error) {
       const on = "On Getting Order data";
@@ -95,7 +96,7 @@ module.exports = {
             Items: { $push: "$Items" }
           }
         }
-      ])
+      ]);
       console.log(order);
       res.render("admin/vieworder", { order: order });
     } catch (error) {
@@ -134,8 +135,8 @@ module.exports = {
             Price: productDetails.Price - productDetails.Discount,
             Quantity: req.body.quantity,
             Productimg: req.body.pimage,
-            Shippingcost: productDetails.Shipingcost,
-          },
+            Shippingcost: productDetails.Shipingcost
+          }
         ];
       } else if (Array.isArray(productId)) {
         productDetails = await Products.find({ _id: { $in: productId } });
@@ -153,7 +154,7 @@ module.exports = {
             Price: product.Price,
             Quantity: req.body.quantity[index],
             Productimg: req.body.pimage[index],
-            Shippingcost: product.Shipingcost,
+            Shippingcost: product.Shipingcost
           };
         });
       } else {
@@ -169,14 +170,10 @@ module.exports = {
         city: req.body.city,
         pincode: req.body.pincode,
         streetaddress: req.body.streetaddress1[0],
-        landmark: req.body.streetaddress1[1],
+        landmark: req.body.streetaddress1[1]
       };
 
-      // Calculate total amount for the order (Price * Quantity)
-      const totalAmount = orderItems.reduce(
-        (total, item) => total + item.Price * item.Quantity + item.Shippingcost,
-        0
-      );
+      const totalAmount = req.body.totalAmount;
 
       const orderData = {
         Userid: userId,
@@ -184,35 +181,37 @@ module.exports = {
         Items: orderItems,
         Deliveryaddress: deliveryAddress,
         Totalamount: totalAmount,
-        Orderdate: new Date(),
+        Orderdate: new Date()
       };
 
-      
+      const order = await Orders.create(orderData);
+
       const newSale = new Sales({
         Date: new Date(),
         Userid: userId,
+        Orderid: order._id,
         Amount: totalAmount,
         Products: orderItems.map((product) => {
-          return product.Productid
+          return product.Productid;
         }),
-        Payby: req.body.payby
-      })
+        Payby: req.body.payby,
+        Payment: false
+      });
 
-      const order = await Orders.create(orderData);
-      
       // UPDATING THE STOKE AFTER SAVING THE ORDER
       for (const item of orderItems) {
         const product = await Products.findById(item.Productid);
         if (!product) {
           const on = "On Saving Order";
-          const err = "Product not Found for id "+ item.Productid;
+          const err = "Product not Found for id " + item.Productid;
           res.redirect("/error?err=" + err + "&on=" + on);
         }
         // Calculate the new stock after the order
         const newStock = product.Stoke - item.Quantity;
         if (newStock < 0) {
           const on = "On Saving Order";
-          const err = "Not enough stock for the product: " + product.Productname;
+          const err =
+            "Not enough stock for the product: " + product.Productname;
           res.redirect("/error?err=" + err + "&on=" + on);
         }
         // Update the stock in the database
@@ -226,26 +225,32 @@ module.exports = {
       }
 
       // CHECK THE PAYMENT CRITERIA
-      const payby = req.body.payby
-      if(payby == 'cod'){
+      const payby = req.body.payby;
+      if (payby == "cod") {
         await newSale.save();
-        res.json({codsuccess:true});
-      }else if(payby == 'wallet'){
+        res.json({ codsuccess: true });
+      } else if (payby == "wallet") {
+        newSale.Payment = true;
         const sale = await newSale.save();
-        paymentHelper.paybyWallet(userId, totalAmount, order._id).then(async (data)=>{
-          await orderhelper.recheckOrder(order._id, sale._id)
-          res.json({ walletpay: 'success'})
-        }).catch(async (error)=>{
-          await orderhelper.recheckOrder(order._id, sale._id)
-          res.json({walletpay: 'failed'})
-        })
-      }else{
-        paymentHelper.generateRazorpay(order._id, totalAmount).then(async (response)=>{
-          const sale = await newSale.save();
-          res.json(response);
-        })
+        paymentHelper
+          .paybyWallet(userId, totalAmount, order._id)
+          .then(async (data) => {
+            await orderhelper.recheckOrder(order._id, sale._id);
+            res.json({ walletpay: "success" });
+          })
+          .catch(async (error) => {
+            await orderhelper.recheckOrder(order._id, sale._id);
+            res.json({ walletpay: "failed" });
+          });
+      } else {
+        paymentHelper
+          .generateRazorpay(order._id, totalAmount)
+          .then(async (response) => {
+            newSale.Payment = true;
+            const sale = await newSale.save();
+            res.json(response);
+          });
       }
-      
     } catch (error) {
       const on = "On Saving Order";
       const err = error.message;
@@ -322,16 +327,16 @@ module.exports = {
       const corders = await Orders.aggregate([
         {
           $match: {
-            Userid: new mongoose.Types.ObjectId(uid), // Convert the user ID to ObjectId type
-          },
+            Userid: new mongoose.Types.ObjectId(uid) // Convert the user ID to ObjectId type
+          }
         },
         {
-          $unwind: "$Items", // Split the array into separate documents for each item
+          $unwind: "$Items" // Split the array into separate documents for each item
         },
         {
           $match: {
-            "Items.cancelled": true, // Filter only the items with cancelled set to true
-          },
+            "Items.cancelled": true // Filter only the items with cancelled set to true
+          }
         },
         {
           $group: {
@@ -342,9 +347,9 @@ module.exports = {
             Deliveryaddress: { $first: "$Deliveryaddress" },
             Status: { $first: "$Status" },
             Totalamount: { $first: "$Totalamount" },
-            Items: { $push: "$Items" }, // Reconstruct the items array with cancelled items
-          },
-        },
+            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
+          }
+        }
       ]);
       res.render("user/cancelledorders", { corders });
     } catch (error) {
@@ -355,12 +360,18 @@ module.exports = {
   },
   updateStatus: async (req, res) => {
     try {
-      const oid = req.body.orderid
-      const status = req.body.status
+      const oid = req.body.orderid;
+      const status = req.body.status;
+      if (status == "delivered") {
+        await Sales.updateOne({ Orderid: oid }, { $set: { Payment: true } });
+        await Orders.findByIdAndUpdate(oid, {
+          $set: { Deliverydate: new Date() }
+        });
+      }
       await Orders.findByIdAndUpdate(oid, {
-        $set: { Status: status },
+        $set: { Status: status }
       });
-      res.json({ status:true, message: 'Status updated'})
+      res.json({ status: true, message: "Status updated" });
     } catch (error) {
       const on = "On Update Order Status";
       const err = error.message;
@@ -369,7 +380,9 @@ module.exports = {
   },
   deleteOrder: async (req, res) => {
     try {
-      await Orders.findByIdAndDelete(req.params.orderid);
+      const oid = req.params.orderid;
+      await Orders.findByIdAndDelete(oid);
+      await Sales.findOneAndDelete({ Orderid: oid });
       res.redirect("/admin/orders");
     } catch (error) {
       const on = "On Delete Order";
@@ -382,12 +395,12 @@ module.exports = {
       const uid = req.query.uid;
       const corders = await Orders.aggregate([
         {
-          $unwind: "$Items", // Split the array into separate documents for each item
+          $unwind: "$Items" // Split the array into separate documents for each item
         },
         {
           $match: {
-            "Items.cancelled": true, // Filter only the items with cancelled set to true
-          },
+            "Items.cancelled": true // Filter only the items with cancelled set to true
+          }
         },
         {
           $group: {
@@ -398,9 +411,9 @@ module.exports = {
             Deliveryaddress: { $first: "$Deliveryaddress" },
             Status: { $first: "$Status" },
             Totalamount: { $first: "$Totalamount" },
-            Items: { $push: "$Items" }, // Reconstruct the items array with cancelled items
-          },
-        },
+            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
+          }
+        }
       ]);
       res.render("admin/cancelledorders", { orders: corders });
     } catch (error) {
@@ -409,4 +422,65 @@ module.exports = {
       res.redirect("/admin/error?err=" + err + "&on=" + on);
     }
   },
+  returnItem: async (req, res, next) => {
+    try {
+      const orderId = req.body.oid;
+      const itemId = req.body.pid;
+      const order = await Orders.findById(orderId);
+      if (!order) {
+        throw new Error("Order not found");
+      }
+
+      // Find the index of the item to remove
+      const itemIndex = order.Items.findIndex(
+        (item) => item._id == itemId
+      );
+      if (itemIndex === -1) {
+        throw new Error("Item not found in the order");
+      }
+
+      // Create a new order with the removed item
+      const returnedItem = order.Items[itemIndex];
+      order.Items.splice(itemIndex, 1);
+      order.Totalamount -= returnedItem.Price * returnedItem.Quantity;
+
+      const payback = returnedItem.Price * returnedItem.Quantity
+
+      const newOrder = new Orders({
+        Userid: order.Userid,
+        Username: order.Username,
+        Items: [returnedItem], // Create a new order with the removed item
+        Orderdate: new Date(),
+        Status: "returned",
+        Totalamount: payback
+      });
+      // Save the new order Status == 'returned'
+      await newOrder.save();
+      
+      if(order.Items.length < 1){
+        await Orders.findByIdAndRemove(orderId)
+      }else{
+        // Update the original order
+        await order.save();
+      }
+
+      // update sales
+      // const sale = await Sales.findOne({ Orderid: orderId });
+      // const saleItemIndex = sale.Products.findIndex(
+      //   (item) => item == returnedItem.Productid
+      // );
+      // sale.Products.splice(saleItemIndex, 1);
+      // sale.Amount -= payback
+      // await sale.save()
+
+      const theWallet = await Wallets.findOne({ Userid: req.cookies.user.id })
+      console.log(theWallet);
+      await wallethelper.transaction('credit', payback, theWallet._id)
+      res.json({status: true})
+    } catch (error) {
+      const on = "On Return Order";
+      const err = error.message;
+      res.redirect("/error?err=" + err + "&on=" + on);
+    }
+  }
 };

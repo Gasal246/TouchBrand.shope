@@ -40,6 +40,7 @@ const Productcontroller = require("../controllers/Productcontroller");
 const sharp = require("sharp");
 const checkAuth = require("../middlewares/checkAuth");
 const Bannercontroller = require("../controllers/Bannercontroller");
+const Couponcontroller = require("../controllers/Couponcontroller");
 
 // ############################### GET INTO DASHBOARD #########################
 router.get("/", checkAuth.checkAdmin, AdminUsercontroller.getAdmin);
@@ -75,26 +76,26 @@ router.post(
 router.get("/delproductimg/:imgSrc/:pid", Productcontroller.deleteImage);
 
 // #################################### USER CONTROLS ###########################################
-router.get("/deleteuser/:uid", AdminUsercontroller.deleteUser);
+router.get("/deleteuser/:uid",checkAuth.checkAdmin, AdminUsercontroller.deleteUser);
 
-router.get("/users", AdminUsercontroller.getUsers);
+router.get("/users",checkAuth.checkAdmin, AdminUsercontroller.getUsers);
 
-router.get("/blockuser/:email", AdminUsercontroller.blockUser);
+router.get("/blockuser/:email",checkAuth.checkAdmin, AdminUsercontroller.blockUser);
 
-router.get("/unblockuser/:email", AdminUsercontroller.unblockUser);
+router.get("/unblockuser/:email",checkAuth.checkAdmin, AdminUsercontroller.unblockUser);
 
-router.get('/viewuser', (req, res) => res.render('admin/viewuser'));
+router.get('/viewuser',checkAuth.checkAdmin, (req, res) => res.render('admin/viewuser'));
 
-router.get("/showuser/:uid", AdminUsercontroller.viewuser);
+router.get("/showuser/:uid",checkAuth.checkAdmin, AdminUsercontroller.viewuser);
 
 // ############################## CATEGORY CONTROLL #########################
-router.get("/categories", Categorycontroller.getCategory);
+router.get("/categories",checkAuth.checkAdmin, Categorycontroller.getCategory);
 
-router.post("/addcategory", Categorycontroller.addcategory);
+router.post("/addcategory",checkAuth.checkAdmin, Categorycontroller.addcategory);
 
-router.post("/editcategory/:catid", Categorycontroller.editCategory);
+router.post("/editcategory/:catid",checkAuth.checkAdmin, Categorycontroller.editCategory);
 
-router.get("/deletecategory/:catid", Categorycontroller.deleteCategory);
+router.get("/deletecategory/:catid",checkAuth.checkAdmin, Categorycontroller.deleteCategory);
 
 // ################### ADMIN LOGOUT #################
 router.get("/logout", async (req, res) => {
@@ -114,24 +115,31 @@ router.post('/addbanner', bannerUpload.single('Image'), (req, res)=>{
   Bannercontroller.addBanner(req, res, uniqueIdentifier)
 });
 
-router.get('/deletebanner/:bid', Bannercontroller.deleteBanner)
+router.get('/deletebanner/:bid',checkAuth.checkAdmin, Bannercontroller.deleteBanner)
 
-router.get('/editbanner', Bannercontroller.editBannerForm)
+router.get('/editbanner',checkAuth.checkAdmin, Bannercontroller.editBannerForm)
 
 router.post('/editbanner/:bid', bannerUpload.single('Image'), (req, res)=>{
   Bannercontroller.editBanner(req, res, uniqueIdentifier)
 })
 
 // ###################### ORDER CONTROL ################
-router.get('/orders', Ordercontroller.getOrders)
+router.get('/orders',checkAuth.checkAdmin, Ordercontroller.getOrders)
 
-router.get('/vieworder', Ordercontroller.viewOrder)
+router.get('/vieworder',checkAuth.checkAdmin, Ordercontroller.viewOrder)
 
-router.post('/changeorderstatus', Ordercontroller.updateStatus)
+router.post('/changeorderstatus',checkAuth.checkAdmin, Ordercontroller.updateStatus)
 
-router.get('/deleteorder/:orderid', Ordercontroller.deleteOrder)
+router.get('/deleteorder/:orderid',checkAuth.checkAdmin, Ordercontroller.deleteOrder)
 
-router.get('/cancelledorders', Ordercontroller.viewCancelledOrdersAdmin)
+router.get('/cancelledorders',checkAuth.checkAdmin, Ordercontroller.viewCancelledOrdersAdmin)
+
+// ####################### COUPON CONTROL ###################
+router.get('/coupon',checkAuth.checkAdmin, Couponcontroller.getCoupan)
+
+router.post('/addcoupons', checkAuth.checkAdmin, Couponcontroller.addCoupons)
+
+router.post('/deletecoupons', checkAuth.checkAdmin, Couponcontroller.deleteCoupon)
 
 // ###################### ERROR PAAGE #########
 router.get('/error', AdminDashboard.renderError)

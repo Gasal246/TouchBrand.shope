@@ -4,6 +4,7 @@ module.exports = {
   transaction: async (type, amount, wid) => {
     return new Promise(async (resolve, reject) => {
       const wallet = await Wallets.findById(wid);
+      console.log(wallet);
       const money = parseInt(amount, 10);
       let transactions = wallet.Transactions || [];
       let balance = wallet.Balance;

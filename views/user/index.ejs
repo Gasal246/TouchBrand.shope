@@ -59,7 +59,7 @@
                         <div
                             class="header-search header-search-extended header-search-visible header-search-no-radius d-none d-lg-block">
                             <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                            <form action="#" method="get">
+                            <form action="/search" method="post" id="searchinput">
                                 <div class="header-search-wrapper search-wrapper-wide">
                                     <label for="q" class="sr-only">Search</label>
                                     <input type="search" class="form-control" name="q" id="q"
@@ -814,103 +814,54 @@
                                 }
                             }
                         }'>
-                            <% if(products){ %>
-                                <% products.map((product, index)=>{%>
-                                    <% if(product.Category.toLowerCase()=='smartphones' ){ %>
-                                        <div class="product product-11 text-center" style="border-radius: 5px;">
-                                            <figure class="product-media" style="background: white;">
-                                                <a href="/viewproduct/<%= product._id %>">
-                                                    <img src="<%= product.Imagepath[0] %>" alt="Product image"
-                                                        class="product-image"
-                                                        style="height: 280px; object-fit: contain;">
-                                                    <img src="<%= product.Imagepath[1] %>" alt="Product image"
-                                                        class="product-image-hover"
-                                                        style="height: 280px; object-fit: contain;">
-                                                </a>
+                        <% if(Products.length > 0){ %>
+                            <% Products.forEach(item => { %>
+                                <% if(item.category == 'smartphones'){ %>
+                                <% if(item.products.length > 0){ %>
+                            <% item.products.map((product, index)=>{%>
+                                    <div class="product product-11 text-center" style="border-radius: 5px;">
+                                        <figure class="product-media" style="background: white;">
+                                            <a href="/viewproduct/<%= product._id %>">
+                                                <img src="<%= product.Imagepath[0] %>" alt="Product image"
+                                                    class="product-image"
+                                                    style="height: 280px; object-fit: contain;">
+                                                <img src="<%= product.Imagepath[1] %>" alt="Product image"
+                                                    class="product-image-hover"
+                                                    style="height: 280px; object-fit: contain;">
+                                            </a>
 
-                                                <div class="product-action-vertical">
-                                                    <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                            wishlist</span></a>
-                                                </div><!-- End .product-action-vertical -->
-                                            </figure><!-- End .product-media -->
+                                            <div class="product-action-vertical">
+                                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to
+                                                        wishlist</span></a>
+                                            </div><!-- End .product-action-vertical -->
+                                        </figure><!-- End .product-media -->
 
-                                            <div class="product-body">
-                                                <h3 class="product-title"><a href="/viewproduct/<%= product._id %>">
-                                                        <%= product.Productname %>
-                                                    </a></h3>
-                                                <!-- End .product-title -->
-                                                <div class="product-price">
-                                                    $<%= product.Price %>
-                                                </div><!-- End .product-price -->
-                                                <div class="product-nav product-nav-dots">
-                                                    <a href="#" class="active" style="background: #1f1e18;"><span
-                                                            class="sr-only">Color name</span></a>
-                                                    <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
-                                                            name</span></a>
-                                                </div><!-- End .product-nav -->
-                                            </div><!-- End .product-body -->
-                                            <div class="product-action">
-                                                <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
-                                            </div><!-- End .product-action -->
-                                        </div><!-- End .product -->
+                                        <div class="product-body">
+                                            <h3 class="product-title"><a href="/viewproduct/<%= product._id %>">
+                                                    <%= product.Productname %>
+                                                </a></h3>
+                                            <!-- End .product-title -->
+                                            <div class="product-price">
+                                                $<%= product.Price %>
+                                            </div><!-- End .product-price -->
+                                            <div class="product-nav product-nav-dots">
+                                                <a href="#" class="active" style="background: #1f1e18;"><span
+                                                        class="sr-only">Color name</span></a>
+                                                <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
+                                                        name</span></a>
+                                            </div><!-- End .product-nav -->
+                                        </div><!-- End .product-body -->
+                                        <div class="product-action">
+                                            <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </div><!-- End .product -->
+                                    <% }) %>
+                                    <% } %>
+                                    <% }else{ %>
+                                        <p>No Products for this category</p>
                                         <% } %>
-                                            <% }) %>
-                                                <% } %>
-                                                    <% if(products){ %>
-                                                        <% products.map((product, index)=>{%>
-                                                            <% if(product.Category.toLowerCase()=='smartphones' ){ %>
-                                                                <div class="product product-11 text-center"
-                                                                    style="border-radius: 5px;">
-                                                                    <figure class="product-media"
-                                                                        style="background: white;">
-                                                                        <a href="product.html">
-                                                                            <img src="<%= product.Imagepath[0] %>"
-                                                                                alt="Product image"
-                                                                                class="product-image"
-                                                                                style="height: 280px; object-fit: contain;">
-                                                                            <img src="<%= product.Imagepath[1] %>"
-                                                                                alt="Product image"
-                                                                                class="product-image-hover"
-                                                                                style="height: 280px; object-fit: contain;">
-                                                                        </a>
-
-                                                                        <div class="product-action-vertical">
-                                                                            <a href="#"
-                                                                                class="btn-product-icon btn-wishlist"><span>add
-                                                                                    to
-                                                                                    wishlist</span></a>
-                                                                        </div><!-- End .product-action-vertical -->
-                                                                    </figure><!-- End .product-media -->
-
-                                                                    <div class="product-body">
-                                                                        <h3 class="product-title"><a
-                                                                                href="product.html">
-                                                                                <%= product.Productname %>
-                                                                            </a></h3>
-                                                                        <!-- End .product-title -->
-                                                                        <div class="product-price">
-                                                                            $<%= product.Price %>
-                                                                        </div><!-- End .product-price -->
-                                                                        <div class="product-nav product-nav-dots">
-                                                                            <a href="#" class="active"
-                                                                                style="background: #1f1e18;"><span
-                                                                                    class="sr-only">Color
-                                                                                    name</span></a>
-                                                                            <a href="#"
-                                                                                style="background: #e8e8e8;"><span
-                                                                                    class="sr-only">Color
-                                                                                    name</span></a>
-                                                                        </div><!-- End .product-nav -->
-                                                                    </div><!-- End .product-body -->
-                                                                    <div class="product-action">
-                                                                        <a href="#"
-                                                                            class="btn-product btn-cart"><span>add to
-                                                                                cart</span></a>
-                                                                    </div><!-- End .product-action -->
-                                                                </div><!-- End .product -->
-                                                                <% } %>
-                                                                    <% }) %>
-                                                                        <% } %>
+                                    <% }) %>
+                                    <% } %>
 
 
                         </div><!-- End .owl-carousel -->
@@ -945,96 +896,54 @@
                                 }
                             }
                         }'>
-                            <div class="product product-11 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/products/product-5-1.jpg"
-                                            alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-2/products/product-5-2.jpg"
-                                            alt="Product image" class="product-image-hover">
-                                    </a>
+                        <% if(Products.length > 0){ %>
+                            <% Products.forEach(item => { %>
+                                <% if(item.category == 'laptops'){ %>
+                                <% if(item.products.length > 0){ %>
+                            <% item.products.map((product, index)=>{%>
+                                    <div class="product product-11 text-center" style="border-radius: 5px;">
+                                        <figure class="product-media" style="background: white;">
+                                            <a href="/viewproduct/<%= product._id %>">
+                                                <img src="<%= product.Imagepath[0] %>" alt="Product image"
+                                                    class="product-image"
+                                                    style="height: 280px; object-fit: contain;">
+                                                <img src="<%= product.Imagepath[1] %>" alt="Product image"
+                                                    class="product-image-hover"
+                                                    style="height: 280px; object-fit: contain;">
+                                            </a>
 
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
+                                            <div class="product-action-vertical">
+                                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to
+                                                        wishlist</span></a>
+                                            </div><!-- End .product-action-vertical -->
+                                        </figure><!-- End .product-media -->
 
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <h3 class="product-title"><a href="product.html">Petite Table Lamp</a></h3>
-                                    <!-- End .product-title -->
-                                    <div class="product-price">
-                                        $675,00
-                                    </div><!-- End .product-price -->
-
-                                    <div class="product-nav product-nav-dots">
-                                        <a href="#" class="active" style="background: #74543e;"><span
-                                                class="sr-only">Color name</span></a>
-                                        <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
-                                                name</span></a>
-                                    </div><!-- End .product-nav -->
-                                </div><!-- End .product-body -->
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </div><!-- End .product -->
-
-                            <div class="product product-11 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/products/product-6-1.jpg"
-                                            alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-2/products/product-6-2.jpg"
-                                            alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <h3 class="product-title"><a href="product.html">Elephant Armchair</a></h3>
-                                    <!-- End .product-title -->
-                                    <div class="product-price">
-                                        $457,00
-                                    </div><!-- End .product-price -->
-                                </div><!-- End .product-body -->
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </div><!-- End .product -->
-
-                            <div class="product product-11 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/products/product-1-1.jpg"
-                                            alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-2/products/product-1-2.jpg"
-                                            alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <h3 class="product-title"><a href="product.html">Butler Stool Ladder</a></h3>
-                                    <!-- End .product-title -->
-                                    <div class="product-price">
-                                        $251,00
-                                    </div><!-- End .product-price -->
-                                </div><!-- End .product-body -->
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </div><!-- End .product -->
+                                        <div class="product-body">
+                                            <h3 class="product-title"><a href="/viewproduct/<%= product._id %>">
+                                                    <%= product.Productname %>
+                                                </a></h3>
+                                            <!-- End .product-title -->
+                                            <div class="product-price">
+                                                $<%= product.Price %>
+                                            </div><!-- End .product-price -->
+                                            <div class="product-nav product-nav-dots">
+                                                <a href="#" class="active" style="background: #1f1e18;"><span
+                                                        class="sr-only">Color name</span></a>
+                                                <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
+                                                        name</span></a>
+                                            </div><!-- End .product-nav -->
+                                        </div><!-- End .product-body -->
+                                        <div class="product-action">
+                                            <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </div><!-- End .product -->
+                                    <% }) %>
+                                    <% } %>
+                                    <% }else{ %>
+                                        <p>No Products for this category</p>
+                                        <% } %>
+                                    <% }) %>
+                                    <% } %>
                         </div><!-- End .owl-carousel -->
                     </div><!-- .End .tab-pane -->
                     <div class="tab-pane p-0 fade" id="products-top-tab" role="tabpanel"

@@ -1,6 +1,8 @@
 const Address = require("../public/models/addressmodel");
 const Carts = require("../public/models/cartmodel");
+const Coupons = require("../public/models/couponmodel");
 const usermodel = require("../public/models/usermodel");
+const Wallets = require("../public/models/walletmodel");
 
 module.exports = {
   Quantityupdate: async (req, res, next) => {
@@ -25,16 +27,26 @@ module.exports = {
     }
   },
   cartCheckout: async (req, res) => {
-    console.log(req.body);
     try {
       const user = await usermodel.findById(req.cookies.user.id);
       const address = await Address.findOne({ Userid: user._id });
       const cart = await Carts.findOne({ Userid: user._id });
+      let total = cart.Products.reduce((total, item) => total + item.Price * item.Quantity, 0)
+      const wallet = await Wallets.findOne({ Userid: req.cookies.user.id });
+      const coupon = req.query.coupon;
+      let Coupon
+      if(coupon){
+        Coupon = await Coupons.findOne({ Code: coupon })
+        let disc = (Coupon.Discount / 100) * total
+        total = total - disc
+      }
       res.render("user/checkout", {
         product: null,
         user: user,
         address: address,
+        quantity: null,
         cart: cart.Products,
+        wallet, total, coupon: Coupon
       });
     } catch (error) {
       const on = "On Checkout From Cart";

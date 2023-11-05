@@ -21,6 +21,8 @@ const Paymentcontroller = require("../controllers/Paymentcontroller");
 const Walletcontroller = require("../controllers/Walletcontroller");
 
 const { checkUser } = require("../middlewares/checkAuth");
+const Resultcontroller = require("../controllers/Resultcontroller");
+const Couponcontroller = require("../controllers/Couponcontroller");
 
 router.get("/", Homepagecontroller.loadHome);
 
@@ -99,7 +101,17 @@ router.get('/wallet', checkUser, Walletcontroller.getWallet)
 
 router.post('/addmoneytowallet', checkUser, Walletcontroller.addToWallet)
 
+// ########################## RETURN ITEM #########################
+router.post('/return-item', checkUser, Ordercontroller.returnItem)
+
 // ########################## ERROR WRAPPER #########################
 router.get('/error', checkUser, Homepagecontroller.errorPage)
+
+// ########################## SEARCH MAIN #########################
+router.post('/search', checkUser, Homepagecontroller.searchControl)
+router.get('/result', checkUser, Resultcontroller.resultLoader)
+
+// ######################## COUPONS AND VOUCHERS #########################
+router.get('/coupons', checkUser, Couponcontroller.getUserCoupan)
 
 module.exports = router;
