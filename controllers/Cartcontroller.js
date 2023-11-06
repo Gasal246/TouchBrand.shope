@@ -30,8 +30,8 @@ module.exports = {
     try {
       const user = await usermodel.findById(req.cookies.user.id);
       const address = await Address.findOne({ Userid: user._id });
-      const cart = await Carts.findOne({ Userid: user._id });
-      let total = cart.Products.reduce((total, item) => total + item.Price * item.Quantity, 0)
+      const cart = await Carts.findOne({ Userid: user._id }).populate('Products.Productid')
+      let total = cart.Products.reduce((total, item) => total + (item.Productid.Price - item.Productid.Discount) * item.Quantity, 0)
       const wallet = await Wallets.findOne({ Userid: req.cookies.user.id });
       const coupon = req.query.coupon;
       let Coupon

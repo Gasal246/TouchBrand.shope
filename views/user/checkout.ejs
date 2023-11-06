@@ -179,12 +179,12 @@
                                                                 value="<%= product.Productimg %>">
                                                             <tr>
                                                                 <td><a href="#">
-                                                                        <%= product.Productname %>
+                                                                        <%= product.Productid.Productname %>
                                                                     </a><i
                                                                         style="color: rgb(0, 0, 0);font-weight: 500;"> x
                                                                         <%= product.Quantity %>
                                                                     </i></td>
-                                                                <td>$<%= product.Price * product.Quantity %>
+                                                                <td>$<%= (product.Productid.Price - product.Productid.Discount)  * product.Quantity %>
                                                                 </td>
                                                             </tr>
                                                             <% }) %>

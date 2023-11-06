@@ -122,7 +122,7 @@
                                         <div class="product">
                                             <div class="product-cart-details">
                                                 <h4 class="product-title">
-                                                    <a href="/viewproduct/<%= product.Productid %>"><%= product.Productname %></a>
+                                                    <a href="/viewproduct/<%= product.Productid._id %>"><%= product.Productid.Productname %></a>
                                                 </h4>
 
                                                 <span class="cart-product-info">
@@ -132,12 +132,13 @@
                                             </div><!-- End .product-cart-details -->
 
                                             <figure class="product-image-container">
-                                                <a href="/viewproduct/<%= product.Productid %>" class="product-image">
-                                                    <img src="<%= product.Productimg %>" alt="product">
+                                                <a href="/viewproduct/<%= product.Productid._id %>" class="product-image">
+                                                    <img src="<%= product.Productid.Imagepath[0] %>" alt="product">
                                                 </a>
                                             </figure>
-                                            <a  onclick="removeFromCart('<%= product.Productid %>')" class="btn-remove" title="Remove Product"><i
+                                            <a  onclick="removeFromCart('<%= product.Productid._id %>')" class="btn-remove" title="Remove Product"><i
                                                     class="icon-close"></i></a>
+                                                    
                                         </div><!-- End .product -->
                                         <% totalPrice += product.Price * product.Quantity; %>
                                         <% }) %>

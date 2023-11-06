@@ -27,7 +27,7 @@ module.exports = {
       const categories = await categoryCopy.find({});
       const banners = await Banners.find({});
       if (req.cookies.user) {
-        let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
+        let cart = await cartModel.findOne({ Userid: req.cookies.user.id }).populate('Products.Productid')
         await usermodel.findById(req.cookies.user.id).then((data)=>{
           if(data.Blocked == true){
             res.render("user/index", {
@@ -137,7 +137,8 @@ module.exports = {
   },
   getCart: async (req, res) => {
     if (req.cookies.user) {
-      let cart = await cartModel.findOne({ Userid: req.cookies.user.id });
+      let cart = await cartModel.findOne({ Userid: req.cookies.user.id }).populate('Products.Productid')
+      console.log("Popuated: ", cart);
       res.render("user/cart", { cart: cart ? cart.Products : null });
     }
   },
