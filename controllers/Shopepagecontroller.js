@@ -8,31 +8,32 @@ module.exports = {
       let min = req.query.min || 0;
       let max = req.query.max || 5000;
       let queryObj = req.query.qobj || {Price: { $gte: min, $lte: max }};
-      let query = Products.find(queryObj);
+      let query = Products.find(queryObj).populate('Category');
       const categorydata = await Categories.find({});
       const productCount = await Products.aggregate([
         {
-          $match: {
-            Price: {
-              $gte: min,
-              $lte: max
-            }
+          $group: {
+            _id: '$Category',
+            count: { $sum: 1 }
           }
         },
         {
-          $group: {
-            _id: { $toLower: "$Category" }, // Convert category to lowercase
-            count: { $sum: 1 },
-          },
+          $lookup: {
+            from: 'categories',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'categoryArray'
+          }
         },
         {
           $project: {
-            _id: 0,
-            category: "$_id",
+            _id: 1,
             count: 1,
-          },
-        },
-      ]);
+            category: 1,
+            category: { $arrayElemAt: ['$categoryArray.Catname', 0] }
+          }
+        }
+      ])
       let cat = req.query.categories || null;
       let categories = cat?req.query.categories.split(","):null;
 

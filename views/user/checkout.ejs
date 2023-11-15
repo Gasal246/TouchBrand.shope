@@ -172,11 +172,11 @@
                                                     <% if(cart){ %>
                                                         <% cart.map((product)=>{ %>
                                                             <input type="hidden" name="productId"
-                                                                value="<%= product.Productid %>">
+                                                                value="<%= product.Productid._id %>">
                                                             <input type="hidden" name="quantity"
                                                                 value="<%= product.Quantity %>">
                                                             <input type="hidden" name="pimage"
-                                                                value="<%= product.Productimg %>">
+                                                                value="<%= product.Productid.Imagepath[0] %>">
                                                             <tr>
                                                                 <td><a href="#">
                                                                         <%= product.Productid.Productname %>

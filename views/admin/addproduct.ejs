@@ -20,7 +20,7 @@
                 <select name="category" id="category" class="form-control" required>
                     <option value="">Select any categories</option>
                     <% categories.map((category)=>{ %>
-                        <option value="<%= category.Catname %>"><%= category.Catname %></option>
+                        <option value="<%= category._id %>"><%= category.Catname %></option>
                     <% }) %>
                 </select>
             </div>

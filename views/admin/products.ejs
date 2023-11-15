@@ -35,10 +35,10 @@
                                     <%= product.Productname %>
                                 </td>
                                 <td class="product-category">
-                                    <%= product.Category %>
+                                    <%= product.Category.Catname %>
                                 </td>
                                 <td>
-                                    $<%= product.Price %>
+                                    $<%= product.Price - product.Discount %>
                                 </td>
                                 <td>
                                     <%= product.Stoke %>

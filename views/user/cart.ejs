@@ -65,7 +65,7 @@
                                                         <td class="total-col">$<%= product.Price * product.Quantity %>
                                                         </td>
                                                         <td class="remove-col"><a
-                                                                onclick="removeFromCart('<%= product.Productid._id %>')"><button
+                                                                onclick="removeFromCart('<%= product.Productid._id %>', '<%= product.Quantity %>')"><button
                                                                     class="btn-remove"><i
                                                                         class="icon-close"></i></button></a></td>
                                                     </tr>
@@ -260,7 +260,7 @@
     </div><!-- End .page-wrapper -->
 
     <script>
-        function updateQuantity(productId, quantity, value) {
+        async function updateQuantity(productId, quantity, value) {
             let newQuantity
             newQuantity = parseInt(quantity) + value;
             if(newQuantity < 1){
@@ -273,11 +273,13 @@
                 type: 'PUT',
                 url: `/updateQuantity/${productId}`,
                 data: { quantity: newQuantity },
-                success: function (response) {
+                success: async (response) => {
                     console.log('Quantity updated successfully:', response);
-                    // Update the total price and any other UI elements as needed
-                    // For simplicity, let's reload the page to update the UI after quantity change
-                    location.reload();
+                    if(response.success){
+                        location.reload();
+                    }else{
+                        await alert("SORRY.. THIS IS THE LAST STOCK YOU HAVE..")
+                    }
                 },
                 error: function (error) {
                     console.error('Error updating quantity:', error);
@@ -285,23 +287,21 @@
             });
         }
 
-        function removeFromCart(productId) {
+        function removeFromCart(productId, quantity) {
             // AJAX request to update the quantity
             const query = confirm('Are you sure you want to remove item from cart?');
             if (query){
                 $.ajax({
-                type: 'GET',
-                url: `/removefromcart/${productId}`,
+                type: 'POST',
+                url: `/removefromcart`,
+                data:{
+                    pid: productId,
+                    qty: quantity
+                },
                 success: function (response) {
                     console.log('Item Removed successfully:', response);
-                    // Update the total price and any other UI elements as needed
-                    // For simplicity, let's reload the page to update the UI after quantity change
                     location.reload();
                 },
-                error: function (error) {
-                    console.error('Error removing cart item:', error);
-                    location.reload();
-                }
             });
             }
             

@@ -183,34 +183,16 @@ module.exports = {
         "Items.cancelled": true
       }).sort({ Orderdate: -1 });
 
-      const activeOrders = await Orders.aggregate([
-        {
-          $match: {
-            Userid: new mongoose.Types.ObjectId(req.cookies.user.id), // Convert the user ID to ObjectId type
-          }
-        },
-        {
-          $unwind: "$Items" // Split the array into separate documents for each item
-        },
-        {
-          $match: {
-            "Items.cancelled": false // Filter only the items with cancelled set to true
-          }
-        },
-        {
-          $group: {
-            _id: "$_id", // Group by order ID
-            Userid: { $first: "$Userid" },
-            Username: { $first: "$Username" },
-            Orderdate: { $first: "$Orderdate" },
-            Deliverydate: { $first: "$Deliverydate" },
-            Deliveryaddress: { $first: "$Deliveryaddress" },
-            Status: { $first: "$Status" },
-            Totalamount: { $first: "$Totalamount" },
-            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
-          }
-        }
-      ]).sort({ Orderdate: -1 });
+      const theOrders = await Orders.find({Userid: req.cookies.user.id}).populate('Items.Productid').sort({ Orderdate: -1 });
+      console.log("The Orders : ", theOrders)
+      let activeOrders = []
+      if(theOrders.length > 0){
+        activeOrders = theOrders.map(order => {
+          order.Items = order.Items.filter(item => !item.cancelled);
+          return order;
+        });
+      }
+      // console.log("Active Orders : ",activeOrders[0].Items)
 
       const address = await AddressCopy.findOne({
         Userid: req.cookies.user.id
@@ -239,7 +221,6 @@ module.exports = {
         activeOrders: activeOrders,
         wallet: wallet
       });
-
     } catch (error) {
       const on = "On User Login";
       const err = error.message;

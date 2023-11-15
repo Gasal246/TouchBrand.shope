@@ -4,7 +4,7 @@ const { Schema, ObjectId } = mongoose;
 
 const CategoriesSchema = new Schema({
   Catname: { type: String, required: true, unique: true },
-  Subcat: { type: String,  },
+  Subcat: [{ type: String,  }],
   Dateadded: { type: Date, default: Date.now()}
 });
 

@@ -663,8 +663,10 @@
                     </div><!-- End .col-6 -->
 
                     <div class="col-6 justify-content-end">
-                        <div class="product-price" >
-                            $<span id="pprice" ><%= product.Price - product.Discount %></span>
+                        <div class="product-price">
+                            $<span id="pprice">
+                                <%= product.Price - product.Discount %>
+                            </span>
                         </div><!-- End .product-price -->
                         <div class="quantity-field">
                             <span class="fa-solid fa-minus cqminus"></span>
@@ -709,22 +711,20 @@
                 $.ajax({
                     type: 'GET',
                     url: `/addtocart/${productId}?qty=${qty}`,
-                    success: async function (response) {
-                        console.log('Item Aadded successfully:', response);
-                        // Update the total price and any other UI elements as needed
-                        // For simplicity, let's reload the page to update the UI after quantity change
-                        alert('Item Aadded successfully');
-                        await location.reload();
+                    success: function (response) {
+                        if (response.success) {
+                            console.log('Item Aadded successfully:', response);
+                            alert('Item Aadded successfully');
+                            location.reload();
+                        } else {
+                            alert("Item not added to cart, SORRY.. OUT OF STOCK..")
+                        }
                     },
-                    error: async function (error) {
-                        console.error('Error Adding cart item:', error);
-                        alert('Item Aadded successfully');
-                        await location.reload();
-                    }
                 });
             }
         </script>
         <script>
+            const stoke = parseInt('<%- product.Stoke %>')
             const cplus = document.querySelector('.cqplus')
             const cminus = document.querySelector('.cqminus')
             const cnum = document.querySelector('.cqnum')
@@ -732,12 +732,17 @@
             let ca = 1
             let cqty = 1
             cplus.addEventListener('click', () => {
-                ca++
-                ca = (ca < 10) ? "0" + ca : ca;
-                ca = (ca > 10) ? 10 : ca;
-                cnum.innerText = ca
-                cqty = parseInt(ca)
-                document.getElementById('pprice').innerHTML = parseInt(price)*cqty
+                console.log(stoke);
+                if (cqty < stoke) {
+                    ca++
+                    ca = (ca < 10) ? "0" + ca : ca;
+                    ca = (ca > 10) ? 10 : ca;
+                    cnum.innerText = ca
+                    cqty = parseInt(ca)
+                    document.getElementById('pprice').innerHTML = parseInt(price) * cqty
+                } else {
+                    alert('OUT OF STOCK! Only one product left.. you can check out with this..');
+                }
             })
             cminus.addEventListener('click', () => {
                 ca--
@@ -745,10 +750,14 @@
                 ca = (ca < 1) ? "0" + 1 : ca;
                 cnum.innerText = ca
                 cqty = parseInt(ca)
-                document.getElementById('pprice').innerHTML = parseInt(price)*cqty
+                document.getElementById('pprice').innerHTML = parseInt(price) * cqty
             })
-            function checkoutthis(pid){
-                window.location.href = "/checkout?pid="+pid+"&qty="+cqty
+            function checkoutthis(pid) {
+                if(stoke > 0){
+                window.location.href = "/checkout?pid=" + pid + "&qty=" + cqty
+                }else{
+                    alert("Sorry.. This Item is OUT OF STOCK!")
+                }
             }
         </script>
 

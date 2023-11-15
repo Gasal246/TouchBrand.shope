@@ -30,7 +30,9 @@
                                         <li><a href="#signin-modal" data-toggle="modal"
                                                 style="color: #1f1e18; font-weight: 600;">Sign in</a></li>
                                         <% } else { %>
-                                            <a href="/logout" onclick="return confirm('You are temporarly lefting Touchbrand..')" style="color: #1d1410; font-weight: 600;">
+                                            <a href="/logout"
+                                                onclick="return confirm('You are temporarly lefting Touchbrand..')"
+                                                style="color: #1d1410; font-weight: 600;">
                                                 <li>Sign out</li>
                                             </a>
                                             <% } %>
@@ -49,9 +51,10 @@
                             <span class="sr-only">Toggle mobile menu</span>
                             <i class="icon-bars"></i>
                         </button>
-                        
+
                         <a href="/" class="logo">
-                            <h1 class="text-center" style="font-size: 28px;font-weight: 700;"><i class="fa-solid fa-table-cells-large"></i> TouchBrand</h1>
+                            <h1 class="text-center" style="font-size: 28px;font-weight: 700;"><i
+                                    class="fa-solid fa-table-cells-large"></i> TouchBrand</h1>
                         </a>
                     </div><!-- End .header-left -->
 
@@ -87,14 +90,14 @@
                         </div><!-- End .compare-dropdown -->
 
                         <div class="wishlist">
-                            <a href="wishlist.html" title="Wishlist">
+                            <a href="#" title="Wishlist">
                                 <div class="icon">
                                     <i class="icon-heart-o"></i>
                                     <span class="wishlist-count badge">3</span>
                                 </div>
                                 <p>Wishlist</p>
                             </a>
-                        </div><!-- End .compare-dropdown -->
+                        </div>
 
                         <div class="dropdown cart-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
@@ -103,11 +106,13 @@
                                     <i class="icon-shopping-cart"></i>
                                     <% if (!error) { %>
                                         <% if (cart) { %>
-                                            <span class="cart-count"><%= cart.length %></span>
-                                        <% } else { %>
-                                            <span class="cart-count">0</span>
-                                        <% } %>
-                                    <% } %>
+                                            <span class="cart-count">
+                                                <%= cart.length %>
+                                            </span>
+                                            <% } else { %>
+                                                <span class="cart-count">0</span>
+                                                <% } %>
+                                                    <% } %>
                                 </div>
                                 <p>Cart</p>
                             </a>
@@ -117,51 +122,61 @@
                                 <div class="dropdown-cart-products">
                                     <% if(!error){ %>
                                         <% if(cart){ %>
-                                            <% let totalPrice = 0; %>
-                                        <% cart.map((product)=>{ %>
-                                        <div class="product">
-                                            <div class="product-cart-details">
-                                                <h4 class="product-title">
-                                                    <a href="/viewproduct/<%= product.Productid._id %>"><%= product.Productid.Productname %></a>
-                                                </h4>
+                                            <% let totalPrice=0; %>
+                                                <% cart.map((product)=>{ %>
+                                                    <div class="product">
+                                                        <div class="product-cart-details">
+                                                            <h4 class="product-title">
+                                                                <a href="/viewproduct/<%= product.Productid._id %>">
+                                                                    <%= product.Productid.Productname %>
+                                                                </a>
+                                                            </h4>
 
-                                                <span class="cart-product-info">
-                                                    <span class="cart-product-qty"><%= product.Quantity %></span>
-                                                    x $<%= product.Price %>
-                                                </span>
-                                            </div><!-- End .product-cart-details -->
+                                                            <span class="cart-product-info">
+                                                                <span class="cart-product-qty">
+                                                                    <%= product.Quantity %>
+                                                                </span>
+                                                                x $<%= product.Price %>
+                                                            </span>
+                                                        </div><!-- End .product-cart-details -->
 
-                                            <figure class="product-image-container">
-                                                <a href="/viewproduct/<%= product.Productid._id %>" class="product-image">
-                                                    <img src="<%= product.Productid.Imagepath[0] %>" alt="product">
-                                                </a>
-                                            </figure>
-                                            <a  onclick="removeFromCart('<%= product.Productid._id %>')" class="btn-remove" title="Remove Product"><i
-                                                    class="icon-close"></i></a>
-                                                    
-                                        </div><!-- End .product -->
-                                        <% totalPrice += product.Price * product.Quantity; %>
-                                        <% }) %>
-                                        
-                                        <div class="dropdown-cart-total">
-                                            <span>Total</span>
-                                            <span class="cart-total-price">$<%= totalPrice.toFixed(2) %></span>
-                                        </div><!-- End .dropdown-cart-total -->
-                                        
-                                        <div class="dropdown-cart-action">
-                                            <a href="/viewcart" class="btn btn-primary">View Cart</a>
-                                            <a href="/cartcheckout"
-                                            class="btn btn-outline-primary-2"><span>Checkout</span><i
-                                            class="icon-long-arrow-right"></i></a>
-                                        </div><!-- End .dropdown-cart-total -->
-                                        <% } else { %>
-                                            <h6>Cart is empty</h6>
-                                            <% } %>
-                                        <% } else { %>
-                                            <a href="#signin-modal" data-toggle="modal">
-                                                <h6 style="color: orangered;"><u>Sign in</u></h6>
-                                            </a>
-                                            <% } %>
+                                                        <figure class="product-image-container">
+                                                            <a href="/viewproduct/<%= product.Productid._id %>"
+                                                                class="product-image">
+                                                                <img src="<%= product.Productid.Imagepath[0] %>"
+                                                                    alt="product">
+                                                            </a>
+                                                        </figure>
+                                                        <a onclick="removeFromCart('<%= product.Productid._id %>', '<%= product.Quantity %>')"
+                                                            class="btn-remove" title="Remove Product"><i
+                                                                class="icon-close"></i></a>
+
+                                                    </div><!-- End .product -->
+                                                    <% totalPrice +=product.Price * product.Quantity; %>
+                                                        <% }) %>
+
+                                                            <div class="dropdown-cart-total">
+                                                                <span>Total</span>
+                                                                <span class="cart-total-price">$<%=
+                                                                        totalPrice.toFixed(2) %></span>
+                                                            </div><!-- End .dropdown-cart-total -->
+
+                                                            <div class="dropdown-cart-action">
+                                                                <a href="/viewcart" class="btn btn-primary">View
+                                                                    Cart</a>
+                                                                <a href="/cartcheckout"
+                                                                    class="btn btn-outline-primary-2"><span>Checkout</span><i
+                                                                        class="icon-long-arrow-right"></i></a>
+                                                            </div><!-- End .dropdown-cart-total -->
+                                                            <% } else { %>
+                                                                <h6>Cart is empty</h6>
+                                                                <% } %>
+                                                                    <% } else { %>
+                                                                        <a href="#signin-modal" data-toggle="modal">
+                                                                            <h6 style="color: orangered;"><u>Sign in</u>
+                                                                            </h6>
+                                                                        </a>
+                                                                        <% } %>
                                 </div><!-- End .dropdown-menu -->
                             </div><!-- End .cart-dropdown -->
                         </div><!-- End .header-right -->
@@ -175,7 +190,7 @@
                                 <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false" data-display="static"
                                     title="Browse Categories">
-                                    Browse Categories
+                                    Browse TouchBrand
                                 </a>
 
                                 <div class="dropdown-menu">
@@ -183,15 +198,6 @@
                                         <ul class="menu-vertical sf-arrows">
                                             <li class="item-lead"><a href="#">Daily offers</a></li>
                                             <li class="item-lead"><a href="#">Gift Ideas</a></li>
-                                            <li><a href="#">Beds</a></li>
-                                            <li><a href="#">Lighting</a></li>
-                                            <li><a href="#">Sofas & Sleeper sofas</a></li>
-                                            <li><a href="#">Storage</a></li>
-                                            <li><a href="#">Armchairs & Chaises</a></li>
-                                            <li><a href="#">Decoration </a></li>
-                                            <li><a href="#">Kitchen Cabinets</a></li>
-                                            <li><a href="#">Coffee & Tables</a></li>
-                                            <li><a href="#">Outdoor Furniture </a></li>
                                         </ul><!-- End .menu-vertical -->
                                     </nav><!-- End .side-nav -->
                                 </div><!-- End .dropdown-menu -->
@@ -202,216 +208,7 @@
                             <nav class="main-nav">
                                 <ul class="menu sf-arrows">
                                     <li class="megamenu-container active">
-                                        <a href="index.html" class="sf-with-ul">Home</a>
-
-                                        <div class="megamenu demo">
-                                            <div class="menu-col">
-                                                <div class="menu-title">Choose your demo</div><!-- End .menu-title -->
-
-                                                <div class="demo-list">
-                                                    <div class="demo-item">
-                                                        <a href="index-1.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/1.jpg);"></span>
-                                                            <span class="demo-title">01 - furniture store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-2.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/2.jpg);"></span>
-                                                            <span class="demo-title">02 - furniture store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-3.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/3.jpg);"></span>
-                                                            <span class="demo-title">03 - electronic store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-4.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/4.jpg);"></span>
-                                                            <span class="demo-title">04 - electronic store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-5.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/5.jpg);"></span>
-                                                            <span class="demo-title">05 - fashion store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-6.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/6.jpg);"></span>
-                                                            <span class="demo-title">06 - fashion store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-7.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/7.jpg);"></span>
-                                                            <span class="demo-title">07 - fashion store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-8.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/8.jpg);"></span>
-                                                            <span class="demo-title">08 - fashion store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-9.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/9.jpg);"></span>
-                                                            <span class="demo-title">09 - fashion store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item">
-                                                        <a href="index-10.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/10.jpg);"></span>
-                                                            <span class="demo-title">10 - shoes store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-11.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/11.jpg);"></span>
-                                                            <span class="demo-title">11 - furniture simple store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-12.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/12.jpg);"></span>
-                                                            <span class="demo-title">12 - fashion simple store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-13.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/13.jpg);"></span>
-                                                            <span class="demo-title">13 - market</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-14.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/14.jpg);"></span>
-                                                            <span class="demo-title">14 - market fullwidth</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-15.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/15.jpg);"></span>
-                                                            <span class="demo-title">15 - lookbook 1</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-16.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/16.jpg);"></span>
-                                                            <span class="demo-title">16 - lookbook 2</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-17.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/17.jpg);"></span>
-                                                            <span class="demo-title">17 - fashion store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-18.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/18.jpg);"></span>
-                                                            <span class="demo-title">18 - fashion store (with
-                                                                sidebar)</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-19.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/19.jpg);"></span>
-                                                            <span class="demo-title">19 - games store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-20.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/20.jpg);"></span>
-                                                            <span class="demo-title">20 - book store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-21.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/21.jpg);"></span>
-                                                            <span class="demo-title">21 - sport store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-22.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/22.jpg);"></span>
-                                                            <span class="demo-title">22 - tools store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-23.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/23.jpg);"></span>
-                                                            <span class="demo-title">23 - fashion left navigation
-                                                                store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                    <div class="demo-item hidden">
-                                                        <a href="index-24.html">
-                                                            <span class="demo-bg"
-                                                                style="background-image: url(assets/images/menu/demos/24.jpg);"></span>
-                                                            <span class="demo-title">24 - extreme sport store</span>
-                                                        </a>
-                                                    </div><!-- End .demo-item -->
-
-                                                </div><!-- End .demo-list -->
-
-                                                <div class="megamenu-action text-center">
-                                                    <a href="#"
-                                                        class="btn btn-outline-primary-2 view-all-demos"><span>View
-                                                            All Demos</span><i class="icon-long-arrow-right"></i></a>
-                                                </div><!-- End .text-center -->
-                                            </div><!-- End .menu-col -->
-                                        </div><!-- End .megamenu -->
+                                        <a href="/" class="sf-with-ul">Home</a>
                                     </li>
                                     <li>
                                         <a href="/shope" class="sf-with-ul">Shop</a>
@@ -426,12 +223,13 @@
                                                                 <!-- End .menu-title -->
                                                                 <ul>
                                                                     <li><a href="#"><span>Smartphones<span
-                                                                            class="tip tip-new">New</span></span></a></li>
+                                                                                    class="tip tip-new">New</span></span></a>
+                                                                    </li>
                                                                     <li><a href="#">Laptops</a></li>
                                                                     <li><a href="#">Smart TVs</li>
-                                                                        <li><a href="#"><span>Gadgets & Accessories<span
-                                                                                        class="tip tip-new">New</span></span></a>
-                                                                        </li>
+                                                                    <li><a href="#"><span>Gadgets & Accessories<span
+                                                                                    class="tip tip-new">New</span></span></a>
+                                                                    </li>
                                                                     <li><a href="#">Gaming</a></li>
                                                                 </ul>
                                                             </div><!-- End .col-md-6 -->
@@ -453,7 +251,8 @@
                                                 <div class="col-md-4">
                                                     <div class="banner banner-overlay">
                                                         <a href="/shope" class="banner banner-menu">
-                                                            <img src="assets/images/backgrounds/soon-bg.jpg" alt="Banner">
+                                                            <img src="assets/images/backgrounds/soon-bg.jpg"
+                                                                alt="Banner">
                                                             <div class="banner-content banner-content-top">
                                                                 <div class="banner-title text-white">Last
                                                                     <br>Chance<br><span><strong>Sale</strong></span>
@@ -614,24 +413,26 @@
                 <div class="owl-carousel owl-simple owl-light owl-nav-inside" data-toggle="owl"
                     data-owl-options='{"nav": false}'>
                     <% banners.map((banner)=>{ %>
-                    <div class="intro-slide"
-                        style="background-image: url('<%= banner.Image %>')">
-                        <div class="container intro-content">
-                            <h3 class="intro-subtitle"><%= banner.Category %></h3><!-- End .h3 intro-subtitle -->
-                            <h1 class="intro-title">
-                                <%= banner.Title %> <br>
-                                <span class="text-primary">
-                                    <sup class="text-white font-weight-light">from</sup><sup>$</sup><%= banner.Price %>
-                                </span>
-                            </h1><!-- End .intro-title -->
+                        <div class="intro-slide" style="background-image: url('<%= banner.Image %>')">
+                            <div class="container intro-content">
+                                <h3 class="intro-subtitle">
+                                    <%= banner.Category %>
+                                </h3><!-- End .h3 intro-subtitle -->
+                                <h1 class="intro-title">
+                                    <%= banner.Title %> <br>
+                                        <span class="text-primary">
+                                            <sup class="text-white font-weight-light">from</sup><sup>$</sup>
+                                            <%= banner.Price %>
+                                        </span>
+                                </h1><!-- End .intro-title -->
 
-                            <a href="/shope?categories=<%= banner.Category %>" class="btn btn-primary">
-                                <span>Shop Now</span>
-                                <i class="icon-long-arrow-right"></i>
-                            </a>
-                        </div><!-- End .container intro-content -->
-                    </div><!-- End .intro-slide -->
-                    <% }) %>
+                                <a href="/shope?categories=<%= banner.Category %>" class="btn btn-primary">
+                                    <span>Shop Now</span>
+                                    <i class="icon-long-arrow-right"></i>
+                                </a>
+                            </div><!-- End .container intro-content -->
+                        </div><!-- End .intro-slide -->
+                        <% }) %>
                 </div><!-- End .owl-carousel owl-simple -->
 
                 <span class="slider-loader text-white"></span><!-- End .slider-loader -->
@@ -694,74 +495,57 @@
 
             <div class="mb-3 mb-lg-5"></div><!-- End .mb-3 mb-lg-5 -->
 
-            <div class="banner-group">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 col-lg-5">
-                            <div class="banner banner-large banner-overlay banner-overlay-light">
-                                <a href="#">
-                                    <img src="assets/images/demos/demo-2/banners/banner-1.jpg" alt="Banner">
-                                </a>
-
-                                <div class="banner-content banner-content-top">
-                                    <h4 class="banner-subtitle">Clearence</h4><!-- End .banner-subtitle -->
-                                    <h3 class="banner-title">Coffee Tables</h3><!-- End .banner-title -->
-                                    <div class="banner-text">from $19.99</div><!-- End .banner-text -->
-                                    <a href="#" class="btn btn-outline-gray banner-link">Shop Now<i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- End .banner-content -->
-                            </div><!-- End .banner -->
-                        </div><!-- End .col-lg-5 -->
-
-                        <div class="col-md-6 col-lg-3">
-                            <div class="banner banner-overlay">
-                                <a href="#">
-                                    <img src="assets/images/demos/demo-2/banners/banner-2.jpg" alt="Banner">
-                                </a>
-
-                                <div class="banner-content banner-content-bottom">
-                                    <h4 class="banner-subtitle text-grey">On Sale</h4><!-- End .banner-subtitle -->
-                                    <h3 class="banner-title text-white">Amazing <br>Armchairs</h3>
-                                    <!-- End .banner-title -->
-                                    <div class="banner-text text-white">from $39.99</div><!-- End .banner-text -->
-                                    <a href="#" class="btn btn-outline-white banner-link">Discover Now<i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- End .banner-content -->
-                            </div><!-- End .banner -->
-                        </div><!-- End .col-lg-3 -->
-
-                        <div class="col-md-6 col-lg-4">
-                            <div class="banner banner-overlay">
-                                <a href="#">
-                                    <img src="assets/images/demos/demo-2/banners/banner-3.jpg" alt="Banner">
-                                </a>
-
-                                <div class="banner-content banner-content-top">
-                                    <h4 class="banner-subtitle text-grey">New Arrivals</h4><!-- End .banner-subtitle -->
-                                    <h3 class="banner-title text-white">Storage <br>Boxes & Baskets</h3>
-                                    <!-- End .banner-title -->
-                                    <a href="#" class="btn btn-outline-white banner-link">Discover Now<i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- End .banner-content -->
-                            </div><!-- End .banner -->
-
-                            <div class="banner banner-overlay banner-overlay-light">
-                                <a href="#">
-                                    <img src="assets/images/demos/demo-2/banners/banner-4.jpg" alt="Banner">
-                                </a>
-
-                                <div class="banner-content banner-content-top">
-                                    <h4 class="banner-subtitle">On Sale</h4><!-- End .banner-subtitle -->
-                                    <h3 class="banner-title">Lamps Offer</h3><!-- End .banner-title -->
-                                    <div class="banner-text">up to 30% off</div><!-- End .banner-text -->
-                                    <a href="#" class="btn btn-outline-gray banner-link">Shop Now<i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- End .banner-content -->
-                            </div><!-- End .banner -->
-                        </div><!-- End .col-lg-4 -->
-                    </div><!-- End .row -->
-                </div><!-- End .container -->
-            </div><!-- End .banner-group -->
+            <% if(discountSale){ %>
+                <div class="bg-light deal-container pt-5 pb-3 mb-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <div class="deal">
+                                    <div class="deal-content">
+                                        <h4>Limited Quantities</h4>
+                                        <h2>Deal of the Day</h2>
+    
+                                        <h3 class="product-title"><a href="/product?pid=<%= discountSale.product._id %>"><%= discountSale.product.Productname %></a></h3>
+                                        <!-- End .product-title -->
+    
+                                        <div class="product-price">
+                                            <span class="new-price">$<%= discountSale.product.Price - discountSale.product.Discount %></span>
+                                            <span class="old-price">Was $<%= discountSale.product.Price %></span>
+                                        </div><!-- End .product-price -->
+    
+                                        <div class="deal-countdown" data-until="+10h"></div><!-- End .deal-countdown -->
+    
+                                        <a href="/product?pid=<%= discountSale.product._id %>" class="btn btn-primary">
+                                            <span>Shop Now</span><i class="icon-long-arrow-right"></i>
+                                        </a>
+                                    </div><!-- End .deal-content -->
+                                    <div class="deal-image">
+                                        <a href="/product?pid=<%= discountSale.product._id %>">
+                                            <img src="<%= discountSale.product.Imagepath[0] %>" alt="image">
+                                        </a>
+                                    </div><!-- End .deal-image -->
+                                </div><!-- End .deal -->
+                            </div><!-- End .col-lg-9 -->
+    
+                            <div class="col-lg-3">
+                                <div class="banner banner-overlay banner-overlay-light text-center d-none d-lg-block">
+                                    <a href="/product?pid=<%= discountSale.product._id %>">
+                                        <img src="<%= discountSale.product.Imagepath[1] %>" style="padding-top: 70%;background: white; max-height: 480px;" alt="Banner">
+                                    </a>
+    
+                                    <div class="banner-content banner-content-top banner-content-center">
+                                        <h4 class="banner-subtitle">The Best Choice</h4><!-- End .banner-subtitle -->
+                                        <h3 class="banner-title"><%= discountSale.product.Productname %></h3><!-- End .banner-title -->
+                                        <div class="banner-text text-primary">$<%= discountSale.product.Price - discountSale.product.Discount %></div><!-- End .banner-text -->
+                                        <a href="/product?pid=<%= discountSale.product._id %>" class="btn btn-outline-gray banner-link">Shop Now<i
+                                                class="icon-long-arrow-right"></i></a>
+                                    </div><!-- End .banner-content -->
+                                </div><!-- End .banner -->
+                            </div><!-- End .col-lg-3 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .bg-light -->
+                <% } %>
 
             <div class="mb-3"></div><!-- End .mb-6 -->
 
@@ -815,56 +599,52 @@
                                 }
                             }
                         }'>
-                        <% if(Products.length > 0){ %>
-                            <% Products.forEach(item => { %>
-                                <% if(item.category == 'smartphones'){ %>
-                                <% if(item.products.length > 0){ %>
-                            <% item.products.map((product, index)=>{%>
+                        <% if(Products.smartphones){ %>
+                            <% if(Products.smartphones.length> 0){ %>
+                                <% Products.smartphones.map((product, index)=>{%>
                                     <div class="product product-11 text-center" style="border-radius: 5px;">
                                         <figure class="product-media" style="background: white;">
+                                            <% if(product.Stoke < 1){ %>
+                                                <span class="product-label label-circle label-sale">Stock Out</span>
+                                            <% } %>
                                             <a href="/viewproduct/<%= product._id %>">
                                                 <img src="<%= product.Imagepath[0] %>" alt="Product image"
-                                                    class="product-image"
-                                                    style="height: 280px; object-fit: contain;">
+                                                    class="product-image" style="height: 280px; object-fit: contain;">
                                                 <img src="<%= product.Imagepath[1] %>" alt="Product image"
                                                     class="product-image-hover"
                                                     style="height: 280px; object-fit: contain;">
                                             </a>
-
+    
                                             <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to
+                                                <a href="#" class="btn-product-icon btn-wishlist"><span>add
+                                                        to
                                                         wishlist</span></a>
                                             </div><!-- End .product-action-vertical -->
                                         </figure><!-- End .product-media -->
-
+    
                                         <div class="product-body">
                                             <h3 class="product-title"><a href="/viewproduct/<%= product._id %>">
                                                     <%= product.Productname %>
                                                 </a></h3>
                                             <!-- End .product-title -->
                                             <div class="product-price">
-                                                $<%= product.Price %>
+                                                <span class="new-price">$<%= product.Price - product.Discount %></span>
+                                                <span class="old-price">Was $<%= product.Price %></span>
                                             </div><!-- End .product-price -->
-                                            <div class="product-nav product-nav-dots">
-                                                <a href="#" class="active" style="background: #1f1e18;"><span
-                                                        class="sr-only">Color name</span></a>
-                                                <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
-                                                        name</span></a>
-                                            </div><!-- End .product-nav -->
+                                            
                                         </div><!-- End .product-body -->
                                         <div class="product-action">
-                                            <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            <a onclick="addToCart('<%= product._id %>')"
+                                                class="btn-product btn-cart"><span>add to cart</span></a>
                                         </div><!-- End .product-action -->
                                     </div><!-- End .product -->
                                     <% }) %>
-                                    <% } %>
-                                    <% }else{ %>
-                                        <p>No Products for this category</p>
-                                        <% } %>
-                                    <% }) %>
-                                    <% } %>
-
-
+                                        <% }else{ %>
+                                            <p>No Products for this category</p>
+                                            <% } %>
+                                            <% }else{ %>
+                                                <p>No Such a category found</p>
+                                                <% } %>
                         </div><!-- End .owl-carousel -->
                     </div><!-- .End .tab-pane -->
                     <div class="tab-pane p-0 fade" id="products-sale-tab" role="tabpanel"
@@ -897,54 +677,52 @@
                                 }
                             }
                         }'>
-                        <% if(Products.length > 0){ %>
-                            <% Products.forEach(item => { %>
-                                <% if(item.category == 'laptops'){ %>
-                                <% if(item.products.length > 0){ %>
-                            <% item.products.map((product, index)=>{%>
+                        <% if(Products.laptops){ %>
+                            <% if(Products.laptops.length> 0){ %>
+                                <% Products.laptops.map((product, index)=>{%>
                                     <div class="product product-11 text-center" style="border-radius: 5px;">
                                         <figure class="product-media" style="background: white;">
+                                            <% if(product.Stoke < 1){ %>
+                                                <span class="product-label label-circle label-sale">Sale</span>
+                                            <% } %>
                                             <a href="/viewproduct/<%= product._id %>">
                                                 <img src="<%= product.Imagepath[0] %>" alt="Product image"
-                                                    class="product-image"
-                                                    style="height: 280px; object-fit: contain;">
+                                                    class="product-image" style="height: 280px; object-fit: contain;">
                                                 <img src="<%= product.Imagepath[1] %>" alt="Product image"
                                                     class="product-image-hover"
                                                     style="height: 280px; object-fit: contain;">
                                             </a>
-
+    
                                             <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to
+                                                <a href="#" class="btn-product-icon btn-wishlist"><span>add
+                                                        to
                                                         wishlist</span></a>
                                             </div><!-- End .product-action-vertical -->
                                         </figure><!-- End .product-media -->
-
+    
                                         <div class="product-body">
                                             <h3 class="product-title"><a href="/viewproduct/<%= product._id %>">
                                                     <%= product.Productname %>
                                                 </a></h3>
                                             <!-- End .product-title -->
                                             <div class="product-price">
-                                                $<%= product.Price %>
+                                                <span class="new-price">$<%= product.Price - product.Discount %></span>
+                                                <span class="old-price">Was $<%= product.Price %></span>
                                             </div><!-- End .product-price -->
-                                            <div class="product-nav product-nav-dots">
-                                                <a href="#" class="active" style="background: #1f1e18;"><span
-                                                        class="sr-only">Color name</span></a>
-                                                <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
-                                                        name</span></a>
-                                            </div><!-- End .product-nav -->
+                                            
                                         </div><!-- End .product-body -->
                                         <div class="product-action">
-                                            <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            <a onclick="addToCart('<%= product._id %>')"
+                                                class="btn-product btn-cart"><span>add to cart</span></a>
                                         </div><!-- End .product-action -->
                                     </div><!-- End .product -->
                                     <% }) %>
-                                    <% } %>
-                                    <% }else{ %>
-                                        <p>No Products for this category</p>
-                                        <% } %>
-                                    <% }) %>
-                                    <% } %>
+                                        <% }else{ %>
+                                            <p>No Products for this category</p>
+                                            <% } %>
+                                            <% }else{ %>
+                                                <p>No Such a category found</p>
+                                                <% } %>
                         </div><!-- End .owl-carousel -->
                     </div><!-- .End .tab-pane -->
                     <div class="tab-pane p-0 fade" id="products-top-tab" role="tabpanel"
@@ -977,105 +755,52 @@
                                 }
                             }
                         }'>
-                            <div class="product product-11 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/products/product-2-1.jpg"
-                                            alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-2/products/product-2-2.jpg"
-                                            alt="Product image" class="product-image-hover">
-                                    </a>
+                        <% if(Products.gadgets){ %>
+                        <% if(Products.gadgets || Products.gadgets.length> 0){ %>
+                            <% Products.gadgets.map((product, index)=>{%>
+                                <div class="product product-11 text-center" style="border-radius: 5px;">
+                                    <figure class="product-media">
+                                        <% if(product.Stoke < 1){ %>
+                                            <span class="product-label label-circle label-sale">Sale</span>
+                                        <% } %>
+                                        <a href="/viewproduct/<%= product._id %>">
+                                            <img src="<%= product.Imagepath[0] %>" alt="Product image"
+                                                class="product-image" style="height: 280px; object-fit: contain;">
+                                            <img src="<%= product.Imagepath[1] %>" alt="Product image"
+                                                class="product-image-hover"
+                                                style="height: 280px; object-fit: contain;">
+                                        </a>
 
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-                                </figure><!-- End .product-media -->
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist"><span>add
+                                                    to
+                                                    wishlist</span></a>
+                                        </div><!-- End .product-action-vertical -->
+                                    </figure><!-- End .product-media -->
 
-                                <div class="product-body">
-                                    <h3 class="product-title"><a href="product.html">Octo 4240</a></h3>
-                                    <!-- End .product-title -->
-                                    <div class="product-price">
-                                        $746,00
-                                    </div><!-- End .product-price -->
-
-                                    <div class="product-nav product-nav-dots">
-                                        <a href="#" class="active" style="background: #1f1e18;"><span
-                                                class="sr-only">Color name</span></a>
-                                        <a href="#" style="background: #e8e8e8;"><span class="sr-only">Color
-                                                name</span></a>
-                                    </div><!-- End .product-nav -->
-                                </div><!-- End .product-body -->
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </div><!-- End .product -->
-
-                            <div class="product product-11 text-center">
-                                <figure class="product-media">
-                                    <span class="product-label label-circle label-new">New</span>
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/products/product-3-1.jpg"
-                                            alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-2/products/product-3-2.jpg"
-                                            alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <h3 class="product-title"><a href="product.html">Flow Slim Armchair</a></h3>
-                                    <!-- End .product-title -->
-                                    <div class="product-price">
-                                        $970,00
-                                    </div><!-- End .product-price -->
-                                </div><!-- End .product-body -->
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </div><!-- End .product -->
-
-                            <div class="product product-11 text-center">
-                                <figure class="product-media">
-                                    <span class="product-label label-circle label-sale">Sale</span>
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/products/product-4-1.jpg"
-                                            alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-2/products/product-4-2.jpg"
-                                            alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <h3 class="product-title"><a href="product.html">Roots Sofa Bed</a></h3>
-                                    <!-- End .product-title -->
-                                    <div class="product-price">
-                                        <span class="new-price">$337,00</span>
-                                        <span class="old-price">Was $449,00</span>
-                                    </div><!-- End .product-price -->
-
-                                    <div class="product-nav product-nav-dots">
-                                        <a href="#" class="active" style="background: #878883;"><span
-                                                class="sr-only">Color name</span></a>
-                                        <a href="#" style="background: #dfd5c2;"><span class="sr-only">Color
-                                                name</span></a>
-                                    </div><!-- End .product-nav -->
-                                </div><!-- End .product-body -->
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </div><!-- End .product -->
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="/viewproduct/<%= product._id %>">
+                                                <%= product.Productname %>
+                                            </a></h3>
+                                        <!-- End .product-title -->
+                                        <div class="product-price">
+                                            <span class="new-price">$<%= product.Price - product.Discount %></span>
+                                            <span class="old-price">Was $<%= product.Price %></span>
+                                        </div><!-- End .product-price -->
+                                        
+                                    </div><!-- End .product-body -->
+                                    <div class="product-action">
+                                        <a onclick="addToCart('<%= product._id %>')"
+                                            class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </div><!-- End .product -->
+                                <% }) %>
+                                    <% }else{ %>
+                                        <p>No Products for this category</p>
+                                        <% } %>
+                                        <% }else{ %>
+                                            <p>No Such a category found</p>
+                                            <% } %>
                         </div><!-- End .owl-carousel -->
                     </div><!-- .End .tab-pane -->
                 </div><!-- End .tab-content -->
@@ -1083,6 +808,7 @@
 
             <div class="mb-5"></div><!-- End .mb-5 -->
 
+            <% if(discountSale){ %>
             <div class="bg-light deal-container pt-5 pb-3 mb-5">
                 <div class="container">
                     <div class="row">
@@ -1092,23 +818,23 @@
                                     <h4>Limited Quantities</h4>
                                     <h2>Deal of the Day</h2>
 
-                                    <h3 class="product-title"><a href="product.html">POÄNG</a></h3>
+                                    <h3 class="product-title"><a href="/product?pid=<%= discountSale.product._id %>"><%= discountSale.product.Productname %></a></h3>
                                     <!-- End .product-title -->
 
                                     <div class="product-price">
-                                        <span class="new-price">$149.00</span>
-                                        <span class="old-price">Was $240.00</span>
+                                        <span class="new-price">$<%= discountSale.product.Price - discountSale.product.Discount %></span>
+                                        <span class="old-price">Was $<%= discountSale.product.Price %></span>
                                     </div><!-- End .product-price -->
 
                                     <div class="deal-countdown" data-until="+10h"></div><!-- End .deal-countdown -->
 
-                                    <a href="product.html" class="btn btn-primary">
+                                    <a href="/product?pid=<%= discountSale.product._id %>" class="btn btn-primary">
                                         <span>Shop Now</span><i class="icon-long-arrow-right"></i>
                                     </a>
                                 </div><!-- End .deal-content -->
                                 <div class="deal-image">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-2/deal/product-1.jpg" alt="image">
+                                    <a href="/product?pid=<%= discountSale.product._id %>">
+                                        <img src="<%= discountSale.product.Imagepath[0] %>" alt="image">
                                     </a>
                                 </div><!-- End .deal-image -->
                             </div><!-- End .deal -->
@@ -1116,15 +842,15 @@
 
                         <div class="col-lg-3">
                             <div class="banner banner-overlay banner-overlay-light text-center d-none d-lg-block">
-                                <a href="#">
-                                    <img src="assets/images/demos/demo-2/banners/banner-5.jpg" alt="Banner">
+                                <a href="/product?pid=<%= discountSale.product._id %>">
+                                    <img src="<%= discountSale.product.Imagepath[1] %>" style="padding-top: 70%;background: white; max-height: 480px;" alt="Banner">
                                 </a>
 
                                 <div class="banner-content banner-content-top banner-content-center">
                                     <h4 class="banner-subtitle">The Best Choice</h4><!-- End .banner-subtitle -->
-                                    <h3 class="banner-title">AGEN</h3><!-- End .banner-title -->
-                                    <div class="banner-text text-primary">$49.99</div><!-- End .banner-text -->
-                                    <a href="#" class="btn btn-outline-gray banner-link">Shop Now<i
+                                    <h3 class="banner-title"><%= discountSale.product.Productname %></h3><!-- End .banner-title -->
+                                    <div class="banner-text text-primary">$<%= discountSale.product.Price - discountSale.product.Discount %></div><!-- End .banner-text -->
+                                    <a href="/product?pid=<%= discountSale.product._id %>" class="btn btn-outline-gray banner-link">Shop Now<i
                                             class="icon-long-arrow-right"></i></a>
                                 </div><!-- End .banner-content -->
                             </div><!-- End .banner -->
@@ -1132,6 +858,7 @@
                     </div><!-- End .row -->
                 </div><!-- End .container -->
             </div><!-- End .bg-light -->
+            <% } %>
 
             <div class="mb-6"></div><!-- End .mb-6 -->
 
@@ -1146,7 +873,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="top-fur-link" data-toggle="tab" href="#top-fur-tab" role="tab"
-                                aria-controls="top-fur-tab" aria-selected="false">Furniture</a>
+                                aria-controls="top-fur-tab" aria-selected="false">Gadgets</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="top-decor-link" data-toggle="tab" href="#top-decor-tab" role="tab"
@@ -1164,13 +891,14 @@
                         aria-labelledby="top-all-link">
                         <div class="products">
                             <div class="row justify-content-center">
+                                <% newAdded.forEach(product => { %>
                                 <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
                                     <div class="product product-11 text-center">
                                         <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-7-1.jpg"
+                                            <a href="product?pid=<%= product._id %>">
+                                                <img src="<%= product.Imagepath[0] %>"
                                                     alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-7-2.jpg"
+                                                <img src="<%= product.Imagepath[1] %>"
                                                     alt="Product image" class="product-image-hover">
                                             </a>
 
@@ -1182,329 +910,27 @@
 
                                         <div class="product-body">
                                             <div class="product-cat">
-                                                <a href="#">Lighting</a>
+                                                <a href="#"><%= product.Category.Catname %></a>
                                             </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Petite Table Lamp</a></h3>
+                                            <h3 class="product-title"><a href="product?pid=<%= product._id %>"><%= product.Productname %></a></h3>
                                             <!-- End .product-title -->
                                             <div class="product-price">
-                                                $401,00
+                                                $<%= product.Price - product.Discount %>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                         <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            <a onclick="addToCart('<%= product._id %>')"
+                                                class="btn-product btn-cart"><span>add to cart</span></a>
                                         </div><!-- End .product-action -->
                                     </div><!-- End .product -->
                                 </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-8-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-8-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Decor</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Madra Log Holder</a></h3>
-                                            <!-- End .product-title -->
-                                            <div class="product-price">
-                                                $401,00
-                                            </div><!-- End .product-price -->
-
-                                            <div class="product-nav product-nav-dots">
-                                                <a href="#" class="active" style="background: #333333;"><span
-                                                        class="sr-only">Color name</span></a>
-                                                <a href="#" style="background: #927764;"><span class="sr-only">Color
-                                                        name</span></a>
-                                            </div><!-- End .product-nav -->
-
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <span class="product-label label-circle label-sale">Sale</span>
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-9-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-9-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Furniture</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Garden Armchair</a></h3>
-                                            <!-- End .product-title -->
-                                            <div class="product-price">
-                                                <span class="new-price">$94,00</span>
-                                                <span class="old-price">Was $94,00</span>
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-10-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-10-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Lighting</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Carronade Large Suspension
-                                                    Lamp</a></h3><!-- End .product-title -->
-                                            <div class="product-price">
-                                                $401,00
-                                            </div><!-- End .product-price -->
-
-                                            <div class="product-nav product-nav-dots">
-                                                <a href="#" class="active" style="background: #e8e8e8;"><span
-                                                        class="sr-only">Color name</span></a>
-                                                <a href="#" style="background: #333333;"><span class="sr-only">Color
-                                                        name</span></a>
-                                            </div><!-- End .product-nav -->
-
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-11-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-11-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Decor</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Original Outdoor
-                                                    Beanbag</a></h3><!-- End .product-title -->
-                                            <div class="product-price">
-                                                $259,00
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <span class="product-label label-circle label-new">New</span>
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-12-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-12-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Furniture</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">2-Seater</a></h3>
-                                            <!-- End .product-title -->
-                                            <div class="product-price">
-                                                $3.107,00
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-13-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-13-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Furniture</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Wingback Chair</a></h3>
-                                            <!-- End .product-title -->
-                                            <div class="product-price">
-                                                $2.486,00
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-14-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-14-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Decor</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Cushion Set 3 Pieces</a>
-                                            </h3><!-- End .product-title -->
-                                            <div class="product-price">
-                                                $199,00
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-15-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-15-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Decor</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Cushion Set 3 Pieces</a>
-                                            </h3><!-- End .product-title -->
-                                            <div class="product-price">
-                                                $199,00
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                    <div class="product product-11 text-center">
-                                        <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="assets/images/demos/demo-2/products/product-16-1.jpg"
-                                                    alt="Product image" class="product-image">
-                                                <img src="assets/images/demos/demo-2/products/product-16-2.jpg"
-                                                    alt="Product image" class="product-image-hover">
-                                            </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-
-                                        <div class="product-body">
-                                            <div class="product-cat">
-                                                <a href="#">Lighting</a>
-                                            </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Carronade Table Lamp</a>
-                                            </h3><!-- End .product-title -->
-                                            <div class="product-price">
-                                                $499,00
-                                            </div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+                                <% }) %> 
+                                
                             </div><!-- End .row -->
                         </div><!-- End .products -->
                     </div><!-- .End .tab-pane -->
+
+                    
                     <div class="tab-pane p-0 fade" id="top-fur-tab" role="tabpanel" aria-labelledby="top-fur-link">
                         <div class="products">
                             <div class="row justify-content-center">
@@ -1965,7 +1391,7 @@
 
         <%- include('footer.ejs') %>
     </div><!-- End .page-wrapper -->
-    
+
 
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
@@ -2288,21 +1714,19 @@
 
     </script>
     <script>
-        function removeFromCart(productId) {
+        function removeFromCart(productId, quantity) {
             // AJAX request to update the quantity
             $.ajax({
-                type: 'GET',
-                url: `/removefromcart/${productId}`,
+                type: 'POST',
+                url: `/removefromcart`,
+                data:{
+                    pid: productId,
+                    qty: quantity
+                },
                 success: function (response) {
                     console.log('Item Removed successfully:', response);
-                    // Update the total price and any other UI elements as needed
-                    // For simplicity, let's reload the page to update the UI after quantity change
                     location.reload();
                 },
-                error: function (error) {
-                    console.error('Error removing cart item:', error);
-                    location.reload();
-                }
             });
         }
         function addToCart(productId) {
@@ -2311,17 +1735,14 @@
                 type: 'GET',
                 url: `/addtocart/${productId}`,
                 success: function (response) {
-                    console.log('Item Aadded successfully:', response);
-                    // Update the total price and any other UI elements as needed
-                    // For simplicity, let's reload the page to update the UI after quantity change
-                    alert('Item Aadded successfully');
-                    location.reload();
+                    if(response.success){
+                        console.log('Item Aadded successfully:', response);
+                        alert('Item Aadded successfully');
+                        location.reload();
+                    }else{
+                        alert("Item not added to cart, SORRY.. OUT OF STOCK..")
+                    }
                 },
-                error: function (error) {
-                    console.error('Error Adding cart item:', error);
-                    alert('Item Aadded successfully');
-                    location.reload();
-                }
             });
         }
 

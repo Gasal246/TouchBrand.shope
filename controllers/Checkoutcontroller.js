@@ -30,7 +30,7 @@ module.exports = {
           cart: null,
           wallet, total, coupon: Coupon
         });
-      }
+      } 
     } catch (error) {
       const on = "On Checkout Order";
       const err = error.message;

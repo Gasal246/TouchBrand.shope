@@ -16,7 +16,8 @@ module.exports = {
   // GET PRODUCT
   getAdminProducts: async (req, res, uniqueIdentifier) => {
     try {
-      const products = await Product.find({});
+      const products = await Product.find({}).populate('Category')
+      console.log(products[0]);
       if (req.cookies.admin) {
         res.render("admin/products", { products });
       } else {
@@ -34,6 +35,7 @@ module.exports = {
   getAddProduct: async (req, res) => {
     try {
       const categories = await Categories.find({});
+      console.log("Categories: " + categories);
       res.render("admin/addproduct", { categories });
     } catch (error) {
       const on = "On rendering addproduct Page";
@@ -101,8 +103,8 @@ module.exports = {
       let product;
       const categories = await Categories.find({});
       if (pid) {
-        product = await Product.findById(pid);
-      }
+        product = await Product.findById(pid).populate('Category')
+      } 
       console.log(product);
       res.render("admin/editproduct", { product, categories });
     } catch (error) {
@@ -159,7 +161,6 @@ module.exports = {
           Catname: product.Category
         });
         res.render("user/product", { product: product, category: category });
-        console.log("category : ", category);
       }
     } catch (error) {
       const on = "On Finding product";

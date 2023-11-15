@@ -8,7 +8,7 @@ const OrdersSchema = new Schema({
   Items: [
     {
       Paymet: { type: String, required: true },
-      Productid: { type: Schema.Types.ObjectId, required: true },
+      Productid: { type: Schema.Types.ObjectId, ref:'Products', required: true },
       Productname: { type: String, required: true },
       Price: { type: Number, required: true },
       Quantity: { type: Number, required: true },

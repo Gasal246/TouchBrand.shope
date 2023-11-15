@@ -8,15 +8,7 @@ const Productcontroller = require("../controllers/Productcontroller");
 const Checkoutcontroller = require("../controllers/Checkoutcontroller");
 const Ordercontroller = require("../controllers/Ordercontroller");
 
-const Product = require("../public/models/productmodel");
-const Categories = require("../public/models/categorymodel");
-const usermodel = require("../public/models/usermodel");
-const Address = require("../public/models/addressmodel");
-const Carts = require("../public/models/cartmodel");
-const Orders = require("../public/models/ordermodel");
-const Products = require("../public/models/productmodel");
 const Shopepagecontroller = require("../controllers/Shopepagecontroller");
-const paymentHelper = require("../helpers/paymentHelper");
 const Paymentcontroller = require("../controllers/Paymentcontroller");
 const Walletcontroller = require("../controllers/Walletcontroller");
 
@@ -55,7 +47,7 @@ router.post("/editprofile", checkUser, Usercontroller.editProfile);
 // ################## CART CONTROL ################
 router.get("/addtocart/:pid", checkUser, Homepagecontroller.addToCart);
 
-router.get("/removefromcart/:pid", checkUser, Homepagecontroller.deleteCartItem);
+router.post("/removefromcart", checkUser, Homepagecontroller.deleteCartItem);
 
 router.get("/viewcart", checkUser, Homepagecontroller.getCart);
 

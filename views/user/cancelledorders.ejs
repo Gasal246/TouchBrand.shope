@@ -9,6 +9,7 @@
     </div>
     <div class="row mb-5">
         <% corders.map((order)=>{ %>
+            <% if(order.Items.length > 0){ %>
             <div class="col-12 col-lg-6">
             <div class="col-12 p-2 shadow mt-2"
                 style="background-color: rgba(255, 230, 230, 0.713); border-radius: 10px;">
@@ -18,12 +19,12 @@
                 <% order.Items.map((item)=>{ %>
                         <div class="col-12">
                             <div class="gcard mb-1">
-                                <a href="/viewproduct/<%= item.Productid %>"><img
-                                        src="<%= item.Productimg %>"
+                                <a href="/viewproduct/<%= item.Productid._id %>"><img
+                                        src="<%= item.Productid.Imagepath[0] %>"
                                         alt=""></a>
                                 <div class="gcard-body">
                                     <h6>
-                                        <a href="/viewproduct/<%= item.Productid %>">
+                                        <a href="/viewproduct/<%= item.Productid._id %>">
                                             <%= item.Productname %>
                                         </a>
 
@@ -31,7 +32,7 @@
                                     <div
                                         style="display: flex;justify-content: space-between;">
                                         <p>Quantity: <%= item.Quantity  %> <br>
-                                                Amount: $<%= item.Quantity*item.Price %>
+                                                Amount: $<%= item.Quantity * (item.Productid.Price - item.Productid.Discount) %>
                                         </p>
                                         <a onclick="removeOrderItem('<%= item._id %>', '<%= order._id %>')"
                                             class="btn btn-dark">remove order</a>
@@ -43,6 +44,7 @@
                         <% }) %>
             </div>
         </div>
+        <% } %>
         <% }) %>
     </div>
     </div>

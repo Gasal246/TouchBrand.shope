@@ -18,9 +18,9 @@
             <div class="mb-3">
                 <label class="form-label">Category</label>
                 <select name="category" id="category" class="form-control" required>
-                    <option value="<%= product?product.Category:'' %>"><%= product?product.Category:'' %></option>
+                    <option value="<%= product?product.Category._id:'' %>"><%= product?product.Category.Catname:'' %></option>
                     <% categories.map((category)=>{ %>
-                        <option value="<%= category.Catname %>"><%= category.Catname %></option>
+                        <option value="<%= category._id %>"><%= category.Catname %></option>
                     <% }) %>
                 </select>
             </div>

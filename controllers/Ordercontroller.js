@@ -151,7 +151,7 @@ module.exports = {
             Paymet: req.body.payby,
             Productid: product._id,
             Productname: product.Productname,
-            Price: product.Price,
+            Price: product.Price - product.Discount,
             Quantity: req.body.quantity[index],
             Productimg: req.body.pimage[index],
             Shippingcost: product.Shipingcost
@@ -299,9 +299,13 @@ module.exports = {
 
       if (order.Items.length < 1) {
         await Orders.findByIdAndRemove(oid);
+      }else{
+        // Save the updated order
+        await order.save();
       }
-      // Save the updated order
-      await order.save();
+      
+      const productId = order.Items[index].Productid
+      await Products.findByIdAndUpdate(productId, {$inc:{Stoke: 1}})
 
       next();
     } catch (error) {
@@ -324,33 +328,11 @@ module.exports = {
   viewCancelledOrders: async (req, res) => {
     try {
       const uid = req.cookies.user.id;
-      const corders = await Orders.aggregate([
-        {
-          $match: {
-            Userid: new mongoose.Types.ObjectId(uid) // Convert the user ID to ObjectId type
-          }
-        },
-        {
-          $unwind: "$Items" // Split the array into separate documents for each item
-        },
-        {
-          $match: {
-            "Items.cancelled": true // Filter only the items with cancelled set to true
-          }
-        },
-        {
-          $group: {
-            _id: "$_id", // Group by order ID
-            Userid: { $first: "$Userid" },
-            Username: { $first: "$Username" },
-            Orderdate: { $first: "$Orderdate" },
-            Deliveryaddress: { $first: "$Deliveryaddress" },
-            Status: { $first: "$Status" },
-            Totalamount: { $first: "$Totalamount" },
-            Items: { $push: "$Items" } // Reconstruct the items array with cancelled items
-          }
-        }
-      ]);
+      const theOrders = await Orders.find({Userid: req.cookies.user.id}).populate('Items.Productid').sort({ Orderdate: -1 });
+      const corders = theOrders.map(order => {
+        order.Items = order.Items.filter(item => item.cancelled);
+        return order;
+      });
       res.render("user/cancelledorders", { corders });
     } catch (error) {
       const on = "On View Cancelled Orders";

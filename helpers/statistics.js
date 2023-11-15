@@ -1,3 +1,4 @@
+const Products = require("../public/models/productmodel")
 const Sales = require("../public/models/salesmodel")
 
 module.exports = {
@@ -61,4 +62,9 @@ module.exports = {
             });
         });
     },
+    updateStoke: (pid, value)=>{
+        return new Promise(async (resolve, reject) => {
+            
+        })
+    }
 }
