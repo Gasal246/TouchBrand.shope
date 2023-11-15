@@ -35,7 +35,7 @@
                                     <%= product.Productname %>
                                 </td>
                                 <td class="product-category">
-                                    <%= product.Category.Catname %>
+                                    <%= product.Category?product.Category.Catname:'' %>
                                 </td>
                                 <td>
                                     $<%= product.Price - product.Discount %>

@@ -12,7 +12,7 @@ module.exports = {
       const populated = await Product.find({}).populate('Category').sort({ Dateadded: -1 })
       const productsByCategory = {};
       populated.forEach((product) => {
-        const categoryName = product.Category.Catname; 
+        const categoryName = product.Category?product.Category.Catname:'';
         if (!productsByCategory[categoryName]) {
           productsByCategory[categoryName] = [];
         }

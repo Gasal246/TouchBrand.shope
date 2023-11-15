@@ -910,7 +910,7 @@
 
                                         <div class="product-body">
                                             <div class="product-cat">
-                                                <a href="#"><%= product.Category.Catname %></a>
+                                                <a href="#"><%= product.Category?product.Category.Catname:'' %></a>
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product?pid=<%= product._id %>"><%= product.Productname %></a></h3>
                                             <!-- End .product-title -->
