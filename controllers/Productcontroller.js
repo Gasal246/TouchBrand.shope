@@ -8,7 +8,6 @@ const fs = require("fs");
 const Product = require("../public/models/productmodel");
 const Admincopy = require("../public/models/adminmodel");
 const Categories = require("../public/models/categorymodel");
-const sharp = require("sharp");
 
 // ###########################################################################################
 

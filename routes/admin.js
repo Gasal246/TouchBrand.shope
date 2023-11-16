@@ -37,7 +37,6 @@ const Ordercontroller = require("../controllers/Ordercontroller");
 const Orders = require("../public/models/ordermodel");
 const Categories = require("../public/models/categorymodel");
 const Productcontroller = require("../controllers/Productcontroller");
-const sharp = require("sharp");
 const checkAuth = require("../middlewares/checkAuth");
 const Bannercontroller = require("../controllers/Bannercontroller");
 const Couponcontroller = require("../controllers/Couponcontroller");
