@@ -20,7 +20,20 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-mongoose.connect(process.env.DATABASE_CONNECTION).then(()=>console.log("DB connected bro!")).catch((e)=>console.log("Bro error on connecting db : "+e))
+const connectDatabase = async () => {
+  try {
+      await mongoose.connect(`${process.env.DATABASE_CONNECTION}`, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+      });
+      console.log('MongoDB connected');
+  } catch (error) {
+      console.log(error.message);
+      process.exit(1);
+  }
+};
+
+connectDatabase()
 
 // app.use(passport.initialize());
 // app.use(passport.session());
