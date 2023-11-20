@@ -25,7 +25,11 @@
                             <div style="display: flex;align-items: center;justify-content: center;">
                                 <input type="text" class="form-control" id="coupon-input"
                                     placeholder="Paste or enter your coupon code here" value="<%= coupon?coupon.Code:'' %>">
-                                    <button id="apply-coupon-button" >Apply</button>
+                                    <% if(!coupon){ %>
+                                    <button onclick="applycoupan()" >Apply</button>
+                                    <% }else{ %>
+                                    <button onclick="removecoupan()">Remove</button>
+                                    <% } %>
                             </div>
                         </div><!-- End .checkout-discount -->
                         <form id="the-checkout-form" method="post" action="/saveorder">
@@ -424,21 +428,21 @@
 
     <script>
         document.getElementById('the-checkout-form').addEventListener('submit', (e) => {
-            console.log("AAh pressed");
+            // console.log("AAh pressed");
             e.preventDefault();
             $.ajax({
                 url: "/saveorder",
                 method: "post",
                 data: $("#the-checkout-form").serialize(),
                 success: ((response) => {
-                    alert(response)
+                    showPopup(response)
                     if (response.codsuccess) {
-                        location.href = "/placeorder"
+                        location.href = "/placeorder?oid="+response.oid
                     } else if (response.walletpay == 'success') {
-                        alert(response)
-                        location.href = "/placeorder"
+                        showPopup(response)
+                        location.href = "/placeorder?oid="+response.oid
                     } else if (response.walletpay == 'failed') {
-                        alert('Payment Failed Insuficiant wallet Balance');
+                        showPopup('Payment Failed Insuficiant wallet Balance');
                         location.reload()
                     } else {
                         console.log(response);
@@ -495,35 +499,61 @@
                 method: 'POST',
                 success: (response) => {
                     if (response.status) {
-                        location.href = "/placeorder"
+                        location.href = "/placeorder?oid="+response.oid
                     } else {
-                        alert("Error: " + response.error.message)
+                        showPopup("Error: " + response.error.message)
                     }
                 }
             })
+        }
+
+        function showPopup(message) {
+            // Create the popup element
+            var popup = document.createElement("div");
+            popup.className = "popup-message";
+            var popupContent = document.createTextNode(message);
+            popup.appendChild(popupContent);
+
+            // Append the popup to the body
+            document.body.appendChild(popup);
+
+            // Display the popup
+            popup.style.display = "block";
+
+            // Hide the popup after 3 seconds
+            setTimeout(function () {
+                popup.style.display = "none";
+                // Remove the popup from the DOM after hiding
+                document.body.removeChild(popup);
+            }, 2500);
         }
     </script>
     <script>
         // Get references to the input fields and the button
         const couponInput = document.getElementById("coupon-input");
         const applyButton = document.getElementById("apply-coupon-button");
+        const removeButton = document.getElementById("remove-coupon-button");
 
         // Define the click event for the "Apply" button
-        applyButton.addEventListener("click", function () {
-            // Get product ID and quantity from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get("pid");
-            const quantity = urlParams.get("qty");
-
-            // Get the coupon code from the input field
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get("pid");
+        const quantity = urlParams.get("qty");
+        function applycoupan () {
             const couponCode = couponInput.value;
-
             if(!productId){
                 location.href = `/cartcheckout?coupon=${couponCode}`
             }else{
                 location.href = `/checkout?pid=${productId}&qty=${quantity}&coupon=${couponCode}`
             }
-
-        });
+            
+        }
+        function removecoupan() {
+            couponInput.value = null;
+            if(!productId){
+                location.href = `/cartcheckout`
+            }else{
+                location.href = `/checkout?pid=${productId}&qty=${quantity}`
+            }
+        }
     </script>
     <%- include('foot.ejs') %>

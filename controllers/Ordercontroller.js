@@ -228,7 +228,7 @@ module.exports = {
       const payby = req.body.payby;
       if (payby == "cod") {
         await newSale.save();
-        res.json({ codsuccess: true });
+        res.json({ codsuccess: true, oid:order._id });
       } else if (payby == "wallet") {
         newSale.Payment = true;
         const sale = await newSale.save();
@@ -236,7 +236,7 @@ module.exports = {
           .paybyWallet(userId, totalAmount, order._id)
           .then(async (data) => {
             await orderhelper.recheckOrder(order._id, sale._id);
-            res.json({ walletpay: "success" });
+            res.json({ walletpay: "success", oid:order._id });
           })
           .catch(async (error) => {
             await orderhelper.recheckOrder(order._id, sale._id);

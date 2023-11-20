@@ -8,7 +8,7 @@
                         <img src="assets/images/demos/demo-2/logot.png" width="180px" alt="Logo" class="soon-logo mx-auto">
                         <h1 class="soon-title">Order Placed.. Thankyou</h1><!-- End .soon-title -->
                         <div class="container">
-                            <a href="/account" class="btn btn-dark">see orders</a>
+                            <a id="see-orders" class="btn btn-dark">My order</a>
                             <a href="/" class="btn btn-dark">continue shopping</a>
                         </div>
                         <hr class="mt-2 mb-3 mt-md-3">
@@ -61,5 +61,11 @@ $(function() {
         // $('.coming-countdown').countdown('pause');
     }
 });
+
+document.getElementById('see-orders').addEventListener('click', ()=>{
+    const urlParams = new URLSearchParams(window.location.search);
+    const oid = urlParams.get('oid');
+    location.href = '/vieworder?id='+oid
+})
 </script>
 <%- include('foot.ejs') %>

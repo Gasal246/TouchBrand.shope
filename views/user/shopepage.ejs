@@ -391,19 +391,39 @@
             $.ajax({
                 type: 'GET',
                 url: `/addtocart/${productId}`,
-                success: function (response) {
-                    console.log('Item Aadded successfully:', response);
-                    // Update the total price and any other UI elements as needed
-                    // For simplicity, let's reload the page to update the UI after quantity change
-                    alert('Item Aadded successfully');
-                    location.reload();
+                success: async function (response) {
+                    if (response.success) {
+                        console.log('Item Aadded successfully:', response);
+                        // alert('Item Aadded successfully');
+                        // await location.reload();
+                        await showPopup("Item added to cart successfully")
+                    } else {
+                        // alert("Item not added to cart, SORRY.. OUT OF STOCK..")
+                        await showPopup("Item not added to cart, SORRY.. OUT OF STOCK..")
+                    }
                 },
-                error: function (error) {
-                    console.error('Error Adding cart item:', error);
-                    alert('Item Aadded successfully');
-                    location.reload();
-                }
             });
+        }
+        function showPopup(message) {
+            // Create the popup element
+            var popup = document.createElement("div");
+            popup.className = "popup-message";
+            var popupContent = document.createTextNode(message);
+            popup.appendChild(popupContent);
+
+            // Append the popup to the body
+            document.body.appendChild(popup);
+
+            // Display the popup
+            popup.style.display = "block";
+
+            // Hide the popup after 3 seconds
+            setTimeout(function () {
+                popup.style.display = "none";
+                // Remove the popup from the DOM after hiding
+                location.reload()
+                document.body.removeChild(popup);
+            }, 2500);
         }
     </script>
     <script src="assets/js/nouislider.min.js"></script>

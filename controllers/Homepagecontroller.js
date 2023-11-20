@@ -28,7 +28,8 @@ module.exports = {
 
       let newAdded = await Product.find({}).populate('Category').sort({ Dateadded: -1 }).limit(14) || []
       
-      const discountSale = await producthelper.higherstDiscountProduct() || null
+      const discountSale = await producthelper.higherstDiscountProduct()
+      console.log(discountSale);
 
       const categories = await categoryCopy.find({});
       const banners = await Banners.find({});

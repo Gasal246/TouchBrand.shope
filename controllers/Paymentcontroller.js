@@ -11,7 +11,7 @@ module.exports = {
           await Orders.findByIdAndUpdate(data, {
             $set: { Status: 'active' },
           })
-          res.json({ status: true });
+          res.json({ status: true, oid: data });
         })
         .catch((err) => {
           res.json({ error: err });

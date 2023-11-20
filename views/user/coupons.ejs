@@ -21,40 +21,66 @@
             <div class="col-12 col-lg-3 mb-3">
                 <div class="coupon-card p-3 shadow">
                     <h4>
-                        <span class="text-info" id="couponCode"><%= c.coupons.Code %></span>
+                        <span class="text-info" class="couponCode"><%= c.coupons.Code %></span>
                     </h4>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h6><span class="text-success ml-2 mb-0 font-weight-medium"><%= c.coupons.Discount %>%</span> off</h6>
-                        <a style="cursor:pointer;" onclick="copyCouponCode()"><i class="fa fa-solid fa-copy h5"></i></a>
+                        <a style="cursor:pointer;" onclick="copyCouponCode('<%= c.coupons.Code %>')"><i class="fa fa-solid fa-copy h5"></i></a>
                     </div>
                 </div>
             </div>
         <% }) %>
     </div>
 </div>
-</div>
+</div> 
 
 <script>
-    function copyCouponCode() {
-    var couponCode = document.getElementById("couponCode");
-    
-    // Create a temporary textarea element to hold the code
-    var tempTextarea = document.createElement("textarea");
-    tempTextarea.value = couponCode.textContent;
-    document.body.appendChild(tempTextarea);
-    
-    // Select and copy the code
-    tempTextarea.select();
-    document.execCommand("copy");
-    
-    // Remove the temporary textarea
-    document.body.removeChild(tempTextarea);
-    
-    // Provide feedback to the user (optional)
-    alert("Coupon code copied to clipboard: " + couponCode.textContent);
-}
+    function copyCouponCode(couponCode) {
+        // Check if the coupon code is provided
+        if (couponCode) {
+            // Create a temporary textarea element to hold the code
+            var tempTextarea = document.createElement("textarea");
+            tempTextarea.value = couponCode;
+            document.body.appendChild(tempTextarea);
 
+            // Select and copy the code
+            tempTextarea.select();
+            document.execCommand("copy");
+
+            // Remove the temporary textarea
+            document.body.removeChild(tempTextarea);
+
+            // Provide feedback to the user (optional)
+            showPopup("Coupon code copied to clipboard: " + couponCode);
+        } else {
+            console.error("No coupon code provided");
+        }
+    }
+
+    function showPopup(message) {
+        // Create the popup element
+        var popup = document.createElement("div");
+        popup.className = "popup-message";
+        var popupContent = document.createTextNode(message);
+        popup.appendChild(popupContent);
+
+        // Append the popup to the body
+        document.body.appendChild(popup);
+
+        // Display the popup
+        popup.style.display = "block";
+
+        // Hide the popup after 3 seconds
+        setTimeout(function () {
+            popup.style.display = "none";
+            // Remove the popup from the DOM after hiding
+            document.body.removeChild(popup);
+        }, 2500);
+    }
 </script>
+
+
+
 
 <%- include('footer.ejs') %>
 <%- include('foot.ejs') %>

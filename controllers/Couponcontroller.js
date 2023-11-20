@@ -79,6 +79,7 @@ module.exports = {
           $unwind: '$coupons'
         }
       ])
+      console.log(ownedCoupons);
       res.render('user/coupons', { oc: ownedCoupons })
     } catch (error) {
       const on = "On getting user side coupon page";

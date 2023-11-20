@@ -714,16 +714,15 @@
                     success: function (response) {
                         if (response.success) {
                             console.log('Item Aadded successfully:', response);
-                            alert('Item Aadded successfully');
+                            showPopup('Item Aadded successfully');
                             location.reload();
                         } else {
-                            alert("Item not added to cart, SORRY.. OUT OF STOCK..")
+                            showPopup("Item not added to cart, SORRY.. OUT OF STOCK..")
                         }
                     },
                 });
             }
-        </script>
-        <script>
+
             const stoke = parseInt('<%- product.Stoke %>')
             const cplus = document.querySelector('.cqplus')
             const cminus = document.querySelector('.cqminus')
@@ -741,7 +740,7 @@
                     cqty = parseInt(ca)
                     document.getElementById('pprice').innerHTML = parseInt(price) * cqty
                 } else {
-                    alert('OUT OF STOCK! Only one product left.. you can check out with this..');
+                    showPopup('OUT OF STOCK!!.. Quantity for checkout cant be increased');
                 }
             })
             cminus.addEventListener('click', () => {
@@ -756,9 +755,30 @@
                 if(stoke > 0){
                 window.location.href = "/checkout?pid=" + pid + "&qty=" + cqty
                 }else{
-                    alert("Sorry.. This Item is OUT OF STOCK!")
+                    showPopup("Sorry.. This Item is OUT OF STOCK!")
                 }
             }
-        </script>
+            function showPopup(message) {
+            // Create the popup element
+            var popup = document.createElement("div");
+            popup.className = "popup-message";
+            var popupContent = document.createTextNode(message);
+            popup.appendChild(popupContent);
 
+            // Append the popup to the body
+            document.body.appendChild(popup);
+
+            // Display the popup
+            popup.style.display = "block";
+
+            // Hide the popup after 3 seconds
+            setTimeout(function () {
+                popup.style.display = "none";
+                // Remove the popup from the DOM after hiding
+                location.reload()
+                document.body.removeChild(popup);
+            }, 2500);
+        }
+        </script>
+ 
         <%- include('foot.ejs') %> 
