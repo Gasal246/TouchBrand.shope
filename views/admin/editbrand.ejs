@@ -1,0 +1,66 @@
+<%- include('chead.ejs')%>
+
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row">
+                <h4>Edit The Brand Data</h4>
+                <% if(err){ %>
+                    <h6 class="col-12 text-danger"><i class="fa-solid fa-error"></i>
+                        <%= err %>
+                    </h6>
+                    <% } %>
+            </div>
+            <div class="row">
+                <form action="/admin/editbrand/<%= brand._id %>" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="brandName">Brand Name:</label>
+                        <input type="text" class="form-control" id="brandName" value="<%= brand.Brandname %>" name="brandName" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categories">Categories:</label>
+                        <% categories.forEach(category=> { %>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<%= category._id %>"
+                                    id="category_<%= category._id %>" name="categories" <% if (brand.Categories.includes(category._id)) { %> checked <% } %> multiple>
+                                <label class="form-check-label" for="category_<%= category._id %>">
+                                    <%= category.Catname %>
+                                </label>
+                            </div>
+                            <% }); %>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brandImage">Brand Image:</label>
+                        <input type="file" class="form-control-file" id="brandImage" name="brandImage" accept="image/*"
+                            onchange="previewImage(this)">
+                        <img id="imagePreview" src="<%= brand.Image %>" alt="Image Preview"
+                            style="max-width: 150px; margin-top: 10px;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Edit Brand</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(input) {
+            var preview = document.getElementById('imagePreview');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+            }
+        }
+    </script>
+
+    <%- include('cfoot.ejs')%>

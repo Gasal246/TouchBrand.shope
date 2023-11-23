@@ -25,6 +25,15 @@
                 </select>
             </div>
             <div class="mb-3">
+                <label class="form-label">Brand</label>
+                <select name="brand" id="brand" class="form-control" required>
+                    <option value="<%= product?product.Brand._id:'' %>"><%= product?product.Brand.Brandname:'' %></option>
+                    <% brands.map((brand)=>{ %>
+                        <option value="<%= brand._id %>"><%= brand.Brandname %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="mb-3">
                 <label class="form-label">Sub Categories</label>
                 <input type="text" class="form-control" name="subcategory" id="editsubcategory" value="<%= product?product.SubCategory:'' %>" required>
             </div>

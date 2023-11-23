@@ -8,6 +8,7 @@ const fs = require("fs");
 const Product = require("../public/models/productmodel");
 const Admincopy = require("../public/models/adminmodel");
 const Categories = require("../public/models/categorymodel");
+const Brands = require("../public/models/brandmodel");
 
 // ###########################################################################################
 
@@ -34,8 +35,8 @@ module.exports = {
   getAddProduct: async (req, res) => {
     try {
       const categories = await Categories.find({});
-      console.log("Categories: " + categories);
-      res.render("admin/addproduct", { categories });
+      const brands = await Brands.find({})
+      res.render("admin/addproduct", { categories, brands });
     } catch (error) {
       const on = "On rendering addproduct Page";
       const err = error.message;
@@ -56,6 +57,7 @@ module.exports = {
         Productname: req.body.pname,
         Spec: req.body.specs,
         Category: req.body.category,
+        Brand: req.body.brand,
         SubCategory: subcategories,
         Price: req.body.price,
         Discount: req.body.discount,
@@ -101,11 +103,12 @@ module.exports = {
       const pid = req.query.id;
       let product;
       const categories = await Categories.find({});
+      const brands = await Brands.find({})
       if (pid) {
-        product = await Product.findById(pid).populate('Category')
+        product = await Product.findById(pid).populate('Category').populate('Brand')
       } 
       console.log(product);
-      res.render("admin/editproduct", { product, categories });
+      res.render("admin/editproduct", { product, categories, brands });
     } catch (error) {
       const on = "On Geting Edit Product page";
       const err = error.message;
@@ -133,6 +136,7 @@ module.exports = {
         Productname: req.body.pname,
         Spec: req.body.specs,
         Category: req.body.category,
+        Brand: req.body.brand,
         SubCategory: req.body.subcategory,
         Price: req.body.price,
         Discount: req.body.discount,

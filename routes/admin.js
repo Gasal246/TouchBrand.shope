@@ -24,8 +24,17 @@ const bannerStorage = multer.diskStorage({
   },
 });
 
+const brandStorage = multer.diskStorage({
+  destination: "public/uploads/brands",
+  filename: (req, file, cb) => {
+    let filename = `${uniqueIdentifier}_${file.originalname}`;
+    cb(null, filename); // Use the unique file name
+  },
+});
+
 const upload = multer({ storage: storage });
 const bannerUpload = multer({ storage: bannerStorage });
+const brandUpload = multer({ storage: brandStorage });
 
 // Controller Imports
 const productController = require("../controllers/Productcontroller");
@@ -40,6 +49,7 @@ const Productcontroller = require("../controllers/Productcontroller");
 const checkAuth = require("../middlewares/checkAuth");
 const Bannercontroller = require("../controllers/Bannercontroller");
 const Couponcontroller = require("../controllers/Couponcontroller");
+const Brandcontroller = require("../controllers/Brandcontroller");
 
 // ############################### GET INTO DASHBOARD #########################
 router.get("/", checkAuth.checkAdmin, AdminUsercontroller.getAdmin);
@@ -139,6 +149,22 @@ router.get('/coupon',checkAuth.checkAdmin, Couponcontroller.getCoupan)
 router.post('/addcoupons', checkAuth.checkAdmin, Couponcontroller.addCoupons)
 
 router.post('/deletecoupons', checkAuth.checkAdmin, Couponcontroller.deleteCoupon)
+
+// ##################### BRANDS #####################
+router.get('/brand', checkAuth.checkAdmin, Brandcontroller.getBrandsAdmin)
+
+router.get('/addbrand', checkAuth.checkAdmin, Brandcontroller.addBrandGet)
+
+router.post('/addbrand', brandUpload.single('brandImage'), (req, res)=>{
+  Brandcontroller.addBrand(req, res, uniqueIdentifier)
+})
+router.get('/deletebrand/:bid',checkAuth.checkAdmin, Brandcontroller.deleteBrand)
+
+router.get('/editbrand/:bid',checkAuth.checkAdmin, Brandcontroller.getEditBrand)
+
+router.post('/editbrand/:bid',brandUpload.single('brandImage'), (req, res)=>{
+  Brandcontroller.editBrand(req, res, uniqueIdentifier)
+})
 
 // ###################### ERROR PAAGE #########
 router.get('/error', AdminDashboard.renderError)

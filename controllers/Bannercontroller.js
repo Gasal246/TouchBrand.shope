@@ -83,7 +83,6 @@ module.exports = {
   },
   editBanner: async (req, res, uniqueIdentifier) => {
     try {
-      console.log(req.body);
       const bid = req.params.bid;
       const banner = await Banners.findById(bid);
       let image = banner.Image;

@@ -5,11 +5,12 @@ const usermodel = require("../public/models/usermodel");
 const Banners = require("../public/models/bannermodel");
 const Products = require("../public/models/productmodel");
 const producthelper = require("../helpers/producthelper");
+const Brands = require("../public/models/brandmodel");
 
 module.exports = {
   loadHome: async (req, res) => {
     try {
-      const populated = await Product.find({}).populate('Category').sort({ Dateadded: -1 })
+      const populated = await Product.find({}).populate('Category')
       const productsByCategory = {};
       populated.forEach((product) => {
         const categoryName = product.Category?product.Category.Catname:'';
@@ -27,32 +28,33 @@ module.exports = {
       });
 
       let newAdded = await Product.find({}).populate('Category').sort({ Dateadded: -1 }).limit(14) || []
-      
       const discountSale = await producthelper.higherstDiscountProduct()
-      console.log(discountSale);
-
       const categories = await categoryCopy.find({});
       const banners = await Banners.find({});
+      const brands = await Brands.find({});
+
       if (req.cookies.user) {
         let cart = await cartModel.findOne({ Userid: req.cookies.user.id }).populate('Products.Productid')
         await usermodel.findById(req.cookies.user.id).then((data)=>{
+
           if(data.Blocked == true){
             res.render("user/index", {
               error: req.query.err ? { form: req.query.err } : "Not logged in ??",
               cdata: null,
               Products: productsByCategory, newAdded,
               categories, discountSale,
-              banners,
+              banners, brands,
               cart: "no",
             });
           }
         })
+
         res.render("user/index", {
           cdata: req.cookies.user,
           error: null,
           Products: productsByCategory, newAdded,
           categories, discountSale,
-          banners,
+          banners, brands,
           cart: cart ? cart.Products : null,
         });
       } else {
@@ -61,7 +63,7 @@ module.exports = {
           cdata: null,
           Products: productsByCategory, newAdded,
           categories, discountSale: null,
-          banners,
+          banners, brands,
           cart: "no",
         });
       }

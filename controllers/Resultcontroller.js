@@ -1,3 +1,4 @@
+const Brands = require("../public/models/brandmodel");
 const Categories = require("../public/models/categorymodel");
 const Products = require("../public/models/productmodel");
 
@@ -10,10 +11,10 @@ module.exports = {
         
             const regex = new RegExp(term, 'i');
             const totalItems = await Products.countDocuments({
-              $or: [{ Productname: regex }, { Category: { $in: (await Categories.find({ Catname: regex })).map(cat => cat._id) } }],
+              $or: [{ Productname: regex }, { Category: { $in: (await Categories.find({ Catname: regex })).map(cat => cat._id) } }, { Brand: { $in: (await Brands.find({ Brandname: regex })).map(brand => brand._id) } }],
             });
             const results = await Products.find({
-              $or: [{ Productname: regex }, { Category: { $in: (await Categories.find({ Catname: regex })).map(cat => cat._id) } }],
+              $or: [{ Productname: regex }, { Category: { $in: (await Categories.find({ Catname: regex })).map(cat => cat._id) } }, { Brand: { $in: (await Brands.find({ Brandname: regex })).map(brand => brand._id) } }],
             }).populate('Category')
               .skip((page - 1) * ITEMS_PER_PAGE)
               .limit(ITEMS_PER_PAGE);

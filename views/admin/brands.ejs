@@ -1,0 +1,111 @@
+<%- include('chead.ejs') %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <h3 class="headtext p-3"><i class="fa-solid fa-cog"></i> brand control</h3>
+        <h6 style="color: red;"><%= err?err:'' %></h6>
+        <div class="category-wrapper">
+            <div class="productsNav mt-3 mb-5">
+                <div class="searchBar">
+                    <input type="search" placeholder="search by brand name" id="brandSearch">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <a class="btn btn-success" href="/admin/addbrand"><i class="fa-solid fa-plus"></i> brand</a>
+            </div>
+            <div class="div tableWrapper">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Brand name</th>
+                            <th scope="col">Included Categories</th>
+                            <th scope="col">edit</th>
+                            <th scope="col">delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% brands.map((brand, index)=> { %>
+                            <tr class="brand-row">
+                                <th scope="row">
+                                    <%= index+1 %>
+                                </th>
+                                <td>
+                                    <img src="<%= brand.Image %>"
+                                        style="width: 80px;height: 40px;object-fit: cover;border-radius: 10px;">
+                                </td>
+                                <td class="brand-name">
+                                    <%= brand.Brandname %>
+                                </td>
+                                <td class="subcategory">
+                                    <%= brand.Categories.map(category => category.Catname).join(', ') %>
+                                </td>
+                                <td><a class="btn btn-primary w-75 openEditCateg"
+                                        href="/admin/editbrand/<%= brand._id %>">Edit</a>
+                                </td>
+                                <td><a class="btn btn-danger w-75"
+                                        onclick="deleteBrand('<%= brand._id %>')">Delete</a>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // Select the search input field
+            const productSearchInput = document.getElementById('brandSearch');
+
+            // Select all product rows
+            const productRows = document.querySelectorAll('.brand-row');
+
+            productSearchInput.addEventListener('input', () => {
+                const searchTerm = productSearchInput.value.toLowerCase();
+
+                // Loop through all product rows and hide those that don't match the search term
+                productRows.forEach((row) => {
+                    const productName = row.querySelector('.brand-name').textContent.toLowerCase();
+                    const productCategory = row.querySelector('.subcategory').textContent.toLowerCase();
+
+                    if (
+                        productName.includes(searchTerm) ||
+                        productCategory.includes(searchTerm)
+                    ) {
+                        row.style.display = 'table-row';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+        })
+    </script>
+
+<script>
+    function deleteBrand(bid) {
+        const prompt = confirm('Are you sure to Delete the brand ?');
+        if (prompt) {
+            $.ajax({
+                type: 'GET',
+                url: '/admin/deletebrand/' + bid,
+                success: function (response) {
+                    console.log('Banner Removed successfully:', response);
+                    // Update the total price and any other UI elements as needed
+                    // For simplicity, let's reload the page to update the UI after quantity change
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Error removing order item:', error);
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+
+    <%- include('cfoot.ejs') %>
