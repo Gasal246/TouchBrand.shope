@@ -22,7 +22,7 @@ app.set('view engine', 'ejs');
 
 const connectDatabase = async () => {
   try {
-      await mongoose.connect(`${process.env.DATABASE_CONNECTION}`, {
+      await mongoose.connect( process.env.ATLAS_URI , {
           useNewUrlParser: true,
           useUnifiedTopology: true,
       });
@@ -32,8 +32,9 @@ const connectDatabase = async () => {
       process.exit(1);
   }
 };
-
 connectDatabase()
+
+
 
 // app.use(passport.initialize());
 // app.use(passport.session());
