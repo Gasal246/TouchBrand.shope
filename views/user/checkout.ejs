@@ -182,6 +182,8 @@
                                                                 value="<%= product.Quantity %>">
                                                             <input type="hidden" name="pimage"
                                                                 value="<%= product.Productid.Imagepath[0] %>">
+                                                            <input type="hidden" name="iscart"
+                                                                value="1">
                                                             <tr>
                                                                 <td><a href="#">
                                                                         <%= product.Productid.Productname %>
@@ -200,6 +202,7 @@
                                                                         value="<%= quantity %>">
                                                                     <input type="hidden" name="pimage"
                                                                         value="<%= product.Imagepath[0] %>">
+                                                                        <input type="hidden" name="iscart" value="0">
                                                                     <tr>
                                                                         <td><a href="#">
                                                                                 <%= product.Productname %>

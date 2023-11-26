@@ -118,7 +118,7 @@ module.exports = {
       const productId = req.body.productId;
       let productDetails;
       let orderItems;
-      let isCart = false;
+      let isCart = req.body.iscart;
 
       if (typeof productId === "string") {
         productDetails = await Products.findById(productId);
@@ -145,7 +145,7 @@ module.exports = {
             .status(400)
             .json({ message: "Products not found for the given IDs" });
         }
-        isCart = true;
+        // isCart = true;
         orderItems = productDetails.map((product, index) => {
           return {
             Paymet: req.body.payby,
@@ -220,7 +220,7 @@ module.exports = {
       }
 
       // CLEAR THE CART AFTER ODERING FROM CART
-      if (isCart == true) {
+      if (isCart == 1) {
         await Carts.findOneAndRemove({ Userid: userId });
       }
 
