@@ -20,7 +20,7 @@ app.set("view engine", "ejs");
 
 const connectDatabase = async () => {
   try {
-    await mongoose.connect(process.env.MONGOSH_URI, {
+    await mongoose.connect(process.env.ATLAS_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
