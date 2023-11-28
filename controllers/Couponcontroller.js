@@ -24,9 +24,11 @@ module.exports = {
           const couponCode = couponhelper.generateCouponCode();
           const coupon = new Coupons({
             Code: couponCode,
+            Basedon: req.body.based,
             Discount: discount,
             Status: 'active',
             Addon: new Date(),
+            Expiry: req.body.expiry
           });
           couponsToAdd.push(coupon);
         }

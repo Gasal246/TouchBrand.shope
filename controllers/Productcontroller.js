@@ -159,11 +159,10 @@ module.exports = {
     try {
       const pid = req.query.pid;
       if (pid) {
-        const product = await Product.findById(pid);
-        const category = await Categories.findOne({
-          Catname: product.Category
-        });
-        res.render("user/product", { product: product, category: category });
+        const product = await Product.findById(pid).populate('Category');
+        const brandid = product.Brand
+        const otherProducts = await Product.find({ Brand: brandid }).populate('Brand');
+        res.render("user/product", { product: product, liked: otherProducts });
       }
     } catch (error) {
       const on = "On Finding product";

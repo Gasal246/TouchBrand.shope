@@ -40,14 +40,14 @@
                                                         <td class="product-col">
                                                             <div class="product">
                                                                 <figure class="product-media">
-                                                                    <a href="#">
+                                                                    <a href="/product?pid=<%= product.Productid._id %>">
                                                                         <img src="<%= product.Productid.Imagepath[0] %>"
                                                                             alt="Product image">
                                                                     </a>
                                                                 </figure>
 
                                                                 <h3 class="product-title">
-                                                                    <a href="#">
+                                                                    <a href="/product?pid=<%= product.Productid._id %>">
                                                                         <%= product.Productid.Productname %>
                                                                     </a>
                                                                 </h3><!-- End .product-title -->
@@ -57,9 +57,13 @@
                                                         </td>
                                                         <td class="quantity-col">
                                                             <div class="quantity-field">
-                                                                <span class="fa-solid fa-minus" onclick="updateQuantity('<%= product._id %>', '<%= product.Quantity %>', -1)"></span>
-                                                                <span class="num" id="qnumber"><%= product.Quantity %></span>
-                                                                <span class="fa-solid fa-plus" onclick="updateQuantity('<%= product._id %>', '<%= product.Quantity %>', 1)"></span>
+                                                                <span class="fa-solid fa-minus"
+                                                                    onclick="updateQuantity('<%= product._id %>', '<%= product.Quantity %>', -1)"></span>
+                                                                <span class="num" id="qnumber">
+                                                                    <%= product.Quantity %>
+                                                                </span>
+                                                                <span class="fa-solid fa-plus"
+                                                                    onclick="updateQuantity('<%= product._id %>', '<%= product.Quantity %>', 1)"></span>
                                                             </div>
                                                         </td>
                                                         <td class="total-col">$<%= product.Price * product.Quantity %>
@@ -79,20 +83,11 @@
 
                                 <div class="cart-bottom">
                                     <div class="cart-discount">
-                                        <form action="#">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" required
-                                                    placeholder="coupon code">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-primary-2" type="submit"><i
-                                                            class="icon-long-arrow-right"></i></button>
-                                                </div><!-- .End .input-group-append -->
-                                            </div><!-- End .input-group -->
-                                        </form>
+
                                     </div><!-- End .cart-discount -->
 
-                                    <a href="/deletecartitems" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i
-                                            class="icon-refresh"></i></a>
+                                    <a onclick="deleteCartItems()" class="btn btn-outline-dark-2"><span>UPDATE
+                                            CART</span><i class="icon-refresh"></i></a>
                                 </div><!-- End .cart-bottom -->
                             </div><!-- End .col-lg-9 -->
                             <aside class="col-lg-3">
@@ -260,12 +255,31 @@
     </div><!-- End .page-wrapper -->
 
     <script>
+
+        function deleteCartItems() {
+            showConfirm("Are you sure you want to delete all items in the cart?").then((value) => {
+                if (value) {
+                    $.ajax({
+                        url: '/deletecartitems',
+                        method: 'get',
+                        success: async (response) => {
+                            if (response.status) {
+                                location.reload();
+                            }
+                        }
+                    })
+                } else {
+                    location.reload();
+                }
+            })
+
+        }
         async function updateQuantity(productId, quantity, value) {
             let newQuantity
             newQuantity = parseInt(quantity) + value;
-            if(newQuantity < 1){
+            if (newQuantity < 1) {
                 newQuantity = 1;
-            }else if(newQuantity > 10 ){
+            } else if (newQuantity > 10) {
                 newQuantity = 10;
             }
             // AJAX request to update the quantity
@@ -275,9 +289,9 @@
                 data: { quantity: newQuantity },
                 success: async (response) => {
                     console.log('Quantity updated successfully:', response);
-                    if(response.success){
+                    if (response.success) {
                         location.reload();
-                    }else{
+                    } else {
                         await alert("SORRY.. THIS IS THE LAST STOCK YOU HAVE..")
                     }
                 },
@@ -288,23 +302,22 @@
         }
 
         function removeFromCart(productId, quantity) {
-            // AJAX request to update the quantity
-            const query = confirm('Are you sure you want to remove item from cart?');
-            if (query){
-                $.ajax({
-                type: 'POST',
-                url: `/removefromcart`,
-                data:{
-                    pid: productId,
-                    qty: quantity
-                },
-                success: function (response) {
-                    console.log('Item Removed successfully:', response);
-                    location.reload();
-                },
-            });
-            }
-            
+            showConfirm("Are you sure you want to remove this item ?").then((result) => {
+                if (result) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/removefromcart`,
+                        data: {
+                            pid: productId,
+                            qty: quantity
+                        },
+                        success: function (response) {
+                            console.log('Item Removed successfully:', response);
+                            location.reload();
+                        },
+                    });
+                }
+            })
         }
     </script>
 

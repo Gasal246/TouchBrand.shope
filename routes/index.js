@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const passport = require('passport');
 
 const Usercontroller = require("../controllers/Usercontroller");
 const Homepagecontroller = require("../controllers/Homepagecontroller");
@@ -34,6 +35,10 @@ router.get("/logout", (req, res) => {
   res.clearCookie("user");
   res.redirect("/");
 });
+
+// ################ LOGIN WITH GOOGLE SETUP ##############
+
+
 
 // ################## ACCOUNT SECTION ROUTES ################
 router.get("/account", checkUser, Usercontroller.getUser);

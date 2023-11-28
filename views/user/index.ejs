@@ -30,9 +30,9 @@
                                         <li><a href="#signin-modal" data-toggle="modal"
                                                 style="color: #1f1e18; font-weight: 600;">Sign in</a></li>
                                         <% } else { %>
-                                            <a href="/logout"
-                                                onclick="return confirm('You are temporarly lefting Touchbrand..')"
-                                                style="color: #1d1410; font-weight: 600;">
+                                            <a
+                                                onclick="signout()"
+                                                style="color: #1d1410; font-weight: 600;cursor: pointer;">
                                                 <li>Sign out</li>
                                             </a>
                                             <% } %>
@@ -210,12 +210,13 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <% if(categories){ %>
-                                                                <div class="menu-title">Shop with category</div>
-                                                                <!-- End .menu-title -->
-                                                                <ul>
+                                                                    <div class="menu-title">Shop with category</div>
+                                                                    <!-- End .menu-title -->
+                                                                    <ul>
                                                                         <% categories.map((cat)=>{ %>
-                                                                    <li><a href="#"><span><%= cat.Catname %></a></li>
-                                                                        <% }) %>
+                                                                            <li><a href="#"><span>
+                                                                                        <%= cat.Catname %></a></li>
+                                                                            <% }) %>
                                                                     </ul>
                                                                     <% } %>
                                                             </div><!-- End .col-md-6 -->
@@ -262,10 +263,12 @@
                                                         <ul>
                                                             <% if(brands){ %>
                                                                 <% brands.map((brand)=>{ %>
-                                                                    <li><a href="/result?term=<%= brand.Brandname %>"><%= brand.Brandname %></a></li>
-                                                                <% }) %>
-                                                            <% } %>
-                                                            
+                                                                    <li><a href="/result?term=<%= brand.Brandname %>">
+                                                                            <%= brand.Brandname %>
+                                                                        </a></li>
+                                                                    <% }) %>
+                                                                        <% } %>
+
                                                         </ul>
                                                     </div><!-- End .menu-col -->
                                                 </div><!-- End .col-md-6 -->
@@ -386,11 +389,11 @@
             }'>
                 <% if(brands){ %>
                     <% brands.map((brand)=>{ %>
-                <a href="/result?term=<%= brand.Brandname %>" class="brand">
-                    <img src="<%= brand.Image %>" alt="<%= brand.Brandname %>">
-                </a>
-                    <% }) %>
-                <% } %>
+                        <a href="/result?term=<%= brand.Brandname %>" class="brand">
+                            <img src="<%= brand.Image %>" alt="<%= brand.Brandname %>">
+                        </a>
+                        <% }) %>
+                            <% } %>
 
             </div><!-- End .owl-carousel -->
 
@@ -464,24 +467,27 @@
                         <ul class="nav nav-pills nav-border-anim nav-big justify-content-center mb-3" role="tablist">
                             <% for(let i=0; i < 3; i++){ %>
                                 <li class="nav-item">
-                                    <% let cat = categories?categories[i]:'' %>
-                                    <a class="nav-link" id="products-<%= cat?cat.Catname:'' %>-link" data-toggle="tab"
-                                    href="#products-<%= cat?cat.Catname:'' %>-tab" role="tab" aria-controls="products-<%= cat?cat.Catname:'' %>-tab"
-                                    aria-selected="true"><%= cat?cat.Catname:'' %></a>
+                                    <% let cat=categories?categories[i]:'' %>
+                                        <a class="nav-link" id="products-<%= cat?cat.Catname:'' %>-link"
+                                            data-toggle="tab" href="#products-<%= cat?cat.Catname:'' %>-tab" role="tab"
+                                            aria-controls="products-<%= cat?cat.Catname:'' %>-tab" aria-selected="true">
+                                            <%= cat?cat.Catname:'' %>
+                                        </a>
                                 </li>
                                 <% } %>
-                            
+
                         </ul>
                     </div><!-- End .container -->
 
                     <div class="container-fluid">
                         <div class="tab-content tab-content-carousel">
                             <% for(let i=0; i < 3; i++){ %>
-                                <% let cat = categories?categories[i]:'' %>
-                            <div class="tab-pane p-0 fade <% if(i == 0){ %> show active <% } %>" id="products-<%= cat?cat.Catname:'' %>-tab" role="tabpanel"
-                                aria-labelledby="products-<%= cat?cat.Catname:'' %>-link">
-                                <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
-                                    data-toggle="owl" data-owl-options='{
+                                <% let cat=categories?categories[i]:'' %>
+                                    <div class="tab-pane p-0 fade <% if(i == 0){ %> show active <% } %>"
+                                        id="products-<%= cat?cat.Catname:'' %>-tab" role="tabpanel"
+                                        aria-labelledby="products-<%= cat?cat.Catname:'' %>-link">
+                                        <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
+                                            data-toggle="owl" data-owl-options='{
                             "nav": false, 
                             "dots": true,
                             "margin": 20,
@@ -508,62 +514,69 @@
                                 }
                             }
                         }'>
-                        <% let catName = cat?cat.Catname:'' %>
-                                    <% if(Products[catName]){ %>
-                                        <% if(Products[catName].length> 0){ %>
-                                            <% Products[catName].map((product, index)=>{%>
-                                                <div class="product product-11 text-center" style="border-radius: 5px;">
-                                                    <figure class="product-media" style="background: white;">
-                                                        <% if(product.Stoke < 1){ %>
-                                                            <span class="product-label label-circle label-sale">Stock
-                                                                Out</span>
-                                                            <% } %>
-                                                                <a href="/viewproduct/<%= product._id %>">
-                                                                    <img src="<%= product.Imagepath[0] %>"
-                                                                        alt="Product image" class="product-image"
-                                                                        style="height: 280px; object-fit: contain;">
-                                                                    <img src="<%= product.Imagepath[1] %>"
-                                                                        alt="Product image" class="product-image-hover"
-                                                                        style="height: 280px; object-fit: contain;">
-                                                                </a>
+                                            <% let catName=cat?cat.Catname:'' %>
+                                                <% if(Products[catName]){ %>
+                                                    <% if(Products[catName].length> 0){ %>
+                                                        <% Products[catName].map((product, index)=>{%>
+                                                            <div class="product product-11 text-center"
+                                                                style="border-radius: 5px;">
+                                                                <figure class="product-media"
+                                                                    style="background: white;">
+                                                                    <% if(product.Stoke < 1){ %>
+                                                                        <span
+                                                                            class="product-label label-circle label-sale">Stock
+                                                                            Out</span>
+                                                                        <% } %>
+                                                                            <a href="/viewproduct/<%= product._id %>">
+                                                                                <img src="<%= product.Imagepath[0] %>"
+                                                                                    alt="Product image"
+                                                                                    class="product-image"
+                                                                                    style="height: 280px; object-fit: contain;">
+                                                                                <img src="<%= product.Imagepath[1] %>"
+                                                                                    alt="Product image"
+                                                                                    class="product-image-hover"
+                                                                                    style="height: 280px; object-fit: contain;">
+                                                                            </a>
 
-                                                                <div class="product-action-vertical">
-                                                                    <a href="#"
-                                                                        class="btn-product-icon btn-wishlist"><span>add
-                                                                            to
-                                                                            wishlist</span></a>
-                                                                </div><!-- End .product-action-vertical -->
-                                                    </figure><!-- End .product-media -->
+                                                                            <div class="product-action-vertical">
+                                                                                <a href="#"
+                                                                                    class="btn-product-icon btn-wishlist"><span>add
+                                                                                        to
+                                                                                        wishlist</span></a>
+                                                                            </div><!-- End .product-action-vertical -->
+                                                                </figure><!-- End .product-media -->
 
-                                                    <div class="product-body">
-                                                        <h3 class="product-title"><a
-                                                                href="/viewproduct/<%= product._id %>">
-                                                                <%= product.Productname %>
-                                                            </a></h3>
-                                                        <!-- End .product-title -->
-                                                        <div class="product-price">
-                                                            <span class="new-price">$<%= product.Price -
-                                                                    product.Discount %></span>
-                                                            <span class="old-price">Was $<%= product.Price %></span>
-                                                        </div><!-- End .product-price -->
+                                                                <div class="product-body">
+                                                                    <h3 class="product-title"><a
+                                                                            href="/viewproduct/<%= product._id %>">
+                                                                            <%= product.Productname %>
+                                                                        </a></h3>
+                                                                    <!-- End .product-title -->
+                                                                    <div class="product-price">
+                                                                        <span class="new-price">$<%= product.Price -
+                                                                                product.Discount %></span>
+                                                                        <span class="old-price">Was $<%= product.Price
+                                                                                %></span>
+                                                                    </div><!-- End .product-price -->
 
-                                                    </div><!-- End .product-body -->
-                                                    <div class="product-action">
-                                                        <a onclick="addToCart('<%= product._id %>')"
-                                                            class="btn-product btn-cart"><span>add to cart</span></a>
-                                                    </div><!-- End .product-action -->
-                                                </div><!-- End .product -->
-                                                <% }) %>
-                                                    <% }else{ %>
-                                                        <p>No Products for this category</p>
-                                                        <% } %>
-                                                            <% }else{ %>
-                                                                <p>No Such a category found</p>
-                                                                <% } %>
-                                </div><!-- End .owl-carousel -->
-                            </div><!-- .End .tab-pane -->
-                            <% } %>
-                            
+                                                                </div><!-- End .product-body -->
+                                                                <div class="product-action">
+                                                                    <a onclick="addToCart('<%= product._id %>')"
+                                                                        class="btn-product btn-cart"><span>add to
+                                                                            cart</span></a>
+                                                                </div><!-- End .product-action -->
+                                                            </div><!-- End .product -->
+                                                            <% }) %>
+                                                                <% }else{ %>
+                                                                    <p>No Products for this category</p>
+                                                                    <% } %>
+                                                                        <% }else{ %>
+                                                                            <p>No Such a category found</p>
+                                                                            <% } %>
+                                        </div><!-- End .owl-carousel -->
+                                    </div><!-- .End .tab-pane -->
+                                    <% } %>
+
                         </div><!-- End .tab-content -->
                     </div><!-- End .container-fluid -->
 
@@ -589,7 +602,7 @@
                                                     <span class="new-price">$<%= discountSale.product.Price -
                                                             discountSale.product.Discount %></span>
                                                     <span class="old-price">Was $<%= discountSale.product.Price %>
-                                                            </span>
+                                                    </span>
                                                 </div><!-- End .product-price -->
 
                                                 <div class="deal-countdown" data-until="+10h"></div>
@@ -649,14 +662,18 @@
                                                 href="#top-all-tab" role="tab" aria-controls="top-all-tab"
                                                 aria-selected="true">All</a>
                                         </li>
-                                        
+
                                         <% for(let i=0; i < 3; i++){ %>
-                                        <li class="nav-item">
-                                            <% let cat = categories?categories[i]:'' %>
-                                            <a class="nav-link" id="top-<%= cat?cat.Catname:'' %>-link" data-toggle="tab" href="#top-<%= cat?cat.Catname:'' %>-tab"
-                                                role="tab" aria-controls="top-<%= cat?cat.Catname:'' %>-tab" aria-selected="false"><%= cat?cat.Catname:'' %></a>
-                                        </li>
-                                        <% } %>
+                                            <li class="nav-item">
+                                                <% let cat=categories?categories[i]:'' %>
+                                                    <a class="nav-link" id="top-<%= cat?cat.Catname:'' %>-link"
+                                                        data-toggle="tab" href="#top-<%= cat?cat.Catname:'' %>-tab"
+                                                        role="tab" aria-controls="top-<%= cat?cat.Catname:'' %>-tab"
+                                                        aria-selected="false">
+                                                        <%= cat?cat.Catname:'' %>
+                                                    </a>
+                                            </li>
+                                            <% } %>
                                     </ul>
                                 </div><!-- End .heading -->
 
@@ -714,60 +731,64 @@
                                     </div><!-- .End .tab-pane -->
 
                                     <% for(let i=0; i < 3; i++){ %>
-                                        <% let cat = categories?categories[i]:'' %>
-                                    <div class="tab-pane p-0 fade" id="top-<%= cat?cat.Catname:'' %>-tab" role="tabpanel"
-                                        aria-labelledby="top-<%= cat?cat.Catname:'' %>-link">
-                                        <div class="products">
-                                            <div class="row justify-content-center">
-                                                <% newAdded.forEach(product=> { %>
-                                                    <% if(cat && cat.Catname == product.Category.Catname){ %>
-                                                    <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
-                                                        <div class="product product-11 text-center">
-                                                            <figure class="product-media">
-                                                                <a href="product?pid=<%= product._id %>">
-                                                                    <img src="<%= product.Imagepath[0] %>"
-                                                                        alt="Product image" class="product-image">
-                                                                    <img src="<%= product.Imagepath[1] %>"
-                                                                        alt="Product image" class="product-image-hover">
-                                                                </a>
+                                        <% let cat=categories?categories[i]:'' %>
+                                            <div class="tab-pane p-0 fade" id="top-<%= cat?cat.Catname:'' %>-tab"
+                                                role="tabpanel" aria-labelledby="top-<%= cat?cat.Catname:'' %>-link">
+                                                <div class="products">
+                                                    <div class="row justify-content-center">
+                                                        <% newAdded.forEach(product=> { %>
+                                                            <% if(cat && cat.Catname==product.Category.Catname){ %>
+                                                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
+                                                                    <div class="product product-11 text-center">
+                                                                        <figure class="product-media">
+                                                                            <a href="product?pid=<%= product._id %>">
+                                                                                <img src="<%= product.Imagepath[0] %>"
+                                                                                    alt="Product image"
+                                                                                    class="product-image">
+                                                                                <img src="<%= product.Imagepath[1] %>"
+                                                                                    alt="Product image"
+                                                                                    class="product-image-hover">
+                                                                            </a>
 
-                                                                <div class="product-action-vertical">
-                                                                    <a href="#"
-                                                                        class="btn-product-icon btn-wishlist "><span>add
-                                                                            to
-                                                                            wishlist</span></a>
-                                                                </div><!-- End .product-action-vertical -->
-                                                            </figure><!-- End .product-media -->
+                                                                            <div class="product-action-vertical">
+                                                                                <a href="#"
+                                                                                    class="btn-product-icon btn-wishlist "><span>add
+                                                                                        to
+                                                                                        wishlist</span></a>
+                                                                            </div><!-- End .product-action-vertical -->
+                                                                        </figure><!-- End .product-media -->
 
-                                                            <div class="product-body">
-                                                                <div class="product-cat">
-                                                                    <a href="#">
-                                                                        <%= product.Category?product.Category.Catname:''%>
-                                                                    </a>
-                                                                </div><!-- End .product-cat -->
-                                                                <h3 class="product-title"><a
-                                                                        href="product?pid=<%= product._id %>">
-                                                                        <%= product.Productname %>
-                                                                    </a></h3>
-                                                                <!-- End .product-title -->
-                                                                <div class="product-price">
-                                                                    $<%= product.Price - product.Discount %>
-                                                                </div><!-- End .product-price -->
-                                                            </div><!-- End .product-body -->
-                                                            <div class="product-action">
-                                                                <a onclick="addToCart('<%= product._id %>')"
-                                                                    class="btn-product btn-cart"><span>add to
-                                                                        cart</span></a>
-                                                            </div><!-- End .product-action -->
-                                                        </div><!-- End .product -->
-                                                    </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-                                                    <% } %>
-                                                    <% }) %>
+                                                                        <div class="product-body">
+                                                                            <div class="product-cat">
+                                                                                <a href="#">
+                                                                                    <%=
+                                                                                        product.Category?product.Category.Catname:''%>
+                                                                                </a>
+                                                                            </div><!-- End .product-cat -->
+                                                                            <h3 class="product-title"><a
+                                                                                    href="product?pid=<%= product._id %>">
+                                                                                    <%= product.Productname %>
+                                                                                </a></h3>
+                                                                            <!-- End .product-title -->
+                                                                            <div class="product-price">
+                                                                                $<%= product.Price - product.Discount %>
+                                                                            </div><!-- End .product-price -->
+                                                                        </div><!-- End .product-body -->
+                                                                        <div class="product-action">
+                                                                            <a onclick="addToCart('<%= product._id %>')"
+                                                                                class="btn-product btn-cart"><span>add
+                                                                                    to
+                                                                                    cart</span></a>
+                                                                        </div><!-- End .product-action -->
+                                                                    </div><!-- End .product -->
+                                                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+                                                                <% } %>
+                                                                    <% }) %>
 
-                                            </div><!-- End .row -->
-                                        </div><!-- End .products -->
-                                    </div><!-- .End .tab-pane -->
-                                    <% } %>
+                                                    </div><!-- End .row -->
+                                                </div><!-- End .products -->
+                                            </div><!-- .End .tab-pane -->
+                                            <% } %>
                                 </div><!-- End .tab-content -->
                             </div><!-- End .container -->
 
@@ -787,24 +808,28 @@
     <div class="mobile-menu-container mobile-menu-light">
         <div class="mobile-menu-wrapper">
             <span class="mobile-menu-close"><i class="icon-close"></i></span>
-            
+
             <form action="#" method="get" class="mobile-search">
                 <label for="mobile-search" class="sr-only">Search</label>
-                <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search product ..." required>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search product ..." required>
                 <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
             </form>
 
             <ul class="nav nav-pills-mobile nav-border-anim" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="mobile-menu-link" data-toggle="tab" href="#mobile-menu-tab" role="tab" aria-controls="mobile-menu-tab" aria-selected="true">Menu</a>
+                    <a class="nav-link active" id="mobile-menu-link" data-toggle="tab" href="#mobile-menu-tab"
+                        role="tab" aria-controls="mobile-menu-tab" aria-selected="true">Menu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="mobile-cats-link" data-toggle="tab" href="#mobile-cats-tab" role="tab" aria-controls="mobile-cats-tab" aria-selected="false">Categories</a>
+                    <a class="nav-link" id="mobile-cats-link" data-toggle="tab" href="#mobile-cats-tab" role="tab"
+                        aria-controls="mobile-cats-tab" aria-selected="false">Categories</a>
                 </li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="mobile-menu-tab" role="tabpanel" aria-labelledby="mobile-menu-link">
+                <div class="tab-pane fade show active" id="mobile-menu-tab" role="tabpanel"
+                    aria-labelledby="mobile-menu-link">
                     <nav class="mobile-nav">
                         <ul class="mobile-menu">
                             <li class="active">
@@ -844,10 +869,12 @@
                                     <li><a href="category-2cols.html">Shop Grid 2 Columns</a></li>
                                     <li><a href="category.html">Shop Grid 3 Columns</a></li>
                                     <li><a href="category-4cols.html">Shop Grid 4 Columns</a></li>
-                                    <li><a href="category-boxed.html"><span>Shop Boxed No Sidebar<span class="tip tip-hot">Hot</span></span></a></li>
+                                    <li><a href="category-boxed.html"><span>Shop Boxed No Sidebar<span
+                                                    class="tip tip-hot">Hot</span></span></a></li>
                                     <li><a href="category-fullwidth.html">Shop Fullwidth No Sidebar</a></li>
                                     <li><a href="product-category-boxed.html">Product Category Boxed</a></li>
-                                    <li><a href="product-category-fullwidth.html"><span>Product Category Fullwidth<span class="tip tip-new">New</span></span></a></li>
+                                    <li><a href="product-category-fullwidth.html"><span>Product Category Fullwidth<span
+                                                    class="tip tip-new">New</span></span></a></li>
                                     <li><a href="cart.html">Cart</a></li>
                                     <li><a href="checkout.html">Checkout</a></li>
                                     <li><a href="wishlist.html">Wishlist</a></li>
@@ -859,7 +886,8 @@
                                 <ul>
                                     <li><a href="product.html">Default</a></li>
                                     <li><a href="product-centered.html">Centered</a></li>
-                                    <li><a href="product-extended.html"><span>Extended Info<span class="tip tip-new">New</span></span></a></li>
+                                    <li><a href="product-extended.html"><span>Extended Info<span
+                                                    class="tip tip-new">New</span></span></a></li>
                                     <li><a href="product-gallery.html">Gallery</a></li>
                                     <li><a href="product-sticky.html">Sticky Info</a></li>
                                     <li><a href="product-sidebar.html">Boxed With Sidebar</a></li>
@@ -1040,10 +1068,10 @@
                                         <p class="text-center">or sign in with</p>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
+                                                <button class="btn btn-login btn-g" >
                                                     <i class="icon-google"></i>
                                                     Login With Google
-                                                </a>
+                                                </button>
                                             </div>
                                             <div class="col-sm-6">
                                                 <a href="#" class="btn btn-login btn-f">
@@ -1076,6 +1104,13 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/demos/demo-2.js"></script>
 
+    <!-- <script>
+        document.getElementById('googleSignupBtn').addEventListener('click', () => {
+          // Redirect the user to the Google authentication page
+          window.location.href = '/auth/google';
+        });
+      </script> -->
+
     <script>
         var theError = document.getElementById('form-error');
 
@@ -1095,20 +1130,32 @@
 
     </script>
     <script>
-        function removeFromCart(productId, quantity) {
-            // AJAX request to update the quantity
-            $.ajax({
-                type: 'POST',
-                url: `/removefromcart`,
-                data: {
-                    pid: productId,
-                    qty: quantity
-                },
-                success: function (response) {
-                    console.log('Item Removed successfully:', response);
+        function signout(){
+            showConfirm("You are temporarily leaving TouchBrand..").then((value)=>{
+                if(value){
+                    location.href = '/logout'
+                }else{
                     location.reload();
-                },
-            });
+                }
+            })
+        }
+        function removeFromCart(productId, quantity) {
+            showConfirm("This will remove this product from cart..").then((result) => {
+                if (result) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/removefromcart`,
+                        data: {
+                            pid: productId,
+                            qty: quantity
+                        },
+                        success: function (response) {
+                            console.log('Item Removed successfully:', response);
+                            location.reload();
+                        },
+                    });
+                }
+            })
         }
         function addToCart(productId) {
             // AJAX request to update the quantity
@@ -1153,4 +1200,4 @@
 
     </script>
 
-    <%- include('foot.ejs') %> 
+    <%- include('foot.ejs') %>

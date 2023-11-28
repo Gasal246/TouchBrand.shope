@@ -13,8 +13,10 @@
                     <div class="col-12 col-lg-3 mt-3">
                         <div class="coupon-card p-3">
                             <h4>Coupan <span class="text-info"><%= coupon.Code %></span></h4>
+                            <h6>Based on: <%= coupon.Basedon %></h6>
+                            <h6>Discount <span class="text-success ml-2 mb-0 font-weight-medium"><%= coupon.Discount %>%</span></h6>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h6>Discount <span class="text-success ml-2 mb-0 font-weight-medium"><%= coupon.Discount %>%</span></h6>
+                                <h6>Exp on: <% let exp; exp = coupon.Expiry || new Date %><%= exp.toDateString(exp) %></h6>
                                 <a onclick="deleteCoupon('<%= coupon._id %>')" style="cursor:pointer;"><i class="mdi mdi-delete-forever h3 text-danger"></i></a>
                             </div>
                         </div>
@@ -51,14 +53,24 @@
                     <h6 class="text-center">Add New coupans</h6>
                     <form id="addcoupon">
                         <div class="mb-3">
-                            <label class="form-label">Number of coupons</label>
-                            <input type="number" class="form-control" min="1" max="15" value="" name="num"
-                                placeholder="Enter a number of coupons to add">
+                            <label class="form-label">Based on</label>
+                            <input type="text" class="form-control" value="" name="based"
+                                placeholder="Enter a the event based">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Discount</label>
                             <input type="number" class="form-control" value="" name="discount" min="1" max="100"
                                 placeholder="Enter the percentage of discount">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Number of coupons</label>
+                            <input type="number" class="form-control" min="1" max="15" value="" name="num"
+                                placeholder="Enter a number of coupons to add">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Expiry on</label>
+                            <input type="date" class="form-control" value="" name="expiry"
+                                placeholder="Expiry date">
                         </div>
                         <button type="submit" class="btn btn-primary">Add Coupons</button>
                     </form>
