@@ -37,7 +37,7 @@ module.exports = {
         hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]'])
         hmac = hmac.digest('hex')
         if(hmac == details['payment[razorpay_signature]']){
-          resolve(details['order[receipt]'])
+          resolve({oid:details['order[receipt]'], tid:details['payment[razorpay_payment_id]']})
         }else{
           reject(error)
         }

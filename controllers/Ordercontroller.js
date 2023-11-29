@@ -118,7 +118,7 @@ module.exports = {
       const productId = req.body.productId;
       let productDetails;
       let orderItems;
-      let isCart = req.body.iscart;
+      let isCart = req.body.iscart || null;
 
       if (typeof productId === "string") {
         productDetails = await Products.findById(productId);
@@ -220,7 +220,7 @@ module.exports = {
       }
 
       // CLEAR THE CART AFTER ODERING FROM CART
-      if (isCart == 1) {
+      if (isCart) {
         await Carts.findOneAndRemove({ Userid: userId });
       }
 

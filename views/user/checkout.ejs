@@ -24,11 +24,11 @@
                         <div class="checkout-discount">
                             <div style="display: flex;align-items: center;justify-content: center;">
                                 <input type="text" class="form-control" id="coupon-input"
-                                    placeholder="Paste or enter your coupon code here" value="<%= coupon?coupon.Code:'' %>">
+                                    placeholder="Enter your coupon code here" value="<%= coupon?coupon.Code:'' %>">
                                     <% if(!coupon){ %>
-                                    <button onclick="applycoupan()" >Apply</button>
+                                    <button class="apply-coupon-btn" onclick="applycoupan()" >Apply</button>
                                     <% }else{ %>
-                                    <button onclick="removecoupan()">Remove</button>
+                                    <button class="remove-coupon-btn" onclick="removecoupan()">Remove</button>
                                     <% } %>
                             </div>
                         </div><!-- End .checkout-discount -->
@@ -94,7 +94,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <% } %>
+                                    <% }else{ %>
+                                        <div>
+                                            <p style="font-weight: 600;">You have no saved address to show here eigther <a href="/account"><u>Add one</u></a> or continue with one now.</p>
+                                        </div>
+                                        <% } %>
 
                                     <div class="row">
                                         <div class="col-12">
@@ -202,7 +206,6 @@
                                                                         value="<%= quantity %>">
                                                                     <input type="hidden" name="pimage"
                                                                         value="<%= product.Imagepath[0] %>">
-                                                                        <input type="hidden" name="iscart" value="0">
                                                                     <tr>
                                                                         <td><a href="#">
                                                                                 <%= product.Productname %>

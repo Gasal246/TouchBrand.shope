@@ -4,14 +4,13 @@ const Orders = require("../public/models/ordermodel");
 module.exports = {
   verifyThePayment: async (req, res) => {
     try {
-      console.log(req.body);
       paymentHelper
         .verifyPayment(req.body)
         .then(async (data) => {
-          await Orders.findByIdAndUpdate(data, {
-            $set: { Status: 'active' },
+          await Orders.findByIdAndUpdate(data.oid, {
+            $set: { Status: 'active', Transactionid: data.tid },
           })
-          res.json({ status: true, oid: data });
+          res.json({ status: true, oid: data.oid });
         })
         .catch((err) => {
           res.json({ error: err });

@@ -28,6 +28,7 @@ const OrdersSchema = new Schema({
     landmark: { type: String },
     pincode: { type: String },
   }, 
+  Transactionid: { type: String },
   Status: { type: String, required: true, default: "pending" },
   Totalamount: { type: Number, required: true },
 });

@@ -23,6 +23,7 @@
             <h5 style="color: slategray;">On: <%= order.Orderdate.toDateString() %></h5>
         </div>
         <div class="allProducts row col-12 mt-1">
+            <% let subTotal = 0 %>
             <% order.Items.map((item)=>{ %>
             <div class="gcard2 col-12 col-lg-4 mb-2">
                 <img src="<%= item.Productimg %>" class="shadow" alt="">
@@ -31,8 +32,9 @@
                     <span>Quantity: <%= item.Quantity %></span><br>
                     <span>Price: $<%= item.Price %></span><br>
                     <span>Shipping cost: $<%= item.Shippingcost %></span><br>
-                    <span>Total: $<%= (item.Price + item.Shippingcost) * item.Quantity  %></span>
-                    <span class="text-success h6"><%= item.Paymet == 'cod'?'COD':'Payed' %></span>
+                    <span>Total: $<% let total = (item.Price + item.Shippingcost) * item.Quantity  %><%= total %></span>
+                    <% subTotal += total %>
+                    <span class="text-success h6"><%= item.Paymet == 'cod'?'not payed':'Payed' %></span>
                 </div>
             </div>
             <% }) %>
@@ -44,7 +46,7 @@
             <!-- <h5 style="color: slategray;">Arriving: <%= order.Orderdate.toDateString() %></h5> -->
         </div>
         <div class="col-12 row">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-4">
                 <h6 style="color: rgb(71, 88, 68);">Delivered to: <span style="color: rgb(146, 146, 146);"><%= order.Deliveryaddress.cname %></span></h6>
                 <h6 style="color: rgb(71, 88, 68);">City: <span style="color: rgb(146, 146, 146);"><%= order.Deliveryaddress.city %></span></h6>
                 <h6 style="color: rgb(71, 88, 68);">Street/Home: <span style="color: rgb(146, 146, 146);"><%= order.Deliveryaddress.streetaddress %></span></h6>
@@ -53,7 +55,7 @@
                 <h6 style="color: rgb(71, 88, 68);">State: <span style="color: rgb(146, 146, 146);"><%= order.Deliveryaddress.state %></span></h6>
                 <h6 style="color: rgb(71, 88, 68);">Pincode: <span style="color: rgb(146, 146, 146);"><%= order.Deliveryaddress.pincode %></span></h6>
             </div>
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-4">
                 <h6 style="color: rgb(71, 88, 68);">Expected delivery: <span style="color: rgb(146, 146, 146);"><%
                     let edate=new Date(order.Orderdate);
                     edate.setDate(edate.getDate()+3) %>
@@ -61,9 +63,12 @@
                 <h6 style="color: rgb(71, 88, 68);">Delivery Status: <span style="color: rgb(146, 146, 146);"><%= order.Status %></span></h6>
                 <h6 style="color: rgb(71, 88, 68);">Items count: <span style="color: rgb(146, 146, 146);"><%= order.Items.length %></span></h6>
                 <h6 style="color: rgb(71, 88, 68);">Total amount: <span style="color: rgb(146, 146, 146);">$<%= order.Totalamount %></span></h6>
-                <br>
+            </div>
+            <div class="col-12 col-lg-4">
                 <h6 style="color: #141b7b;"> <u>Payment Detail</u></h6>
+                <h6 style="color: rgb(71, 88, 68);">Total Amount: <span style="color: rgb(15, 184, 60);">$<%= subTotal %></span></h6>
                 <h6 style="color: rgb(71, 88, 68);">Payment methord: <span style="color: rgb(15, 184, 60);"><%= order.Items[0].Paymet %></span></h6>
+                <h6 style="color: rgb(71, 88, 68);">Transaction id: <span style="color: dodgerblue;"><% if(order.Transactionid){ %><%= order.Transactionid %> <% }else{ %> <span style="font-size: 12px;">No required for this type of payments</span> <% } %></span></h6>
             </div>
         </div>
     </div>
