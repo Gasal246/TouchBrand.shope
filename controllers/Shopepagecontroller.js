@@ -1,3 +1,4 @@
+const Brands = require("../public/models/brandmodel");
 const Categories = require("../public/models/categorymodel");
 const Products = require("../public/models/productmodel");
 
@@ -8,8 +9,9 @@ module.exports = {
       let min = req.query.min || 0;
       let max = req.query.max || 5000;
       let queryObj = req.query.qobj || {Price: { $gte: min, $lte: max }};
-      let query = Products.find(queryObj).populate('Category');
+      let query = Products.find(queryObj).populate('Category').populate('Brand');
       const categorydata = await Categories.find({});
+      const brandData = await Brands.find({})
       const productCount = await Products.aggregate([
         {
           $group: {
@@ -35,23 +37,28 @@ module.exports = {
         }
       ])
       let cat = req.query.categories || null;
+      let brand = req.query.brands || null;
       let categories = cat?req.query.categories.split(","):null;
+      let brands = brand?req.query.brands.split(","):null;
 
       const page = req.query.page * 1 || 1;
       const limit = req.query.limit * 1 || 8;
       const skip = (page - 1) * limit;
 
       query = query.skip(skip).limit(limit);
-
+      
       let products = await query;
-      if(cat){
-        products = products.filter(product => categories.includes(product.Category))
-      }
       console.log(products);
+      if(cat){
+        products = products.filter(product => categories.includes(product.Category.Catname))
+      }
+      if(brand){
+        products = products.filter(product => brands.includes(product.Brand.Brandname))
+      }
       const docCount = await Products.countDocuments();
       const pagecount = Math.ceil(docCount / limit);
 
-      res.render('user/shopepage', {products: products, err: null, pagecount, docCount, page, skip, categorydata, productCount})
+      res.render('user/shopepage', {products: products, err: null, pagecount, docCount, page, skip, categorydata, productCount, brandData})
 
     } catch (error) {
       const on = "On ShopePage";
